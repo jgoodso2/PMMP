@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="c53ab744-6fdd-4cc1-b22a-94df9138ba0d" Scope="Web" Title="PMMPresentation Components">
+  <ElementManifests>
+    <ElementManifest Location="Scripts\Elements.xml" />
+    <ElementManifest Location="Settings\Elements.xml" />
+    <ElementManifest Location="PMMPresentation\Elements.xml" />
+    <ElementManifest Location="PMMPresentations\Elements.xml" />
+    <ElementManifest Location="Templates\Elements.xml" />
+    <ElementFile Location="Templates\PMM Template.pptx" />
+    <ElementManifest Location="ProjectTasks\Elements.xml" />
+    <ElementFile Location="ProjectTasks\Schema.xml" />
+  </ElementManifests>
+</Feature>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Solution xmlns="http://schemas.microsoft.com/sharepoint/" SolutionId="3880adbb-1dea-408e-93e2-9199607225c0" SharePointProductVersion="14.0">
+  <Assemblies>
+    <Assembly Location="ProjectServerServices.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="Repository.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="WCFHelpers.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="PMMP.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="PMMPresentation.dll" DeploymentTarget="GlobalAssemblyCache" />
+  </Assemblies>
+  <TemplateFiles>
+    <TemplateFile Location="Layouts\PMMPresentation\jquery-1.7.1.min.js" />
+    <TemplateFile Location="Layouts\PMMPresentation\NewPMMPresentation.aspx" />
+    <TemplateFile Location="Layouts\PMMPresentation\PMMPresentation.css" />
+    <TemplateFile Location="Layouts\PMMPresentation\PMMPresentation.js" />
+    <TemplateFile Location="Layouts\PMMPresentation\Settings.aspx" />
+  </TemplateFiles>
+  <FeatureManifests>
+    <FeatureManifest Location="PMMPresentation_WebElements\Feature.xml" />
+  </FeatureManifests>
+</Solution>

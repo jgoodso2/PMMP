@@ -1,0 +1,11 @@
+C:\Development\BAE\DataAccess\Repository\obj\Release\ResolveAssemblyReference.cache
+C:\Development\BAE\DataAccess\Repository\bin\Release\Repository.dll.config
+C:\Development\BAE\DataAccess\Repository\bin\Release\Repository.dll
+C:\Development\BAE\DataAccess\Repository\bin\Release\Repository.pdb
+C:\Development\BAE\DataAccess\Repository\bin\Release\Microsoft.Sharepoint.Sandbox.dll
+C:\Development\BAE\DataAccess\Repository\obj\Release\Repository.dll
+C:\Development\BAE\DataAccess\Repository\obj\Release\Repository.pdb
+C:\Development\BAE\DataAccess\Repository\bin\Release\ProjectServerServices.dll
+C:\Development\BAE\DataAccess\Repository\bin\Release\WCFHelpers.dll
+C:\Development\BAE\DataAccess\Repository\bin\Release\WCFHelpers.pdb
+C:\Development\BAE\DataAccess\Repository\bin\Release\WCFHelpers.XmlSerializers.dll

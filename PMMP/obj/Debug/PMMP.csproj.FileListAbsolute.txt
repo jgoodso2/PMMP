@@ -1,0 +1,23 @@
+C:\Development\BAE\PMMP\PMMP\bin\Debug\PMMP.dll
+C:\Development\BAE\PMMP\PMMP\bin\Debug\PMMP.pdb
+C:\Development\BAE\PMMP\PMMP\obj\Debug\ResolveAssemblyReference.cache
+C:\Development\BAE\PMMP\PMMP\obj\Debug\PMMP.dll
+C:\Development\BAE\PMMP\PMMP\obj\Debug\PMMP.pdb
+C:\Development\BAE\PMMP\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\obj\Debug\ResolveAssemblyReference.cache
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\PMMP.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\PMMP.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\obj\Debug\PMMP.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\obj\Debug\PMMP.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\ProjectServerServices.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\Repository.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\WCFHelpers.dll
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\Repository.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMP\bin\Debug\WCFHelpers.pdb
+C:\PMMP\PMMP\bin\Debug\PMMP.dll
+C:\PMMP\PMMP\bin\Debug\PMMP.pdb
+C:\PMMP\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP\PMMP\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP\PMMP\obj\Debug\PMMP.dll
+C:\PMMP\PMMP\obj\Debug\PMMP.pdb

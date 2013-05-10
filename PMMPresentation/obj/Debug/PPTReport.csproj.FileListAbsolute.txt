@@ -1,0 +1,6 @@
+c:\users\administrator\documents\visual studio 2010\Projects\PPTReport\PPTReport\bin\Debug\PPTReport.dll
+c:\users\administrator\documents\visual studio 2010\Projects\PPTReport\PPTReport\bin\Debug\PPTReport.pdb
+c:\users\administrator\documents\visual studio 2010\Projects\PPTReport\PPTReport\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+c:\users\administrator\documents\visual studio 2010\Projects\PPTReport\PPTReport\obj\Debug\ResolveAssemblyReference.cache
+c:\users\administrator\documents\visual studio 2010\Projects\PPTReport\PPTReport\obj\Debug\PPTReport.dll
+c:\users\administrator\documents\visual studio 2010\Projects\PPTReport\PPTReport\obj\Debug\PPTReport.pdb

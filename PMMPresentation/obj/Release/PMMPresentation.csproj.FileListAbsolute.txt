@@ -1,0 +1,12 @@
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\PMMPresentation.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\Microsoft.Sharepoint.Sandbox.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\obj\Release\ResolveAssemblyReference.cache
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\obj\Release\PMMPresentation.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\obj\Release\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\PMMP.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\ProjectServerServices.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\Repository.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\WCFHelpers.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\Repository.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Release\PMMP.pdb

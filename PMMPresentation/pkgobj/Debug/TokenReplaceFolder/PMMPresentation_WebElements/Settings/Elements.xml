@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <CustomAction Id="089ce3f2-c090-4bc3-9689-c05e6213d2cf" 
+                Title="PMM Presentation Settings"
+                GroupId="SiteTasks"
+                Location="Microsoft.SharePoint.SiteSettings"
+                Sequence="1000"
+                RequireSiteAdministrator="TRUE">
+                <UrlAction Url="javascript:OpenPopUpPage('{SiteUrl}/_layouts/PMMPresentation/Settings.aspx')" />
+  </CustomAction>
+</Elements>

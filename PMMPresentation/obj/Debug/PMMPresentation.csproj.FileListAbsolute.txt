@@ -1,0 +1,29 @@
+C:\Projects\PMMPresentation\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\Projects\PMMPresentation\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\Projects\PMMPresentation\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\Projects\PMMPresentation\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\PMMPresentation\PMMPresentation\obj\Debug\PMMPresentation.dll
+C:\Projects\PMMPresentation\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentation\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
+C:\PMM Presentation\PMMPresentation\PMMPresentation\obj\Debug\PMMPresentation.dll
+C:\PMM Presentation\PMMPresentation\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\PMM Presentation\PMMPresentation\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentation\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMM Presentation\PMMPresentation\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\obj\Debug\PMMPresentation.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\ProjectServerServices.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\PMMP.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\Repository.dll
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\PMMP.pdb
+C:\PMM Presentation\PMMPresentationNew\PMMPresentation\bin\Debug\Repository.pdb
+C:\PMMP\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\PMMP\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\PMMP\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP\PMMPresentation\obj\Debug\PMMPresentation.dll
+C:\PMMP\PMMPresentation\obj\Debug\PMMPresentation.pdb

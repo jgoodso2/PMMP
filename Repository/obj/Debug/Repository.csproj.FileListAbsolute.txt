@@ -1,0 +1,29 @@
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\bin\Debug\Repository.dll
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\bin\Debug\Repository.pdb
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\obj\Debug\ResolveAssemblyReference.cache
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\obj\Debug\Repository.dll
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\obj\Debug\Repository.pdb
+C:\Development\BAE\DataAccess\Repository\bin\Debug\Repository.dll.config
+C:\Development\BAE\DataAccess\Repository\bin\Debug\Repository.dll
+C:\Development\BAE\DataAccess\Repository\bin\Debug\Repository.pdb
+C:\Development\BAE\DataAccess\Repository\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\Development\BAE\DataAccess\Repository\obj\Debug\ResolveAssemblyReference.cache
+C:\Development\BAE\DataAccess\Repository\obj\Debug\Repository.dll
+C:\Development\BAE\DataAccess\Repository\obj\Debug\Repository.pdb
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\Repository.dll.config
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\Repository.dll
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\Repository.pdb
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\ProjectServerServices.dll
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMM Presentation\PMMPresentationNew\Repository\obj\Debug\ResolveAssemblyReference.cache
+C:\PMM Presentation\PMMPresentationNew\Repository\obj\Debug\Repository.dll
+C:\PMM Presentation\PMMPresentationNew\Repository\obj\Debug\Repository.pdb
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\WCFHelpers.dll
+C:\PMM Presentation\PMMPresentationNew\Repository\bin\Debug\WCFHelpers.pdb
+C:\PMMP\Repository\bin\Debug\Repository.dll.config
+C:\PMMP\Repository\bin\Debug\Repository.dll
+C:\PMMP\Repository\bin\Debug\Repository.pdb
+C:\PMMP\Repository\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP\Repository\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP\Repository\obj\Debug\Repository.dll
+C:\PMMP\Repository\obj\Debug\Repository.pdb

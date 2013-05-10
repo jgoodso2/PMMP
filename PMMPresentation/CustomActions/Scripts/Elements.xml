@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <CustomAction Location="ScriptLink"
+                Sequence="100"
+                ScriptSrc="PMMPresentation/jquery-1.7.1.min.js" />
+  <CustomAction Location="ScriptLink"
+                Sequence="101"
+                ScriptSrc="PMMPresentation/PMMPresentation.js" />
+</Elements>

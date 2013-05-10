@@ -1,0 +1,5 @@
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\bin\Debug\DataSetTransofrm.dll
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\bin\Debug\DataSetTransofrm.pdb
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\obj\Debug\ResolveAssemblyReference.cache
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\obj\Debug\DataSetTransofrm.dll
+D:\nishant\projects\Samples\Entity Framweork\DataSetTransofrm\DataSetTransofrm\obj\Debug\DataSetTransofrm.pdb

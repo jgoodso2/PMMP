@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<List Title="ProjectTasks"
+      Direction="$Resources:Direction;"
+      Url="Lists/ProjectTasks"
+      BaseType="0"
+      FolderCreation="FALSE"
+      DisableAttachments="TRUE"
+      xmlns:ows="Microsoft SharePoint"
+      xmlns="http://schemas.microsoft.com/sharepoint/">
+  <MetaData>
+    <ContentTypes>
+      <ContentType ID="0x01001c18a15edcc7483ca4d2b7960acff65c"
+             Name="Project Task"
+             Description=""
+             Inherits="TRUE"
+             Version="0">
+        <FieldRefs>
+          <FieldRef ID="{fa564e0f-0c70-4ab9-b863-0177e6ddd247}" Name="Title" Required="FALSE" />
+          <FieldRef ID="{23042158-9c72-47ba-a676-0a9b59dd4a81}" Name="Task" Required="FALSE" />
+          <FieldRef ID="{2a6ba979-b3f0-439b-987a-28e8e826c6af}" Name="Duration" Required="FALSE" />
+          <FieldRef ID="{7da94127-1926-42b4-8e7d-f37af75adb71}" Name="Predecessor" Required="FALSE" />
+          <FieldRef ID="{00216713-71cf-41ba-b25d-c257a1815fb9}" Name="Start" Required="FALSE" />
+          <FieldRef ID="{6bc6478d-af16-4026-babd-5c9eadc6f0e9}" Name="Finish" Required="FALSE" />
+          <FieldRef ID="{754c19ee-2a06-4185-b99e-df950aa43e4b}" Name="ModifiedOn" Required="FALSE" />
+          <FieldRef ID="{60797583-89d3-4f7a-9e74-b115c10d4b1b}" Name="UniqueID" Required="FALSE"/>
+          <FieldRef ID="{e33417bf-5996-40f5-9a30-e529a46c9f62}" Name="PercentComplete" Required="FALSE"/>
+          <FieldRef ID="{73b8cc55-d228-43f6-9802-384e08fea888}" Name="Deadline" Required="FALSE"/>
+          <FieldRef ID="{180b71da-55c1-45ee-9895-db22fd359391}" Name="DrivingPath" Required="FALSE"/>
+          <FieldRef ID="{64660977-9686-4f0b-a1da-ac9f6d591fbf}" Name="ShowOn" Required="FALSE" />
+        </FieldRefs>
+      </ContentType>
+      <ContentTypeRef ID="0x0120" />
+    </ContentTypes>
+    <Fields>
+      <Field ID="{fa564e0f-0c70-4ab9-b863-0177e6ddd247}" Name="Title" StaticName="Title" DisplayName="ID_" Type="Text" Required="TRUE" FromBaseType="TRUE" SourceID="http://schemas.microsoft.com/sharepoint/v3" />
+      <Field ID="{23042158-9c72-47ba-a676-0a9b59dd4a81}" Name="Task" StaticName="Task" DisplayName="Task" Type="Text" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{2a6ba979-b3f0-439b-987a-28e8e826c6af}" Name="Duration" StaticName="Duration" DisplayName="Duration" Type="Text" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{7da94127-1926-42b4-8e7d-f37af75adb71}" Name="Predecessor" StaticName="Predecessor" DisplayName="Predecessor" Type="Text" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{00216713-71cf-41ba-b25d-c257a1815fb9}" Name="Start" StaticName="Start" DisplayName="Start" Type="DateTime" Format="DateOnly" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{6bc6478d-af16-4026-babd-5c9eadc6f0e9}" Name="Finish" StaticName="Finish" DisplayName="Finish" Type="DateTime" Format="DateOnly" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{754c19ee-2a06-4185-b99e-df950aa43e4b}" Name="ModifiedOn" StaticName="Finish" DisplayName="Finish" Type="DateTime" Format="DateOnly" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{60797583-89d3-4f7a-9e74-b115c10d4b1b}" Name="UniqueID" StaticName="UniqueID" DisplayName="Unique ID" Type="Guid" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{e33417bf-5996-40f5-9a30-e529a46c9f62}" Name="PercentComplete" StaticName="PercentComplete" DisplayName="% Complete" Type="Number"  Min="0" Max="1" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{73b8cc55-d228-43f6-9802-384e08fea888}" Name="Deadline" StaticName="Deadline" DisplayName="Deadline" Type="DateTime" Format="DateOnly" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}" />
+      <Field ID="{180b71da-55c1-45ee-9895-db22fd359391}" Name="DrivingPath" StaticName="DrivingPath" DisplayName="Driving Path" Type="MultiChoice" Required="FALSE" FillInChoice="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}">
+        <Default>1</Default>
+        <CHOICES>
+          <CHOICE>1</CHOICE>
+        </CHOICES>
+      </Field>
+      <Field ID="{64660977-9686-4f0b-a1da-ac9f6d591fbf}" Name="ShowOn" StaticName="ShowOn" DisplayName="Show On" Type="MultiChoice" Required="FALSE" SourceID="{$ListId:Lists/ProjectTasks;}">
+        <Default>Milestone Summary Slide</Default>
+        <CHOICES>
+          <CHOICE>Milestone Summary</CHOICE>
+          <CHOICE>Review &amp; Demo Milestones</CHOICE>
+        </CHOICES>
+      </Field>
+    </Fields>
+    <Views>
+      <View DisplayName="$Resources:core,camlid4" DefaultView="TRUE" BaseViewID="1" Type="HTML" MobileView="TRUE" MobileDefaultView="TRUE" ImageUrl="/_layouts/images/generic.png" XslLink="main.xsl" WebPartZoneID="Main" WebPartOrder="1" Url="AllItems.aspx" SetupPath="pages\viewpage.aspx">
+        <XslLink>main.xsl</XslLink>
+        <Query>
+          <OrderBy>
+            <FieldRef Name="ID" />
+          </OrderBy>
+        </Query>
+        <ViewFields>
+          <FieldRef Name="Title" />
+          <FieldRef Name="Task" />
+          <FieldRef Name="Duration" />
+          <FieldRef Name="Predecessor" />
+          <FieldRef Name="Start" />
+          <FieldRef Name="Finish" />
+          <FieldRef Name="ModifiedOn" />
+          <FieldRef Name="UniqueID" />
+          <FieldRef Name="PercentComplete" />
+          <FieldRef Name="Deadline" />
+          <FieldRef Name="DrivingPath" />
+          <FieldRef Name="ShowOn" />
+        </ViewFields>
+        <RowLimit Paged="TRUE">30</RowLimit>
+      </View>
+    </Views>
+    <Forms>
+      <Form Type="DisplayForm" Url="DispForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+      <Form Type="EditForm" Url="EditForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+      <Form Type="NewForm" Url="NewForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+    </Forms>
+  </MetaData>
+</List>

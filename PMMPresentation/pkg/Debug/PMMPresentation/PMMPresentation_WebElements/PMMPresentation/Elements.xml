@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <Field ID="{3836b42f-8de1-4e40-9a2b-8797cb18e102}"
+         Name="PMMPresentationComments"
+         StaticName="PMMPresentationComments" 
+         DisplayName="Comments"
+         Group="PMM Presentation Fields"
+         Type="Note">
+  </Field>
+  <!-- Parent ContentType: Document (0x0101) -->
+  <ContentType ID="0x010100dab977b3af2a41b1b69374fbc8701167"
+               Name="PMM Presentation"
+               Group="Custom Content Types"
+               Description="PMM Report Content Types"
+               Inherits="TRUE"
+               Version="0">
+    <FieldRefs>
+      <FieldRef ID="{3836b42f-8de1-4e40-9a2b-8797cb18e102}" Name="PMMPresentationComments"/>
+    </FieldRefs>
+    <DocumentTemplate TargetName="/_layouts/PMMPresentation/NewPMMPresentation.aspx" />
+  </ContentType>
+</Elements>
