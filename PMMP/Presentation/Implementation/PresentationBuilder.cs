@@ -25,12 +25,12 @@ namespace PMMP
             return bytes;
         }
 
-        public object BuildDataFromDataSource()
+        public object BuildDataFromDataSource(string projectGuid)
         {
-            return TaskItemRepository.GetTaskGroups();
+            return TaskItemRepository.GetTaskGroups(projectGuid);
         }
 
-        public MemoryStream CreateDocument(byte[] template)
+        public MemoryStream CreateDocument(byte[] template,string projectUID)
         {
 
             var ms = new MemoryStream();
@@ -46,7 +46,7 @@ namespace PMMP
                 var gridSlidePart = oPPart.GetSlidePartsInOrder().ToList()[gridSlideIndex];
                 var completedSlidePart = oPPart.GetSlidePartsInOrder().ToList()[completedSlideIndex];
                 var chartSlidePart = oPPart.GetSlidePartsInOrder().ToList()[chartSlideIndex];
-                var taskData = TaskItemRepository.GetTaskGroups();
+                var taskData = TaskItemRepository.GetTaskGroups(projectUID);
                 var data = taskData.TaskItemGroups;
                 int noOfCompletedSlides = 0,noOfGridSlides=0;
                 for (int i = 0; i < data.Count; i++)

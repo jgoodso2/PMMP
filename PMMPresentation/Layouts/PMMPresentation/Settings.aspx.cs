@@ -92,12 +92,6 @@ namespace PMMPresentation.Layouts.PMMPresentation
                     if (this.TemplateFileUpload.HasFile)
                         this.Web.Files.Add(Constants.TEMPLATE_FILE_LOCATION, this.TemplateFileUpload.FileBytes, true);
 
-                    if (updateList)
-                    {
-                        PMMP.TaskItemRepository.DeleteAllFromList();
-                        PMMP.TaskItemRepository.UpdateTasksList(this.txtServiceURL.Text, new Guid(this.ddlProject.SelectedValue));
-                    }
-
                     this.pnlClose.Visible = true;
                 }
             }

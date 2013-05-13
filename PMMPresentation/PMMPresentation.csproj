@@ -108,9 +108,6 @@
     <None Include="ListInstances\PMMPresentations\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{0f694e82-621e-4605-9488-c0c1614ad21a}</SharePointProjectItemId>
     </None>
-    <None Include="ListInstances\ProjectTasks\SharePointProjectItem.spdata">
-      <SharePointProjectItemId>{ab9faa9b-d313-4601-a50d-a0d19e3b316a}</SharePointProjectItemId>
-    </None>
     <None Include="Modules\Templates\PMM Template.pptx" />
     <None Include="Modules\Templates\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{59e05ee1-5b50-4737-bc6a-ae7e2451ef82}</SharePointProjectItemId>
@@ -147,8 +144,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="ListInstances\PMMPresentations\Elements.xml" />
-    <Content Include="ListInstances\ProjectTasks\Elements.xml" />
-    <Content Include="ListInstances\ProjectTasks\Schema.xml" />
     <Content Include="Modules\Templates\Elements.xml" />
   </ItemGroup>
   <ItemGroup>

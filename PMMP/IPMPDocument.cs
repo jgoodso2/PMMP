@@ -8,6 +8,6 @@ namespace PMMP
 {
     interface IPMPDocument
     {
-        Stream CreateDocument(string template, byte[] fileName);
+        Stream CreateDocument(string template, byte[] fileName,string projectUID);
     }
 }

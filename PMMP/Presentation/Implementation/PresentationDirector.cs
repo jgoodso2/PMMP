@@ -8,10 +8,10 @@ namespace PMMP
 {
     class PresentationDirector : IDirector
     {
-        public Stream Construct(IBuilder builder, byte[] fileName)
+        public Stream Construct(IBuilder builder, byte[] fileName,string projectGuid)
         {
-            builder.BuildDataFromDataSource();
-           return builder.CreateDocument(fileName);
+            builder.BuildDataFromDataSource(projectGuid);
+           return builder.CreateDocument(fileName,projectGuid);
         }
     }
 }

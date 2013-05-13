@@ -8,9 +8,9 @@ namespace PMMP
 {
     public class PMPDocument :IPMPDocument
     {
-        public Stream CreateDocument(string template,byte[] fileName)
+        public Stream CreateDocument(string template,byte[] fileName,string projectUID)
         {
-            return PresentationDocumentFactory.CreateDocument(template,fileName);
+            return PresentationDocumentFactory.CreateDocument(template, fileName, projectUID);
         }
     }
 

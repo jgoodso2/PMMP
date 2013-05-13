@@ -28,12 +28,11 @@ namespace PMMPresentation.Layouts.PMMPresentation
         {
             if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
             {
-                PMMP.TaskItemRepository.UpdateTasksList(Configuration.ServiceURL, new Guid(Configuration.ProjectUID));
                 var docName = this.txtDocumentName.Text + ".pptx";
                 var docLib = this.Web.Lists[this.ListId];
                 var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
                 PMMP.PMPDocument document = new PMMP.PMPDocument();
-                var stream = document.CreateDocument("Presentation", templateFile.OpenBinary());
+                var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(),Configuration.ProjectUID);
                     
 
                 

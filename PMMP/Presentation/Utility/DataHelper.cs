@@ -45,7 +45,7 @@ namespace PMMP
         {
             DateTime? value = null;
 
-            if (oValue != null)
+            if (oValue != null && !string.IsNullOrEmpty(oValue.ToString()))
                 value = Convert.ToDateTime(oValue);
 
             return value;

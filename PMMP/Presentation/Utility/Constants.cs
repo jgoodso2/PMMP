@@ -26,7 +26,7 @@ namespace PMMP
         public const string PROPERTY_NAME_DB_SERVICE_URL = "PMM-ServiceURL";
         public const string PROPERTY_NAME_DB_PROJECT_UID = "PMM-ProjectUID";
 
-        public const string TEMPLATE_FILE_LOCATION = "_cts/PMM Presentation/PMM TemplateNew.pptx";
+        public const string TEMPLATE_FILE_LOCATION = "_cts/PMM Presentation/PMM Template.pptx";
 
         public const string CT_PMM_NAME = "PMM Presentation";
 

@@ -8,6 +8,6 @@ namespace PMMP
 {
     interface IDirector
     {
-        Stream Construct(IBuilder builder, byte[] fileName);
+        Stream Construct(IBuilder builder, byte[] fileName, string projectGuid);
     }
 }

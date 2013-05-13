@@ -7,7 +7,5 @@
     <ElementManifest Location="PMMPresentations\Elements.xml" />
     <ElementManifest Location="Templates\Elements.xml" />
     <ElementFile Location="Templates\PMM Template.pptx" />
-    <ElementManifest Location="ProjectTasks\Elements.xml" />
-    <ElementFile Location="ProjectTasks\Schema.xml" />
   </ElementManifests>
 </Feature>

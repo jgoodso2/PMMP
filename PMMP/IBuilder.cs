@@ -8,7 +8,7 @@ namespace PMMP
 {
     interface IBuilder
     {
-        object BuildDataFromDataSource();
-        MemoryStream CreateDocument(byte[] template);
+        object BuildDataFromDataSource(string projectGuid);
+        MemoryStream CreateDocument(byte[] template,string projectUID);
     }
 }

@@ -9,13 +9,13 @@ namespace PMMP
 {
     public class PresentationDocumentFactory
     {
-        public static Stream CreateDocument(string template, byte[] fileName)
+        public static Stream CreateDocument(string template, byte[] fileName,string projectGuid)
         {
             switch (template)
             {
                 case "Presentation":
                     PresentationDirector director = new PresentationDirector();
-                    return director.Construct(new PresentationBuilder(),fileName);
+                    return director.Construct(new PresentationBuilder(), fileName, projectGuid);
             }
             return null;
         }
