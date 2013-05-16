@@ -26,6 +26,9 @@ namespace PMMPresentation.Layouts.PMMPresentation
 
         protected void btnCreate_Click(object sender, EventArgs e)
         {
+            SPSecurity.RunWithElevatedPrivileges(() =>
+{
+ 
             if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
             {
                 var docName = this.txtDocumentName.Text + ".pptx";
@@ -54,7 +57,7 @@ namespace PMMPresentation.Layouts.PMMPresentation
             {
                 this.ShowErrorMessage("An error has ocurred trying to get the configuration parameters");  
             }
-
+});
             this.pnlSubmit.Visible = true;
         }
 

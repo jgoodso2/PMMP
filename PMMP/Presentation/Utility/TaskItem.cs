@@ -15,9 +15,24 @@ namespace PMMP
         public string Predecessor { get; set; }
         public DateTime? Start { get; set; }
         public DateTime? Finish { get; set; }
+        public DateTime? BaseLineStart { get; set; }
+        public DateTime? BaseLineFinish { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public string[] ShowOn { get; set; }
         public int WorkCompletePercentage { get; set; }
+        public string TotalSlack { get; set; }
+
+        public string Hours { get; set; }
+
+        public string CA { get; set; }
+
+        public DateTime? EstFinish { get; set; }
+
+        public DateTime? EstStart { get; set; }
+
+        public string PMT { get; set; }
+
+        public string ReasonRecovery { get; set; }
     }
 }

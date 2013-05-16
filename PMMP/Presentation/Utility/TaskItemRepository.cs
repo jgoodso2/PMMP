@@ -10,6 +10,7 @@ using Constants = PMMP.Constants;
 using System.Collections.Specialized;
 using SvcProject;
 
+
 namespace PMMP
 {
     public class TaskItemRepository
@@ -18,7 +19,7 @@ namespace PMMP
         public static TaskGroupData GetTaskGroups(string projectUID)
         {
             TaskGroupData taskData = new TaskGroupData();
-            
+            FiscalMonth month = DataRepository.GetCurrentFiscalMonth();
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
           
             
@@ -26,16 +27,17 @@ namespace PMMP
             DataSet dataset = dataAccess.ReadProject(null);
             DataTable tasksDataTable = dataset.Tables["Task"];
             Dictionary<string, IList<TaskItem>> ChartsData = GetChartsData(tasksDataTable);
+            IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable,month);
             taskData.TaskItemGroups = retVal;
             taskData.ChartsData = ChartsData;
+            taskData.LateTaskGroups = LateTasksData;
             if (tasksDataTable != null)
             {
-                var dPaths = tasksDataTable.AsEnumerable().Select(t => t.Field<string>("TASK_DRIVINGPATH_ID")).Distinct();
+                var dPaths = tasksDataTable.AsEnumerable().Where(t => !string.IsNullOrEmpty(t.Field<string>("TASK_DRIVINGPATH_ID"))).Select(t => t.Field<string>("TASK_DRIVINGPATH_ID")).Distinct();
                 var chartTypes = tasksDataTable.AsEnumerable().Select(t => t.Field<string>("CUSTOMFIELD_DESC")).Distinct(); ;
                
                 foreach (string dPath in dPaths)
                 {
-
                     int taskCount = -1;
                     var taskItemGroup = new TaskItemGroup { DrivingPath = dPath, TaskItems = new List<TaskItem>() };
                     string previousTitle = string.Empty;
@@ -50,7 +52,7 @@ namespace PMMP
                     TaskItemGroup completedTaskItemGroup = new TaskItemGroup { DrivingPath = dPath, TaskItems = new List<TaskItem>() };
                     foreach (DataRow item in collection)
                     {
-                        if (item["TASK_DEADLINE"] != null)
+                        if (item["TASK_DEADLINE"] != System.DBNull.Value && !string.IsNullOrEmpty(item["TASK_DEADLINE"].ToString()))
                         {
                             if (!dictTitle.ContainsKey(dPath.Split(",".ToCharArray())[0]))
                             {
@@ -63,7 +65,7 @@ namespace PMMP
                             chartItems.Add(BuildTaskItem(dPath, item));
                         }
 
-                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) < 100))
+                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) < 100) && !string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(month))
                         {
                                 totalUnCompletedtaskCount++;
                                 taskCount++;
@@ -152,6 +154,55 @@ namespace PMMP
             return taskData;
         }
 
+        private static IList<TaskItemGroup> GetLateTasksData(DataTable tasksDataTable, FiscalMonth month)
+        {
+            
+            int count = -1;
+            int lateTaskCount = 0;
+            IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
+            
+            
+            TaskItemGroup taskData = new TaskItemGroup() { TaskItems = new List<TaskItem>()};
+               IList<TaskItem> items = new List<TaskItem>();
+                EnumerableRowCollection<DataRow> collection = 
+                    
+                    tasksDataTable.AsEnumerable()
+                    .Where((t => t.Field<DateTime?>("TASK_START_DATE").HasValue && t.Field<DateTime?>("TB_START").HasValue && t.Field<DateTime?>("TB_START").Value.InCurrentFiscalMonth(month) &&
+                           t.Field<int>("TASK_PCT_COMP") < 100 &&
+                           t.Field<DateTime?>("TASK_START_DATE").Value.Date > t.Field<DateTime?>("TB_START").Value.Date));
+                            
+                     List<DataRow> mergedCollection =  collection.Union(tasksDataTable.AsEnumerable()
+                    .Where(t => t.Field<DateTime?>("TASK_FINISH_DATE").HasValue && t.Field<DateTime?>("TB_FINISH").HasValue && t.Field<DateTime?>("TB_FINISH").Value.InCurrentFiscalMonth(month) &&
+                           t.Field<int>("TASK_PCT_COMP") < 100 &&
+                           t.Field<DateTime?>("TASK_FINISH_DATE").Value.Date > t.Field<DateTime?>("TB_FINISH").Value.Date) 
+                           ).ToList();
+                foreach (DataRow item in mergedCollection)
+                {
+                    count++;
+                    lateTaskCount++;
+                    TaskItem taskItem = BuildTaskItem("", item);
+                    if (count == 4)
+                    {
+                        retVal.Add(taskData);
+                        taskData = new TaskItemGroup {  TaskItems = new List<TaskItem>() };
+                        count = 0;
+                        taskData.TaskItems.Add(BuildTaskItem("", item));
+                    }
+                    else
+                    {
+                        taskData.TaskItems.Add(BuildTaskItem("", item));
+                    }
+                }
+
+                if (lateTaskCount % 4 != 0)
+                {
+                    retVal.Add(taskData);
+
+                }
+                
+            return retVal;
+        }
+
         private static Dictionary<string, IList<TaskItem>> GetChartsData(DataTable tasksDataTable)
         {
             Dictionary<string, IList<TaskItem>> chartsData = new Dictionary<string, IList<TaskItem>>() ;
@@ -188,9 +239,18 @@ namespace PMMP
                 Start = DataHelper.GetValueAsDateTime(item["TASK_START_DATE"].ToString()),
                 Finish = DataHelper.GetValueAsDateTime(item["TASK_FINISH_DATE"].ToString()),
                 Deadline = DataHelper.GetValueAsDateTime(item["TASK_DEADLINE"].ToString()),
-                ShowOn = DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString()),
+                ShowOn = DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(),CustomFieldType.ShowOn),
+                CA = string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.CA)),
+                EstFinish = !string.IsNullOrEmpty(string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstFinish))) ? (DateTime?) Convert.ToDateTime(DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstFinish)) : null,
+                EstStart = !string.IsNullOrEmpty(string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstStart))) ? (DateTime?) Convert.ToDateTime(DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstStart)): null,
+                PMT = string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.PMT)),
+                ReasonRecovery =string.Join(",", DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.ReasonRecovery)),
                 ModifiedOn = DataHelper.GetValueAsDateTime(item["TASK_MODIFIED_ON"].ToString()),
-                WorkCompletePercentage = DataHelper.GetValueAsInteger(item["TASK_PCT_COMP"].ToString())
+                WorkCompletePercentage = DataHelper.GetValueAsInteger(item["TASK_PCT_COMP"].ToString()),
+                TotalSlack = DataHelper.GetValue(item["TASK_TOTAL_SLACK"].ToString()),
+                BaseLineStart = DataHelper.GetValueAsDateTime(item["TB_START"].ToString()),
+                BaseLineFinish = DataHelper.GetValueAsDateTime(item["TB_FINISH"].ToString()),
+                Hours = DataHelper.GetValue(item["TASK_WORK"].ToString())
             };
         }
     }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <SharePointSiteUrl>http://intranet.contoso.com/PMM5/</SharePointSiteUrl>
+    <SharePointSiteUrl>http://intranet.contoso.com/projectserver5/PMM5/</SharePointSiteUrl>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <ProjectExtensions>

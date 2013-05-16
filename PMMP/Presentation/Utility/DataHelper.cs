@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 
+
 namespace PMMP
 {
     public class DataHelper
@@ -26,7 +27,7 @@ namespace PMMP
             return value;
         }
 
-        public static string[] GetValueFromMultiChoice(object oValue)
+        public static string[] GetValueFromMultiChoice(object oValue,CustomFieldType type)
         {
             string[] value = null;
 
@@ -35,7 +36,12 @@ namespace PMMP
                 SPFieldMultiChoiceValue fieldValue = new SPFieldMultiChoiceValue(oValue.ToString());
                 value = new string[fieldValue.Count];
                 for (int i = 0; i < fieldValue.Count; i++)
+                {
+                    if(fieldValue[i].StartsWith(type.GetString()))
+                    {
                     value[i] = fieldValue[i];
+                    }
+                }
             }
 
             return value;

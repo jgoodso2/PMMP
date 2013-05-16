@@ -20,6 +20,12 @@ using System.Web.Services.Protocols;
 
 namespace Repository
 {
+    public struct FiscalMonth
+    {
+        public DateTime To { get; set; }
+        public DateTime From { get; set; }
+    }
+
     public class DataRepository
     {
         // WCF endpoint names in app.config.
@@ -395,6 +401,48 @@ namespace Repository
         }
 
         #endregion
+
+        public static FiscalMonth GetCurrentFiscalMonth()
+        {
+            SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year);
+            if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
+            {
+                foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
+                {
+                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                    if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                    {
+                        return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                    }
+                }
+            }
+            fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year - 1);
+            if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
+            {
+                foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
+                {
+                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                    if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                    {
+                        return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                    }
+                }
+            }
+
+            fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year + 1);
+            if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
+            {
+                foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
+                {
+                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                    if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                    {
+                        return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                    }
+                }
+            }
+            return new FiscalMonth() { From = DateTime.MinValue, To = DateTime.Now };
+        }
         public static CustomFieldDataSet ReadCustomFields()
         {
             return customFieldsClient.ReadCustomFields(string.Empty, false);

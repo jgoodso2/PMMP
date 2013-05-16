@@ -38,7 +38,7 @@ namespace PMMP
                 throw new ArgumentOutOfRangeException("to");
 
             PresentationPart presentationPart = presentationDocument.PresentationPart;
-            Presentation presentation = presentationPart.Presentation;
+            Presentation  presentation = presentationPart.Presentation;
             SlideIdList slideIdList = presentation.SlideIdList;
             SlideId sourceSlide = slideIdList.ChildElements[from] as SlideId;
             SlideId targetSlide = null;

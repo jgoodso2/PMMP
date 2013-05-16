@@ -9,6 +9,7 @@ namespace PMMP
     {
         Grid = 0,
         Chart =1,
-        Completed = 2
+        Completed = 2,
+        Late = 3
     }
 }
