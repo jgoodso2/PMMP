@@ -51,7 +51,7 @@ namespace PMMP
            
         }
 
-        internal static void PopulateLateTasksTable(Table table, IList<TaskItem> iList)
+        internal static void PopulateLateTasksTable(Table table, IList<TaskItem> iList,Repository.FiscalMonth fiscalMonth)
         {
             
             foreach (TaskItem item in iList)
@@ -65,7 +65,7 @@ namespace PMMP
                 tr.Append(CreateTextCell(item.Task));
                 tr.Append(CreateTextCell(item.TotalSlack));
                 tr.Append(CreateTextCell(item.Start.HasValue ? item.Start.Value.ToShortDateString() : String.Empty));
-                tr.Append(CreateTextCell(item.Finish.HasValue ? item.Start.Value.ToShortDateString() : String.Empty));
+                tr.Append(CreateTextCell(item.Finish.HasValue ? item.Finish.Value.ToShortDateString() : String.Empty));
                 TableCell baseLineStart;
                 TableCell baseLineFinish;
                 if (!item.BaseLineStart.HasValue)
@@ -74,8 +74,7 @@ namespace PMMP
                 }
                 else
                 {
-                    if (item.Start.HasValue && item.Start.Value.Year == DateTime.Now.Year && item.Start.Value.Month > DateTime.Now.Month
-                        && item.BaseLineStart.Value.Month <= DateTime.Now.Month)
+                    if (item.Start.HasValue && item.Start.Value <= fiscalMonth.From && item.Start.Value >= fiscalMonth.To && item.Start.Value.Month > fiscalMonth.To.Month)
                     {
                         baseLineStart = CreateTextCell(item.BaseLineStart.Value.ToShortDateString(), System.Drawing.Color.Red);
                     }
@@ -106,8 +105,7 @@ namespace PMMP
                 }
                 else
                 {
-                    if (item.Finish.HasValue && item.Finish.Value.Year == DateTime.Now.Year && item.Finish.Value.Month > DateTime.Now.Month
-                        && item.BaseLineFinish.Value.Month <= DateTime.Now.Month)
+                    if (item.Finish.HasValue && item.Finish.Value <= fiscalMonth.From && item.Finish.Value >= fiscalMonth.To && item.Finish.Value.Month > fiscalMonth.To.Month)
                     {
                         baseLineFinish = CreateTextCell(item.BaseLineFinish.Value.ToShortDateString(), System.Drawing.Color.Red);
                     }

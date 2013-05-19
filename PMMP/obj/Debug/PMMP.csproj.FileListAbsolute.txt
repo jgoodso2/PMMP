@@ -21,8 +21,8 @@ C:\PMMP\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
 C:\PMMP\PMMP\obj\Debug\ResolveAssemblyReference.cache
 C:\PMMP\PMMP\obj\Debug\PMMP.dll
 C:\PMMP\PMMP\obj\Debug\PMMP.pdb
+C:\PMMP\PMMP\bin\Debug\PMMRepository.dll
 C:\PMMP\PMMP\bin\Debug\ProjectServerServices.dll
-C:\PMMP\PMMP\bin\Debug\Repository.dll
-C:\PMMP\PMMP\bin\Debug\Repository.pdb
 C:\PMMP\PMMP\bin\Debug\WCFHelpers.dll
+C:\PMMP\PMMP\bin\Debug\PMMRepository.pdb
 C:\PMMP\PMMP\bin\Debug\WCFHelpers.pdb

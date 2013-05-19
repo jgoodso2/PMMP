@@ -27,7 +27,7 @@ C:\PMMP\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
 C:\PMMP\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
 C:\PMMP\PMMPresentation\obj\Debug\PMMPresentation.dll
 C:\PMMP\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\PMMP\PMMPresentation\bin\Debug\PMMRepository.dll
+C:\PMMP\PMMPresentation\bin\Debug\PMMRepository.pdb
 C:\PMMP\PMMPresentation\bin\Debug\PMMP.dll
-C:\PMMP\PMMPresentation\bin\Debug\Repository.dll
 C:\PMMP\PMMPresentation\bin\Debug\PMMP.pdb
-C:\PMMP\PMMPresentation\bin\Debug\Repository.pdb

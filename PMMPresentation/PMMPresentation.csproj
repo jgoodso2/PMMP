@@ -117,6 +117,7 @@
     </None>
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +152,9 @@
       <Project>{CE9C3DDA-E600-455A-972B-0B3D1E6CE8AF}</Project>
       <Name>PMMP</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Repository.csproj">
+    <ProjectReference Include="..\PMMRepository\PMMRepository.csproj">
       <Project>{116CFA48-278A-4C3A-9389-94F406716000}</Project>
-      <Name>Repository</Name>
+      <Name>PMMRepository</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

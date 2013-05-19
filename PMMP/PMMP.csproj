@@ -88,9 +88,9 @@
     <None Include="PMMP.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Repository\Repository.csproj">
+    <ProjectReference Include="..\PMMRepository\PMMRepository.csproj">
       <Project>{116CFA48-278A-4C3A-9389-94F406716000}</Project>
-      <Name>Repository</Name>
+      <Name>PMMRepository</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

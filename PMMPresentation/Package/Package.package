@@ -2,7 +2,7 @@
 <package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="3880adbb-1dea-408e-93e2-9199607225c0" solutionId="3880adbb-1dea-408e-93e2-9199607225c0" resetWebServer="false" name="PMMPresentation" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
   <assemblies>
     <customAssembly location="ProjectServerServices.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="bin\Debug\ProjectServerServices.dll" />
-    <customAssembly location="Repository.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="bin\Debug\Repository.dll" />
+    <customAssembly location="PMMRepository.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="..\PMMRepository\bin\Debug\PMMRepository.dll" />
     <customAssembly location="WCFHelpers.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="bin\Debug\WCFHelpers.dll" />
     <customAssembly location="PMMP.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="..\PMMP\bin\Debug\PMMP.dll" />
   </assemblies>

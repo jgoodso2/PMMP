@@ -2,7 +2,7 @@
 <Solution xmlns="http://schemas.microsoft.com/sharepoint/" SolutionId="3880adbb-1dea-408e-93e2-9199607225c0" SharePointProductVersion="14.0">
   <Assemblies>
     <Assembly Location="ProjectServerServices.dll" DeploymentTarget="GlobalAssemblyCache" />
-    <Assembly Location="Repository.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="PMMRepository.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="WCFHelpers.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="PMMP.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="PMMPresentation.dll" DeploymentTarget="GlobalAssemblyCache" />

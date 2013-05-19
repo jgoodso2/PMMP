@@ -19,15 +19,16 @@ namespace PMMP
         public static TaskGroupData GetTaskGroups(string projectUID)
         {
             TaskGroupData taskData = new TaskGroupData();
-            FiscalMonth month = DataRepository.GetCurrentFiscalMonth();
+            FiscalMonth fiscalPeriod = DataRepository.GetCurrentFiscalMonth();
+            taskData.FiscalPeriod = fiscalPeriod;
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
-          
+           
             
             DataAccess dataAccess = new Repository.DataAccess(new Guid(projectUID));
             DataSet dataset = dataAccess.ReadProject(null);
             DataTable tasksDataTable = dataset.Tables["Task"];
             Dictionary<string, IList<TaskItem>> ChartsData = GetChartsData(tasksDataTable);
-            IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable,month);
+            IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable,fiscalPeriod);
             taskData.TaskItemGroups = retVal;
             taskData.ChartsData = ChartsData;
             taskData.LateTaskGroups = LateTasksData;
@@ -65,7 +66,7 @@ namespace PMMP
                             chartItems.Add(BuildTaskItem(dPath, item));
                         }
 
-                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) < 100) && !string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(month))
+                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) < 100) && !string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(fiscalPeriod))
                         {
                                 totalUnCompletedtaskCount++;
                                 taskCount++;
