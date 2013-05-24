@@ -66,8 +66,28 @@ namespace PMMP
                             chartItems.Add(BuildTaskItem(dPath, item));
                         }
 
-                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) < 100) && !string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(fiscalPeriod))
+                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) >= 100) && !string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(fiscalPeriod))
                         {
+                            totalCompletedTaskCount++;
+                            completedTaskCount++;
+                            if (completedTaskCount == 10)
+                            {
+                                completedTasks.Add(completedTaskItemGroup);
+                                completedTaskItemGroup = new TaskItemGroup { DrivingPath = dPath, TaskItems = new List<TaskItem>() };
+                                completedTaskCount = 0;
+                                completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
+                            }
+                            else
+                            {
+                                completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
+                            }    
+                           
+                        }
+                        else
+                        {
+
+                            if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) < 100))
+                            {
                                 totalUnCompletedtaskCount++;
                                 taskCount++;
                                 if (taskCount == 10)
@@ -84,22 +104,7 @@ namespace PMMP
                                 {
                                     taskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
                                 }
-                        }
-                        else
-                        {
-                                totalCompletedTaskCount++;
-                                completedTaskCount++;
-                                if (completedTaskCount == 10)
-                                {
-                                    completedTasks.Add(completedTaskItemGroup);
-                                    completedTaskItemGroup = new TaskItemGroup { DrivingPath = dPath, TaskItems = new List<TaskItem>() };
-                                    completedTaskCount = 0;
-                                    completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
-                                }
-                                else
-                                {
-                                    completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
-                                }
+                            }
                             
                         }
                     }
@@ -161,19 +166,19 @@ namespace PMMP
             int count = -1;
             int lateTaskCount = 0;
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
-            
+           
             
             TaskItemGroup taskData = new TaskItemGroup() { TaskItems = new List<TaskItem>()};
                IList<TaskItem> items = new List<TaskItem>();
                 EnumerableRowCollection<DataRow> collection = 
                     
                     tasksDataTable.AsEnumerable()
-                    .Where((t => t.Field<DateTime?>("TASK_START_DATE").HasValue && t.Field<DateTime?>("TB_START").HasValue && t.Field<DateTime?>("TB_START").Value.InCurrentFiscalMonth(month) &&
+                    .Where((t => t.Field<bool>("TASK_IS_SUMMARY") == false && t.Field<DateTime?>("TASK_START_DATE").HasValue && t.Field<DateTime?>("TB_START").HasValue && t.Field<DateTime?>("TB_START").Value.InCurrentFiscalMonth(month) &&
                            t.Field<int>("TASK_PCT_COMP") < 100 &&
                            t.Field<DateTime?>("TASK_START_DATE").Value.Date > t.Field<DateTime?>("TB_START").Value.Date));
                             
                      List<DataRow> mergedCollection =  collection.Union(tasksDataTable.AsEnumerable()
-                    .Where(t => t.Field<DateTime?>("TASK_FINISH_DATE").HasValue && t.Field<DateTime?>("TB_FINISH").HasValue && t.Field<DateTime?>("TB_FINISH").Value.InCurrentFiscalMonth(month) &&
+                    .Where(t => t.Field<bool>("TASK_IS_SUMMARY") == false && t.Field<DateTime?>("TASK_FINISH_DATE").HasValue && t.Field<DateTime?>("TB_FINISH").HasValue && t.Field<DateTime?>("TB_FINISH").Value.InCurrentFiscalMonth(month) &&
                            t.Field<int>("TASK_PCT_COMP") < 100 &&
                            t.Field<DateTime?>("TASK_FINISH_DATE").Value.Date > t.Field<DateTime?>("TB_FINISH").Value.Date) 
                            ).ToList();
@@ -182,11 +187,11 @@ namespace PMMP
                     count++;
                     lateTaskCount++;
                     TaskItem taskItem = BuildTaskItem("", item);
-                    if (count == 4)
+                    if (count == 10)
                     {
                         retVal.Add(taskData);
                         taskData = new TaskItemGroup {  TaskItems = new List<TaskItem>() };
-                        count = 0;
+                        count = -1;
                         taskData.TaskItems.Add(BuildTaskItem("", item));
                     }
                     else
@@ -195,7 +200,7 @@ namespace PMMP
                     }
                 }
 
-                if (lateTaskCount % 4 != 0)
+                if (count % 10 != 0)
                 {
                     retVal.Add(taskData);
 
@@ -212,8 +217,12 @@ namespace PMMP
             var chartTypes = tasksDataTable.AsEnumerable().Select(t => t.Field<string>("CUSTOMFIELD_DESC")).Distinct(); 
                 foreach (string chartType in chartTypes)
                 {
+                   if(!string.IsNullOrEmpty(chartType))
+                   {
+                    foreach(string chartTypeItem in chartType.Split(",".ToCharArray()))
+                   {
                     IList<TaskItem> items = new List<TaskItem>();
-                    EnumerableRowCollection<DataRow> collection = tasksDataTable.AsEnumerable().Where(t => t.Field<string>("CUSTOMFIELD_DESC") != null && t.Field<string>("CUSTOMFIELD_DESC").Split(",".ToCharArray()).Contains(chartType));
+                    EnumerableRowCollection<DataRow> collection = tasksDataTable.AsEnumerable().Where(t => t.Field<string>("CUSTOMFIELD_DESC") != null && t.Field<string>("CUSTOMFIELD_DESC").Split(",".ToCharArray()).Contains(chartTypeItem));
                     foreach (DataRow item in collection)
                     {
                         TaskItem taskItem =  BuildTaskItem("", item);
@@ -221,8 +230,13 @@ namespace PMMP
                     }
                     if (items.Count > 0)
                     {
-                        chartsData.Add(chartType, items);
+                        if (!chartsData.ContainsKey(chartTypeItem))
+                        {
+                            chartsData.Add(chartTypeItem, items);
+                        }
                     }
+                   }
+                   }
             }
             return chartsData;
         }

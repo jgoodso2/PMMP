@@ -24,12 +24,15 @@
 	    </script>
 	</asp:Panel>
     <div class="srs-container">
+     <div><asp:Label ID="lblLoggedInUser" runat="server"></asp:Label></div>
+                <div><asp:Label ID="lblAppPoolUser" runat="server"></asp:Label></div>
         <div class="srs-row">
             <div class="srs-row-column srs-row-column-label">
                 <div><b>Service URL</b></div>
                 <div></div>
             </div>
             <div class="srs-row-column srs-row-column-control">
+               
                 <asp:TextBox runat="server" ID="txtServiceURL" Width="300px"></asp:TextBox>
                 <asp:Button runat="server" ID="btnLoadProjects" Text="Load" Width="100px" OnClick="btnLoad_Click" CausesValidation="false" />
                 <span class="ms-formvalidation">

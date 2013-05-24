@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
+using System.Collections.Specialized;
 
 
 namespace PMMP
@@ -29,22 +30,33 @@ namespace PMMP
 
         public static string[] GetValueFromMultiChoice(object oValue,CustomFieldType type)
         {
-            string[] value = null;
+            StringCollection value = new StringCollection();
 
             if (oValue != null)
             {
-                SPFieldMultiChoiceValue fieldValue = new SPFieldMultiChoiceValue(oValue.ToString());
-                value = new string[fieldValue.Count];
-                for (int i = 0; i < fieldValue.Count; i++)
+                string[] fieldValue =oValue.ToString().Split(",".ToCharArray());
+                for (int i = 0; i < fieldValue.Length; i++)
                 {
-                    if(fieldValue[i].StartsWith(type.GetString()))
+                    foreach (string fieldval in fieldValue[i].Split(",".ToCharArray()))
                     {
-                    value[i] = fieldValue[i];
+                        if (fieldval.StartsWith(type.GetString()))
+                        {
+                            if (!string.IsNullOrEmpty(fieldval))
+                            {
+                                value.Add(fieldval);
+                            }
+                        }
                     }
                 }
             }
 
-            return value;
+            if (value.Count == 0)
+            {
+                return new string[0];
+            }
+            string[] array = new string[value.Count];
+            value.CopyTo(array, 0);
+            return array;
         }
 
         public static DateTime? GetValueAsDateTime(object oValue)

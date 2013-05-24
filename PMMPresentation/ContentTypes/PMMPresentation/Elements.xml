@@ -5,7 +5,7 @@
          StaticName="PMMPresentationComments" 
          DisplayName="Comments"
          Group="PMM Presentation Fields"
-         Type="Note">
+         Type="Note" >
   </Field>
   <!-- Parent ContentType: Document (0x0101) -->
   <ContentType ID="0x010100dab977b3af2a41b1b69374fbc8701167"

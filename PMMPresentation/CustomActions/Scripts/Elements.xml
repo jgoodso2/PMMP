@@ -2,8 +2,8 @@
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <CustomAction Location="ScriptLink"
                 Sequence="100"
-                ScriptSrc="PMMPresentation/jquery-1.7.1.min.js" />
+                ScriptSrc="PMMPresentation/jquery-1.7.1.min.js" RootWebOnly="False" />
   <CustomAction Location="ScriptLink"
                 Sequence="101"
-                ScriptSrc="PMMPresentation/PMMPresentation.js" />
+                ScriptSrc="PMMPresentation/PMMPresentation.js"  RootWebOnly="False"/>
 </Elements>

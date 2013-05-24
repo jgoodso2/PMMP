@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
-  <Module Name="Templates" Path="Templates" Url="_cts/PMM Presentation">
+  <Module Name="Templates" Path="Templates" Url="_cts/PMM Presentation" RootWebOnly="False">
     <File Path="PMM Template.pptx" Url="PMM Template.pptx" />
   </Module>
 </Elements>

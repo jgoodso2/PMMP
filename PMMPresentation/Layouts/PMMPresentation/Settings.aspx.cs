@@ -15,16 +15,25 @@ namespace PMMPresentation.Layouts.PMMPresentation
         {
             try
             {
+                //This gets the app pool account
+                          SPSecurity.RunWithElevatedPrivileges(() =>
+{
+                var obj = System.Security.Principal.WindowsIdentity.GetCurrent();
+                lblLoggedInUser.Text = "The Logged in User =" + SPContext.Current.Web.CurrentUser.LoginName;
+                lblAppPoolUser.Text = "The App Pool User =" + System.Security.Principal.WindowsIdentity.GetCurrent().Name;
                 if (!Page.IsPostBack)
                 {
+            
                     this.txtServiceURL.Text = Configuration.ServiceURL;
                     this.lnkTemplate.NavigateUrl = String.Format("{0}/{1}", this.Web.Url, Constants.TEMPLATE_FILE_LOCATION);
-
+                    
                     if (!String.IsNullOrEmpty(this.txtServiceURL.Text))
                     {
                         DataRepository.ClearImpersonation();
-
-                        if (DataRepository.P14Login("http://intranet.contoso.com/projectserver5"))
+                        
+                       
+                        
+                        if (DataRepository.P14Login(this.txtServiceURL.Text))
                         {
                             var projectList = DataRepository.ReadProjectsList();
                             this.ddlProject.DataSource = projectList.Tables["Project"];
@@ -47,16 +56,22 @@ namespace PMMPresentation.Layouts.PMMPresentation
                             this.ddlProject.SelectedIndex = index;
                         }
                     }
+
                 }
+});
             }
             catch (Exception ex)
             {
                 this.ShowErrorMessage(ex);
             }
+            
         }
 
         protected void btnLoad_Click(object sender, EventArgs e)
         {
+                        SPSecurity.RunWithElevatedPrivileges(() =>
+{
+           
             try
             {
                 if (!String.IsNullOrEmpty(this.txtServiceURL.Text))
@@ -65,6 +80,7 @@ namespace PMMPresentation.Layouts.PMMPresentation
 
                     if (DataRepository.P14Login(this.txtServiceURL.Text))
                     {
+                        var obj = System.Security.Principal.WindowsIdentity.GetCurrent();
                         var projectList = DataRepository.ReadProjectsList();
                         ddlProject.DataSource = projectList.Tables["Project"];
                         ddlProject.DataTextField = "PROJ_NAME";
@@ -77,6 +93,7 @@ namespace PMMPresentation.Layouts.PMMPresentation
             {
                 this.ShowErrorMessage(ex);
             }
+});
         }
 
         protected void btnOK_Click(object sender, EventArgs e)

@@ -26,6 +26,12 @@ namespace PMMP
                 return false;
         }
 
+        public static string ToVeryShortDateString(this DateTime date)
+        {
+            string format = "M/d";
+            return date.ToString(format);
+        }
+
         public static string ToHexString(this System.Drawing.Color color)
         {
             byte[] bytes = new byte[3];

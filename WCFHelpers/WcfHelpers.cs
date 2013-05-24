@@ -142,6 +142,18 @@ namespace WCFHelpers
                                                                   languageCulture, localeCulture);
         }
 
+        public static void SetImpersonation(bool isWindowsUser, string impersonatedUser, Guid resourceGuid)
+        {
+            Guid trackingGuid = Guid.NewGuid();
+            Guid siteId = Guid.Empty;           // Project Web App site ID.
+            CultureInfo languageCulture = null; // The language culture is not used.
+            CultureInfo localeCulture = null;   // The locale culture is not used.
+
+            WcfHelpers.SetImpersonationContext(isWindowsUser, impersonatedUser, resourceGuid, trackingGuid, siteId,
+                                               languageCulture, localeCulture);
+            
+        }
+
         // Get the impersonation context.
         private static String GetImpersonationContext(bool isWindowsUser, String userNTAccount,
                                                       Guid userGuid, Guid trackingGuid, Guid siteId,

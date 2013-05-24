@@ -1,0 +1,12 @@
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\TestLoadProjects.exe.config
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\TestLoadProjects.exe
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\TestLoadProjects.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\obj\x86\Debug\TestLoadProjects.exe
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\obj\x86\Debug\TestLoadProjects.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\PMMRepository.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\ProjectServerServices.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\WCFHelpers.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\PMMRepository.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\TestLoadProjects\bin\Debug\WCFHelpers.pdb

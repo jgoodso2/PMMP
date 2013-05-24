@@ -49,6 +49,24 @@ namespace PMMPresentation.Layouts.PMMPresentation {
         protected global::System.Web.UI.WebControls.Panel pnlClose;
         
         /// <summary>
+        /// lblLoggedInUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLoggedInUser;
+        
+        /// <summary>
+        /// lblAppPoolUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAppPoolUser;
+        
+        /// <summary>
         /// txtServiceURL control.
         /// </summary>
         /// <remarks>

@@ -31,3 +31,23 @@ C:\PMMP\PMMPresentation\bin\Debug\PMMRepository.dll
 C:\PMMP\PMMPresentation\bin\Debug\PMMRepository.pdb
 C:\PMMP\PMMPresentation\bin\Debug\PMMP.dll
 C:\PMMP\PMMPresentation\bin\Debug\PMMP.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\obj\Debug\PMMPresentation.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMP.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMRepository.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMP.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMRepository.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\obj\Debug\PMMPresentation.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMP.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMRepository.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMP.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMPresentation\bin\Debug\PMMRepository.pdb

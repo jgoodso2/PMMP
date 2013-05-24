@@ -5,7 +5,9 @@
                 GroupId="SiteTasks"
                 Location="Microsoft.SharePoint.SiteSettings"
                 Sequence="1000"
-                RequireSiteAdministrator="TRUE">
+                RequireSiteAdministrator="TRUE"
+                RootWebOnly="FALSE"
+                >
                 <UrlAction Url="javascript:OpenPopUpPage('{SiteUrl}/_layouts/PMMPresentation/Settings.aspx')" />
   </CustomAction>
 </Elements>

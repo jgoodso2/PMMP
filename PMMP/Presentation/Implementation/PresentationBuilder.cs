@@ -146,157 +146,197 @@ namespace PMMP
 
         private void CreateChartSlides(TaskGroupData taskData, int lowestSLideIndex, ref int createdCount, PresentationPart oPPart)
         {
-            if (taskData.ChartsData != null)
+            try
             {
-                foreach (string key in taskData.ChartsData.Keys)
+                if (taskData.ChartsData != null)
                 {
-                    if (key.StartsWith("Show On"))
+                    foreach (string key in taskData.ChartsData.Keys)
                     {
-                        //Get all Tasks related to  Driving path
-                        TaskItemGroup newGroup = new TaskItemGroup() { ChartTaskItems = taskData.ChartsData[key] };
-                        var chartDataTable = newGroup.GetChartDataTable(key);
-
-                        #region Charts
-                        if (chartDataTable != null)
+                        try
                         {
-
-                            SlidePart chartSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
-
-                            if (chartSlidePart.ChartParts.ToList().Count > 0)
+                            if (key.StartsWith("Show On"))
                             {
-                                createdCount++;
-                                var chartPart = chartSlidePart.ChartParts.ToList()[0];
+                                //Get all Tasks related to  Driving path
+                                TaskItemGroup newGroup = new TaskItemGroup() { ChartTaskItems = taskData.ChartsData[key] };
+                                var chartDataTable = newGroup.GetChartDataTable(key);
 
-                                foreach (IdPartPair part in chartPart.Parts)
+                                #region Charts
+                                if (chartDataTable != null)
                                 {
-                                    var spreadsheet = chartPart.GetPartById(part.RelationshipId) as EmbeddedPackagePart;
 
-                                    if (spreadsheet != null)
+                                    SlidePart chartSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
+
+                                    if (chartSlidePart.ChartParts.ToList().Count > 0)
                                     {
-                                        using (var oSDoc = SpreadsheetDocument.Open(spreadsheet.GetStream(FileMode.OpenOrCreate, FileAccess.ReadWrite), true))
+                                        createdCount++;
+                                        var chartPart = chartSlidePart.ChartParts.ToList()[0];
+
+                                        foreach (IdPartPair part in chartPart.Parts)
                                         {
-                                            var workSheetPart = oSDoc.WorkbookPart.GetPartsOfType<WorksheetPart>().FirstOrDefault();
-                                            var sheetData = workSheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
+                                            var spreadsheet = chartPart.GetPartById(part.RelationshipId) as EmbeddedPackagePart;
 
-                                            WorkbookUtilities.ReplicateRow(sheetData, 2, chartDataTable.Rows.Count - 1);
-                                            WorkbookUtilities.LoadSheetData(sheetData, chartDataTable, 1, 0);
+                                            if (spreadsheet != null)
+                                            {
+                                                using (var oSDoc = SpreadsheetDocument.Open(spreadsheet.GetStream(FileMode.OpenOrCreate, FileAccess.ReadWrite), true))
+                                                {
+                                                    var workSheetPart = oSDoc.WorkbookPart.GetPartsOfType<WorksheetPart>().FirstOrDefault();
+                                                    var sheetData = workSheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
-                                            BarChartUtilities.LoadChartData(chartPart, chartDataTable);
+                                                    WorkbookUtilities.ReplicateRow(sheetData, 2, chartDataTable.Rows.Count - 1);
+                                                    WorkbookUtilities.LoadSheetData(sheetData, chartDataTable, 1, 0);
+
+                                                    BarChartUtilities.LoadChartData(chartPart, chartDataTable);
+                                                }
+
+                                                break;
+                                            }
                                         }
 
-                                        break;
+                                        var titleShape = chartSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
+                                        if (titleShape.Count > 0)
+                                        {
+                                            titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
+                                                                  new DocumentFormat.OpenXml.Drawing.BodyProperties(),
+                                                                  new DocumentFormat.OpenXml.Drawing.ListStyle(),
+                                                                  new DocumentFormat.OpenXml.Drawing.Paragraph(
+                                                                  new DocumentFormat.OpenXml.Drawing.Run(
+                                                                  new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
+                                                                  new DocumentFormat.OpenXml.Drawing.Text { Text = key.Replace("Show On_", "") })));
+                                        }
+
                                     }
+                                #endregion
                                 }
-
-                                var titleShape = chartSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
-                                if (titleShape.Count > 0)
-                                {
-                                    titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
-                                                          new DocumentFormat.OpenXml.Drawing.BodyProperties(),
-                                                          new DocumentFormat.OpenXml.Drawing.ListStyle(),
-                                                          new DocumentFormat.OpenXml.Drawing.Paragraph(
-                                                          new DocumentFormat.OpenXml.Drawing.Run(
-                                                          new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
-                                                          new DocumentFormat.OpenXml.Drawing.Text { Text = key })));
-                                }
-
                             }
-                        #endregion
                         }
+                        catch
+                        {
+                            continue;
+                        }
+
+
+
                     }
 
-
-
                 }
-
+            }
+            catch
+            {
             }
         }
 
         private void CreateLateSLides(TaskGroupData taskData, int lowestSLideIndex, ref int createdCount, PresentationPart oPPart)
         {
-            #region LateSlides
+            try
+            {
+                #region LateSlides
+
                 foreach (TaskItemGroup lateTaskgroup in taskData.LateTaskGroups)
                 {
-                    lateSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
-                    var table = lateSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Table>().FirstOrDefault();
-
-                    if (table != null && lateTaskgroup.TaskItems.Count > 0)
+                    try
                     {
-                        TableUtilities.PopulateLateTasksTable(table, lateTaskgroup.TaskItems, taskData.FiscalPeriod);
+                        lateSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
+                        var table = lateSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Table>().FirstOrDefault();
+
+                        if (table != null && lateTaskgroup.TaskItems.Count > 0)
+                        {
+                            TableUtilities.PopulateLateTasksTable(table, lateTaskgroup.TaskItems, taskData.FiscalPeriod);
+                        }
+                        createdCount++;
                     }
-                    createdCount++;
+                    catch
+                    {
+                        continue;
+                    }
                 }
-            
-            #endregion
+
+                #endregion
+            }
+            catch
+            {
+
+            }
         }
 
         private void CreateCompletedSlides(TaskItemGroup group,int completedSlideIndex,PresentationPart oPPart)
         {
-            if (group.CompletedTaskgroups != null)
+            try
             {
-                IList<TaskItemGroup> CompletedTasks = group.CompletedTaskgroups;
-                if (CompletedTasks != null && CompletedTasks.Count() > 0)
+                if (group.CompletedTaskgroups != null)
                 {
-                    foreach (TaskItemGroup completedTaskgroup in CompletedTasks)
+                    IList<TaskItemGroup> CompletedTasks = group.CompletedTaskgroups;
+                    if (CompletedTasks != null && CompletedTasks.Count() > 0)
                     {
-                        SlidePart completedSlidePart = oPPart.GetSlidePartsInOrder().ToList()[completedSlideIndex];
-                        DocumentFormat.OpenXml.Presentation.TextBody numberPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
-
-                        foreach (string task in completedTaskgroup.TaskItems.Select(t => t.Task))
+                        foreach (TaskItemGroup completedTaskgroup in CompletedTasks)
                         {
-                            DocumentFormat.OpenXml.Drawing.Paragraph paragraph = (DocumentFormat.OpenXml.Drawing.Paragraph)numberPart.Elements().ToList()[3].Clone();
-                            (paragraph.Elements().ToList()[0] as DocumentFormat.OpenXml.Drawing.Run).Text = new DocumentFormat.OpenXml.Drawing.Text(task);
-                            numberPart.Append(paragraph);
-                        }
+                            SlidePart completedSlidePart = oPPart.GetSlidePartsInOrder().ToList()[completedSlideIndex];
+                            DocumentFormat.OpenXml.Presentation.TextBody numberPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
 
-                        var titleShape = completedSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
-                        if (titleShape.Count > 0)
-                        {
-                            titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
-                                                  new DocumentFormat.OpenXml.Drawing.BodyProperties(),
-                                                  new DocumentFormat.OpenXml.Drawing.ListStyle(),
-                                                  new DocumentFormat.OpenXml.Drawing.Paragraph(
-                                                  new DocumentFormat.OpenXml.Drawing.Run(
-                                                  new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
-                                                  new DocumentFormat.OpenXml.Drawing.Text { Text = group.Title })));
-                        }
+                            foreach (string task in completedTaskgroup.TaskItems.Select(t => t.Task))
+                            {
+                                DocumentFormat.OpenXml.Drawing.Paragraph paragraph = (DocumentFormat.OpenXml.Drawing.Paragraph)numberPart.Elements().ToList()[3].Clone();
+                                (paragraph.Elements().ToList()[0] as DocumentFormat.OpenXml.Drawing.Run).Text = new DocumentFormat.OpenXml.Drawing.Text(task);
+                                numberPart.Append(paragraph);
+                            }
 
-                        DocumentFormat.OpenXml.Presentation.TextBody numPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
-                        ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
-                        ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
+                            var titleShape = completedSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
+                            if (titleShape.Count > 0)
+                            {
+                                titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
+                                                      new DocumentFormat.OpenXml.Drawing.BodyProperties(),
+                                                      new DocumentFormat.OpenXml.Drawing.ListStyle(),
+                                                      new DocumentFormat.OpenXml.Drawing.Paragraph(
+                                                      new DocumentFormat.OpenXml.Drawing.Run(
+                                                      new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
+                                                      new DocumentFormat.OpenXml.Drawing.Text { Text = group.Title })));
+                            }
+
+                            DocumentFormat.OpenXml.Presentation.TextBody numPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
+                            ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
+                            ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
+                        }
                     }
                 }
+            }
+            catch
+            {
             }
         }
 
         private void CreateGridSlide(PresentationPart oPPart,int gridSlideIndex,int i,TaskItemGroup group)
         {
-            SlidePart gridSlidePart = oPPart.GetSlidePartsInOrder().ToList()[gridSlideIndex + i];
-
-            var dataTable = group.TaskItemsDataTable;
-            var table = gridSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Table>().FirstOrDefault();
-
-            if (table != null && group.TaskItems != null && group.TaskItems.Count > 0)
+            try
             {
-                TableUtilities.PopulateTable(table, group.TaskItems);
+                SlidePart gridSlidePart = oPPart.GetSlidePartsInOrder().ToList()[gridSlideIndex + i];
+
+                var dataTable = group.TaskItemsDataTable;
+                var table = gridSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Table>().FirstOrDefault();
+
+                if (table != null && group.TaskItems != null && group.TaskItems.Count > 0)
+                {
+                    TableUtilities.PopulateTable(table, group.TaskItems);
+                }
+                //else
+                //{
+                //    DocumentFormat.OpenXml.OpenXmlElement parent = table.Parent;
+                //    parent.ReplaceChild(new DocumentFormat.OpenXml.Presentation.Text("No Data Avialable"), table);
+                //    //table.Remove();
+                //}
+
+                var titleShape = gridSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
+                if (titleShape.Count > 0)
+                {
+                    titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
+                                          new DocumentFormat.OpenXml.Drawing.BodyProperties(),
+                                          new DocumentFormat.OpenXml.Drawing.ListStyle(),
+                                          new DocumentFormat.OpenXml.Drawing.Paragraph(
+                                          new DocumentFormat.OpenXml.Drawing.Run(
+                                          new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
+                                          new DocumentFormat.OpenXml.Drawing.Text { Text = group.Title })));
+                }
             }
-            //else
-            //{
-            //    DocumentFormat.OpenXml.OpenXmlElement parent = table.Parent;
-            //    parent.ReplaceChild(new DocumentFormat.OpenXml.Presentation.Text("No Data Avialable"), table);
-            //    //table.Remove();
-            //}
-
-            var titleShape = gridSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
-            if (titleShape.Count > 0)
+            catch
             {
-                titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
-                                      new DocumentFormat.OpenXml.Drawing.BodyProperties(),
-                                      new DocumentFormat.OpenXml.Drawing.ListStyle(),
-                                      new DocumentFormat.OpenXml.Drawing.Paragraph(
-                                      new DocumentFormat.OpenXml.Drawing.Run(
-                                      new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
-                                      new DocumentFormat.OpenXml.Drawing.Text { Text = group.Title })));
             }
         }
 
@@ -310,11 +350,12 @@ namespace PMMP
                         {
                             if (lateSlidePart != null)
                             {
-                                foreach (TaskItemGroup group in taskData.LateTaskGroups)
-                                {
-                                    var newLateSlidePart = lateSlidePart.CloneSlide(SlideType.Late);
-                                    oPPart.AppendSlide(newLateSlidePart);
-                                }
+                               
+                                    foreach (TaskItemGroup group in taskData.LateTaskGroups)
+                                    {
+                                        var newLateSlidePart = lateSlidePart.CloneSlide(SlideType.Late);
+                                        oPPart.AppendSlide(newLateSlidePart);
+                                    }
                             }
                         }
                     }
@@ -359,12 +400,25 @@ namespace PMMP
                         {
                             if (completedSlidePart != null)
                             {
-                                foreach (TaskItemGroup group in data[i].CompletedTaskgroups)
+                                if (data[i].CompletedTaskgroups.Count == 0)
                                 {
                                     var newCompletedSlidePart = completedSlidePart.CloneSlide(SlideType.Completed);
                                     oPPart.AppendSlide(newCompletedSlidePart);
                                 }
+                                else
+                                {
+                                    foreach (TaskItemGroup group in data[i].CompletedTaskgroups)
+                                    {
+                                        var newCompletedSlidePart = completedSlidePart.CloneSlide(SlideType.Completed);
+                                        oPPart.AppendSlide(newCompletedSlidePart);
+                                    }
+                                }
                             }
+                        }
+                        else
+                        {
+                            var newCompletedSlidePart = completedSlidePart.CloneSlide(SlideType.Completed);
+                            oPPart.AppendSlide(newCompletedSlidePart);
                         }
                     }
 }

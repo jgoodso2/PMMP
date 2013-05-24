@@ -26,3 +26,21 @@ C:\PMMP\PMMP\bin\Debug\ProjectServerServices.dll
 C:\PMMP\PMMP\bin\Debug\WCFHelpers.dll
 C:\PMMP\PMMP\bin\Debug\PMMRepository.pdb
 C:\PMMP\PMMP\bin\Debug\WCFHelpers.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMP.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMP.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\obj\Debug\PMMP.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\obj\Debug\PMMP.pdb
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMRepository.dll
+C:\Users\jgoodson\Desktop\sandbox\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMRepository.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMP.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMP.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\obj\Debug\PMMP.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\obj\Debug\PMMP.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMRepository.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMRepository.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\WCFHelpers.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\WCFHelpers.pdb

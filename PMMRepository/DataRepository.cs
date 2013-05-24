@@ -17,6 +17,8 @@ using System.Security.Principal;
 using System.Xml;
 using System.Data.SqlClient;
 using System.Web.Services.Protocols;
+using SvcResource;
+using System.Globalization;
 
 namespace Repository
 {
@@ -86,6 +88,51 @@ namespace Repository
         public static MySettings mySettings = new MySettings();
 
 
+        public static void SetImpersonation(bool isWindowsUser)
+        {
+            string impersonatedUser = System.Security.Principal.WindowsIdentity.GetCurrent().Name;  
+            Guid resourceGuid = GetResourceUid(impersonatedUser);
+            Guid trackingGuid = Guid.NewGuid();
+            Guid siteId = Guid.Empty;           // Project Web App site ID.
+            CultureInfo languageCulture = null; // The language culture is not used.
+            CultureInfo localeCulture = null;   // The locale culture is not used.
+
+            WcfHelpers.SetImpersonationContext(isWindowsUser, impersonatedUser, resourceGuid, trackingGuid, siteId,
+                                               languageCulture, localeCulture);
+
+        }
+
+        // Get the GUID for a Project Server account name. 
+        public static Guid GetResourceUid(String accountName)
+        {
+            Guid resourceUid = Guid.Empty;
+            ResourceDataSet resourceDs = new ResourceDataSet();
+
+            // Filter for the account name, which can be a 
+            // Windows account or Project Server account.
+            PSLib.Filter filter = new PSLib.Filter();
+            filter.FilterTableName = resourceDs.Resources.TableName;
+
+            PSLib.Filter.Field accountField = new PSLib.Filter.Field(
+                    resourceDs.Resources.TableName,
+                    resourceDs.Resources.WRES_ACCOUNTColumn.ColumnName);
+            filter.Fields.Add(accountField);
+
+            PSLib.Filter.FieldOperator op = new PSLib.Filter.FieldOperator(
+                    PSLib.Filter.FieldOperationType.Equal,
+                    resourceDs.Resources.WRES_ACCOUNTColumn.ColumnName, accountName);
+            filter.Criteria = op;
+
+            string filterXml = filter.GetXml();
+
+            resourceDs = resourceClient.ReadResources(filterXml, false);
+
+            // Return the account GUID.
+            if (resourceDs.Resources.Rows.Count > 0)
+                resourceUid = (Guid)resourceDs.Resources.Rows[0]["RES_UID"];
+
+            return resourceUid;
+        }
         public void LoadProjects(string url)
         {
             ClearImpersonation();
@@ -101,28 +148,37 @@ namespace Repository
             SvcProject.ProjectDataSet projectList = new SvcProject.ProjectDataSet();
             try
             {
-
-
                 using (OperationContextScope scope = new OperationContextScope(projectClient.InnerChannel))
                 {
+                    SetImpersonation(true);
                     WcfHelpers.UseCorrectHeaders(isImpersonated);
+           
+                    Utility.WriteLog(string.Format("Calling ReadStatus"), System.Diagnostics.EventLogEntryType.Information);
                     SvcStatusing.StatusingDataSet dataSet = pwaClient.ReadStatus(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
+                    Utility.WriteLog(string.Format("ReadStatus Successful"), System.Diagnostics.EventLogEntryType.Information);
                     // Get projects of type normal, templates, proposals, master, and inserted.
                     string projectName = string.Empty;
-
+                    Utility.WriteLog(string.Format("Calling ReadStatus on Project Store"), System.Diagnostics.EventLogEntryType.Information);
                     projectList.Merge(projectClient.ReadProjectStatus(Guid.Empty, SvcProject.DataStoreEnum.PublishedStore,
                         projectName, (int)PSLib.Project.ProjectType.Project));
-
+                    Utility.WriteLog(string.Format("ReadStatus on Project Store Successful"), System.Diagnostics.EventLogEntryType.Information);
+                    Utility.WriteLog(string.Format("Calling ReadStatus on Inserted Store"), System.Diagnostics.EventLogEntryType.Information);
                     projectList.Merge(projectClient.ReadProjectStatus(Guid.Empty, SvcProject.DataStoreEnum.PublishedStore,
                         projectName, (int)PSLib.Project.ProjectType.InsertedProject));
+                    Utility.WriteLog(string.Format("ReadStatus on Inserted Store Successful"), System.Diagnostics.EventLogEntryType.Information);
+                    Utility.WriteLog(string.Format("Calling ReadStatus on Published Store"), System.Diagnostics.EventLogEntryType.Information);
                     projectList.Merge(projectClient.ReadProjectStatus(Guid.Empty, SvcProject.DataStoreEnum.PublishedStore,
                         projectName, (int)PSLib.Project.ProjectType.MasterProject));
+                    Utility.WriteLog(string.Format("ReadStatus on Inserted Published Store Successful"), System.Diagnostics.EventLogEntryType.Information);
+
+                    
+                    //SvcProject.ProjectDataSet pds = projectClient.ReadProjectList(); // this fails if no permission... Conversely...ReadProjectStatus returns 0 if no permission.  
                 }
 
             }
             catch (Exception ex)
             {
-
+                Utility.WriteLog(string.Format("An error occured in ReadProjectsList and the error ={0}",ex.Message), System.Diagnostics.EventLogEntryType.Information);
             }
             finally
             {
@@ -133,6 +189,7 @@ namespace Repository
 
         public static bool P14Login(string projectserverURL)
         {
+           
             bool endPointError = false;
             bool result = false;
 
@@ -189,15 +246,18 @@ namespace Repository
                                 loginWindows = new SvcLoginWindows.LoginWindows();
                                 loginWindows.Url = baseUrl + "_vti_bin/PSI/LoginWindows.asmx";
                                 loginWindows.Credentials = new NetworkCredential(windowsUserName, password, windowsDomainName);
-
+                                Utility.WriteLog(string.Format("Logging in with username={0} password={1} Domain={1} ", windowsUserName, password, windowsDomainName),System.Diagnostics.EventLogEntryType.Information);
                                 result = loginWindows.Login();
+                                Utility.WriteLog(string.Format("Logging in result ={0} ", result.ToString()), System.Diagnostics.EventLogEntryType.Information);
                             }
                         }
                     }
                     else
                     {
                         // Forms authentication requires the Authentication web service in Microsoft SharePoint Foundation.
+                        Utility.WriteLog(string.Format("Logging in with username={0} password={1}  ", userName, password), System.Diagnostics.EventLogEntryType.Information);
                         result = WcfHelpers.LogonWithMsf(userName, password, new Uri(baseUrl));
+                        Utility.WriteLog(string.Format("Logging in result ={0} ", result.ToString()), System.Diagnostics.EventLogEntryType.Information);
                     }
                 }
                 return result;
@@ -340,7 +400,7 @@ namespace Repository
                 binding.MaxBufferSize = MAXSIZE;
                 binding.MaxReceivedMessageSize = MAXSIZE;
                 binding.MaxBufferPoolSize = MAXSIZE;
-
+                
 
                 binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
                 binding.GetType().GetProperty("ReaderQuotas").SetValue(binding, XmlDictionaryReaderQuotas.Max, null);
@@ -356,7 +416,7 @@ namespace Repository
                 projectClient.ChannelFactory.Credentials.Windows.AllowedImpersonationLevel
                     = TokenImpersonationLevel.Impersonation;
                 projectClient.ChannelFactory.Credentials.Windows.AllowNtlm = true;
-
+                
                 queueSystemClient = new SvcQueueSystem.QueueSystemClient(binding, address);
                 queueSystemClient.ChannelFactory.Credentials.Windows.AllowedImpersonationLevel
                     = TokenImpersonationLevel.Impersonation;
@@ -404,40 +464,45 @@ namespace Repository
 
         public static FiscalMonth GetCurrentFiscalMonth()
         {
-            SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year);
-            if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
+            using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
             {
-                foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
+                SetImpersonation(true);
+                WcfHelpers.UseCorrectHeaders(isImpersonated);
+                SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year);
+                if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
-                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                    if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                    foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
                     {
-                        return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                        SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                        if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        {
+                            return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                        }
                     }
                 }
-            }
-            fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year - 1);
-            if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
-            {
-                foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
+                fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year - 1);
+                if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
-                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                    if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                    foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
                     {
-                        return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                        SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                        if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        {
+                            return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                        }
                     }
                 }
-            }
 
-            fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year + 1);
-            if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
-            {
-                foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
+                fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year + 1);
+                if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
-                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                    if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                    foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
                     {
-                        return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                        SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                        if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        {
+                            return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                        }
                     }
                 }
             }
@@ -445,16 +510,31 @@ namespace Repository
         }
         public static CustomFieldDataSet ReadCustomFields()
         {
+            using (OperationContextScope scope = new OperationContextScope(customFieldsClient.InnerChannel))
+            {
+                SetImpersonation(true);
+                WcfHelpers.UseCorrectHeaders(isImpersonated);
+            }
             return customFieldsClient.ReadCustomFields(string.Empty, false);
         }
 
         public static LookupTableDataSet ReadLookupTables()
         {
+            using (OperationContextScope scope = new OperationContextScope(lookupTableClient.InnerChannel))
+            {
+                SetImpersonation(true);
+                WcfHelpers.UseCorrectHeaders(isImpersonated);
+            }
             return lookupTableClient.ReadLookupTables(string.Empty, false, 1);
         }
 
         public static ProjectDataSet ReadProject(Guid projectUID)
         {
+            using (OperationContextScope scope = new OperationContextScope(projectClient.InnerChannel))
+            {
+                SetImpersonation(true);
+                WcfHelpers.UseCorrectHeaders(isImpersonated);
+            }
             return projectClient.ReadProject(projectUID, SvcProject.DataStoreEnum.PublishedStore);
         }
 
@@ -462,8 +542,6 @@ namespace Repository
         {
             return Constants.LOOKUP_ENTITY_ID;
         }
-
-
 
         internal static void UpdateLookupTables(LookupTableDataSet lookupTableDataSet)
         {

@@ -5,7 +5,7 @@
                 TemplateType="101"
                 FeatureId="00bfea71-e717-4e80-aa17-d0c71b360101"
                 Url="PMMPresentations"
-                Description="">
+                Description="" RootWebOnly="False">
   </ListInstance>
-  <ContentTypeBinding ContentTypeId="0x010100dab977b3af2a41b1b69374fbc8701167" ListUrl="PMMPresentations" />
+  <ContentTypeBinding ContentTypeId="0x010100dab977b3af2a41b1b69374fbc8701167" ListUrl="PMMPresentations"  RootWebOnly="false"/>
 </Elements>

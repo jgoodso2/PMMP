@@ -39,8 +39,16 @@ namespace PMMP
             string[] values = chartName.Split(",".ToCharArray());
             for (int i = 0; i < values.Count(); i++)
             {
-                var items = this.ChartTaskItems.Where(x => x.ShowOn != null && x.ShowOn.Contains(values[i])).ToList();
-                tasks =  tasks.Union(items.AsEnumerable()).ToList();
+                foreach (TaskItem item in this.ChartTaskItems)
+                {
+                    foreach(string showOn in item.ShowOn)
+                    {
+                        if (!string.IsNullOrEmpty(showOn) && showOn.Contains(values[i]))
+                        {
+                            tasks.Add(item);
+                        }
+                    }
+                }
             }
 
             if (tasks.Count > 0)

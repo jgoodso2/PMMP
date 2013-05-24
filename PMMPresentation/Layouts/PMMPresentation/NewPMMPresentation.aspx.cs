@@ -6,6 +6,7 @@ using System.Linq;
 
 using Configuration = PMMPPresentation.Configuration;
 using Constants = PMMP.Constants;
+using WCFHelpers;
 
 namespace PMMPresentation.Layouts.PMMPresentation
 {
@@ -36,10 +37,10 @@ namespace PMMPresentation.Layouts.PMMPresentation
                 var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
                 PMMP.PMPDocument document = new PMMP.PMPDocument();
                 var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(),Configuration.ProjectUID);
-                    
+
 
                 
-
+                
                 SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
 
                 var pmmContentType = (from SPContentType ct in docLib.ContentTypes

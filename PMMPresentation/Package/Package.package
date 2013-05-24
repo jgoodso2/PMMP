@@ -3,8 +3,8 @@
   <assemblies>
     <customAssembly location="ProjectServerServices.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="bin\Debug\ProjectServerServices.dll" />
     <customAssembly location="PMMRepository.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="..\PMMRepository\bin\Debug\PMMRepository.dll" />
-    <customAssembly location="WCFHelpers.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="bin\Debug\WCFHelpers.dll" />
     <customAssembly location="PMMP.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="..\PMMP\bin\Debug\PMMP.dll" />
+    <customAssembly location="WCFHelpers.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="..\WCFHelpers\bin\Debug\WCFHelpers.dll" />
   </assemblies>
   <features>
     <featureReference itemId="b5ceb3ea-9e71-4c85-a708-551a53c7a199" />
