@@ -124,6 +124,11 @@ namespace PMMP
 
         private void CreateDynamicSlidesData(IList<TaskItemGroup> data, int[] dynamicSlideIndices, int gridSlideIndex, int lowestSLideIndex, ref int createdCount, int completedSlideIndex, PresentationPart oPPart)
         {
+            if (data.Count == 0)
+            {
+                createdCount += 2;
+                return;
+            }
             for (int i = 0; i < data.Count; i++)
                     {
                         var group = data[i];        
@@ -184,7 +189,6 @@ namespace PMMP
 
                                                     WorkbookUtilities.ReplicateRow(sheetData, 2, chartDataTable.Rows.Count - 1);
                                                     WorkbookUtilities.LoadSheetData(sheetData, chartDataTable, 1, 0);
-
                                                     BarChartUtilities.LoadChartData(chartPart, chartDataTable);
                                                 }
 
@@ -346,25 +350,32 @@ namespace PMMP
             {
                     if (lateSlideIndex == slideIndex)
                     {
-                        if (taskData.LateTaskGroups != null)
+                        if (taskData.LateTaskGroups != null && taskData.LateTaskGroups.Count > 0)
                         {
                             if (lateSlidePart != null)
                             {
-                               
-                                    foreach (TaskItemGroup group in taskData.LateTaskGroups)
-                                    {
-                                        var newLateSlidePart = lateSlidePart.CloneSlide(SlideType.Late);
-                                        oPPart.AppendSlide(newLateSlidePart);
-                                    }
+                                foreach (TaskItemGroup group in taskData.LateTaskGroups)
+                                {
+                                    var newLateSlidePart = lateSlidePart.CloneSlide(SlideType.Late);
+                                    oPPart.AppendSlide(newLateSlidePart);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (lateSlidePart != null)
+                            {
+                                var newLateSlidePart = lateSlidePart.CloneSlide(SlideType.Late);
+                                oPPart.AppendSlide(newLateSlidePart);
                             }
                         }
                     }
 
                     if (chartSlideIndex == slideIndex)
                     {
-                        if (taskData.ChartsData != null)
+                        if (taskData.ChartsData != null && taskData.ChartsData.Count > 0)
                         {
-                            if (chartSlidePart != null)
+                            if (chartSlidePart != null && taskData.ChartsData.Keys.Any(t=>t.StartsWith("Show On") == true))
                             {
                                 foreach (string chartType in taskData.ChartsData.Keys)
                                 {
@@ -375,13 +386,35 @@ namespace PMMP
                                     }
                                 }
                             }
+                            else
+                            {
+                                var newChartSlidePart = chartSlidePart.CloneSlide(SlideType.Chart);
+                                oPPart.AppendSlide(newChartSlidePart);
+                            }
                         }
+                        
                     }
                 }
         }
 
         private void CreateDynamicSlides(IList<TaskItemGroup> data, int[] dynamicSlideIndices,int gridSlideIndex,int completedSlideIndex,SlidePart gridSlidePart,SlidePart completedSlidePart,PresentationPart oPPart)
         {
+            if (data.Count < 1)
+            {
+                foreach (int slideIndex in dynamicSlideIndices)
+                {
+                    if (slideIndex == gridSlideIndex)
+                    {
+                        var newGridSlidePart = gridSlidePart.CloneSlide(SlideType.Grid);
+                        oPPart.AppendSlide(newGridSlidePart);
+                    }
+                    if (slideIndex == completedSlideIndex)
+                    {
+                        var newCompletedSlidePart = completedSlidePart.CloneSlide(SlideType.Completed);
+                        oPPart.AppendSlide(newCompletedSlidePart);
+                    }
+                }
+            }
             for (int i = 0; i < data.Count; i++)
             {
                 foreach (int slideIndex in dynamicSlideIndices)

@@ -149,7 +149,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="ListInstances\PMMPresentations\Elements.xml" />
-    <Content Include="Modules\Templates\Elements.xml" />
+    <Content Include="Modules\Templates\Elements.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMMP\PMMP.csproj">

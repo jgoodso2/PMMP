@@ -48,21 +48,6 @@ namespace PMMP
             return new string(chars);
         }
 
-        public static string StringValueOf(this Enum value)
-        {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
-            Microsoft.SharePoint.Linq.ChoiceAttribute[] attributes =
-                (Microsoft.SharePoint.Linq.ChoiceAttribute[])fi.GetCustomAttributes(
-                typeof(Microsoft.SharePoint.Linq.ChoiceAttribute), false);
-            if (attributes.Length > 0)
-            {
-                return attributes[0].Value;
-            }
-            else
-            {
-                return value.ToString();
-            }
-        }
 
         public static string ExceptChars(this string str, IEnumerable<char> toExclude)
         {

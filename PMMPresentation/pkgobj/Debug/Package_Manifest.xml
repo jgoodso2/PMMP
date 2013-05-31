@@ -5,6 +5,7 @@
     <Assembly Location="PMMRepository.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="PMMP.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="WCFHelpers.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="DocumentFormat.OpenXml.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="PMMPresentation.dll" DeploymentTarget="GlobalAssemblyCache" />
   </Assemblies>
   <TemplateFiles>

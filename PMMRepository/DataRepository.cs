@@ -151,7 +151,7 @@ namespace Repository
                 using (OperationContextScope scope = new OperationContextScope(projectClient.InnerChannel))
                 {
                     SetImpersonation(true);
-                    WcfHelpers.UseCorrectHeaders(isImpersonated);
+                    WcfHelpers.UseCorrectHeaders(true);
            
                     Utility.WriteLog(string.Format("Calling ReadStatus"), System.Diagnostics.EventLogEntryType.Information);
                     SvcStatusing.StatusingDataSet dataSet = pwaClient.ReadStatus(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
@@ -467,7 +467,7 @@ namespace Repository
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
             {
                 SetImpersonation(true);
-                WcfHelpers.UseCorrectHeaders(isImpersonated);
+                WcfHelpers.UseCorrectHeaders(true);
                 SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year);
                 if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
@@ -513,7 +513,7 @@ namespace Repository
             using (OperationContextScope scope = new OperationContextScope(customFieldsClient.InnerChannel))
             {
                 SetImpersonation(true);
-                WcfHelpers.UseCorrectHeaders(isImpersonated);
+                WcfHelpers.UseCorrectHeaders(true);
             }
             return customFieldsClient.ReadCustomFields(string.Empty, false);
         }
@@ -523,7 +523,7 @@ namespace Repository
             using (OperationContextScope scope = new OperationContextScope(lookupTableClient.InnerChannel))
             {
                 SetImpersonation(true);
-                WcfHelpers.UseCorrectHeaders(isImpersonated);
+                WcfHelpers.UseCorrectHeaders(true);
             }
             return lookupTableClient.ReadLookupTables(string.Empty, false, 1);
         }
@@ -533,7 +533,7 @@ namespace Repository
             using (OperationContextScope scope = new OperationContextScope(projectClient.InnerChannel))
             {
                 SetImpersonation(true);
-                WcfHelpers.UseCorrectHeaders(isImpersonated);
+                WcfHelpers.UseCorrectHeaders(true);
             }
             return projectClient.ReadProject(projectUID, SvcProject.DataStoreEnum.PublishedStore);
         }
@@ -549,7 +549,7 @@ namespace Repository
             {
                 try
                 {
-                    WcfHelpers.UseCorrectHeaders(isImpersonated);
+                    WcfHelpers.UseCorrectHeaders(true);
                     lookupTableClient.CheckOutLookupTables(new Guid[] { new Guid(Constants.LOOKUP_ENTITY_ID) });
                     lookupTableClient.UpdateLookupTables(lookupTableDataSet, false, true, 1033);
                     //lookupTableClient.CheckInLookupTables(new Guid[] { new Guid(Constants.LOOKUP_ENTITY_ID) },true);

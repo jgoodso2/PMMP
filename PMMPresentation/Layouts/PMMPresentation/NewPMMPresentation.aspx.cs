@@ -7,6 +7,7 @@ using System.Linq;
 using Configuration = PMMPPresentation.Configuration;
 using Constants = PMMP.Constants;
 using WCFHelpers;
+using System.Security.Principal;
 
 namespace PMMPresentation.Layouts.PMMPresentation
 {
@@ -30,29 +31,50 @@ namespace PMMPresentation.Layouts.PMMPresentation
             SPSecurity.RunWithElevatedPrivileges(() =>
 {
  
-            if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
+    if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
             {
-                var docName = this.txtDocumentName.Text + ".pptx";
-                var docLib = this.Web.Lists[this.ListId];
-                var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
-                PMMP.PMPDocument document = new PMMP.PMPDocument();
-                var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(),Configuration.ProjectUID);
-
-
                 
-                
-                SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
-
-                var pmmContentType = (from SPContentType ct in docLib.ContentTypes
-                                      where ct.Name.ToLower() == Constants.CT_PMM_NAME.ToLower()
-                                      select ct).FirstOrDefault();
-
-                if (pmmContentType != null)
+                WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
+                WindowsImpersonationContext ctx = null;
+                try
                 {
-                    item[SPBuiltInFieldId.ContentTypeId] = pmmContentType.Id;
-                    item[Constants.FieldId_Comments] = txtComment.Text;
-                    item.Update();
+                    // Start impersonating
+                    ctx = winId.Impersonate();
+                    var docName = this.txtDocumentName.Text + ".pptx";
+                    var docLib = this.Web.Lists[this.ListId];
+                    var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
+                    PMMP.PMPDocument document = new PMMP.PMPDocument();
+                    var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(), Configuration.ProjectUID);
+
+
+
+
+                    SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
+
+                    var pmmContentType = (from SPContentType ct in docLib.ContentTypes
+                                          where ct.Name.ToLower() == Constants.CT_PMM_NAME.ToLower()
+                                          select ct).FirstOrDefault();
+
+                    if (pmmContentType != null)
+                    {
+                        item[SPBuiltInFieldId.ContentTypeId] = pmmContentType.Id;
+                        item[Constants.FieldId_Comments] = txtComment.Text;
+                        item.Update();
+                    }
+                   
                 }
+
+                // Prevent exceptions from propagating
+                catch
+                {
+                }
+                finally
+                {
+                    // Revert impersonation
+                    if (ctx != null)
+                        ctx.Undo();
+                }
+               
             }
             else 
             {
