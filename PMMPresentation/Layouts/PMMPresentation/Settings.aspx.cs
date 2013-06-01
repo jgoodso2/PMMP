@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using Configuration = PMMPPresentation.Configuration;
 using Constants = PMMP.Constants;
 using System.Security.Principal;
+using System.Net;
 namespace PMMPresentation.Layouts.PMMPresentation
 {
     public partial class Settings : LayoutsPageBase
@@ -17,19 +18,14 @@ namespace PMMPresentation.Layouts.PMMPresentation
             try
             {
                 //This gets the app pool account
-                SPSecurity.RunWithElevatedPrivileges(() =>
-{
+//                SPSecurity.RunWithElevatedPrivileges(() =>
+//{
     var obj = System.Security.Principal.WindowsIdentity.GetCurrent();
     lblLoggedInUser.Text = "The Logged in User =" + SPContext.Current.Web.CurrentUser.LoginName;
     lblAppPoolUser.Text = "The App Pool User =" + System.Security.Principal.WindowsIdentity.GetCurrent().Name;
     if (!Page.IsPostBack)
     {
-        WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
-        WindowsImpersonationContext ctx = null;
-        try
-        {
-            // Start impersonating
-            ctx = winId.Impersonate();
+       
             // Now impersonating
             // Access resources using the identity of the authenticated user
             this.txtServiceURL.Text = Configuration.ServiceURL;
@@ -39,7 +35,7 @@ namespace PMMPresentation.Layouts.PMMPresentation
             {
                 DataRepository.ClearImpersonation();
 
-
+//                CredentialCache.DefaultNetworkCredentials
 
                 if (DataRepository.P14Login(this.txtServiceURL.Text))
                 {
@@ -64,23 +60,8 @@ namespace PMMPresentation.Layouts.PMMPresentation
                     this.ddlProject.SelectedIndex = index;
                 }
             }
-
-        }
-
-        // Prevent exceptions from propagating
-        catch
-        {
-        }
-        finally
-        {
-            // Revert impersonation
-            if (ctx != null)
-                ctx.Undo();
-        }
-
-
     }
-});
+//});
             }
             catch (Exception ex)
             {
@@ -98,13 +79,6 @@ namespace PMMPresentation.Layouts.PMMPresentation
     {
         if (!String.IsNullOrEmpty(this.txtServiceURL.Text))
         {
-            WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
-            WindowsImpersonationContext ctx = null;
-            try
-            {
-                // Start impersonating
-                ctx = winId.Impersonate();
-                // Now impersonating
                 // Access resources using the identity of the authenticated user
                 DataRepository.ClearImpersonation();
 
@@ -117,19 +91,6 @@ namespace PMMPresentation.Layouts.PMMPresentation
                     ddlProject.DataValueField = "PROJ_UID";
                     ddlProject.DataBind();
                 }
-            }
-
-            // Prevent exceptions from propagating
-            catch
-            {
-            }
-            finally
-            {
-                // Revert impersonation
-                if (ctx != null)
-                    ctx.Undo();
-            }
-
         }
     }
     catch (Exception ex)
@@ -145,13 +106,6 @@ namespace PMMPresentation.Layouts.PMMPresentation
 {
     try
     {
-        WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
-        WindowsImpersonationContext ctx = null;
-        try
-        {
-            // Start impersonating
-            ctx = winId.Impersonate();
-            // Now impersonating
             // Access resources using the identity of the authenticated user
             if (!String.IsNullOrEmpty(this.txtServiceURL.Text) && !String.IsNullOrEmpty(this.ddlProject.SelectedValue))
             {
@@ -164,19 +118,6 @@ namespace PMMPresentation.Layouts.PMMPresentation
 
                 this.pnlClose.Visible = true;
             }
-        }
-
-        // Prevent exceptions from propagating
-        catch
-        {
-        }
-        finally
-        {
-            // Revert impersonation
-            if (ctx != null)
-                ctx.Undo();
-        }
-       
     }
     catch (Exception ex)
     {

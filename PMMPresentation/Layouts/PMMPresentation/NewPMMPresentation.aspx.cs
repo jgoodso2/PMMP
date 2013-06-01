@@ -34,12 +34,9 @@ namespace PMMPresentation.Layouts.PMMPresentation
     if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
             {
                 
-                WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
-                WindowsImpersonationContext ctx = null;
-                try
-                {
+               
                     // Start impersonating
-                    ctx = winId.Impersonate();
+                  
                     var docName = this.txtDocumentName.Text + ".pptx";
                     var docLib = this.Web.Lists[this.ListId];
                     var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
@@ -61,20 +58,6 @@ namespace PMMPresentation.Layouts.PMMPresentation
                         item[Constants.FieldId_Comments] = txtComment.Text;
                         item.Update();
                     }
-                   
-                }
-
-                // Prevent exceptions from propagating
-                catch
-                {
-                }
-                finally
-                {
-                    // Revert impersonation
-                    if (ctx != null)
-                        ctx.Undo();
-                }
-               
             }
             else 
             {

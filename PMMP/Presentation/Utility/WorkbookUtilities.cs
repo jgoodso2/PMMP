@@ -43,7 +43,7 @@ namespace PMMP
                     sheetData.AppendChild(row);
                 }
                 else
-                    PopulateRow(data.Rows[i], columnindex, row);
+                    PopulateRow(data.Rows[i], i + 2, row);
             }
         }
 
@@ -77,34 +77,54 @@ namespace PMMP
         {
             Row row = new Row { RowIndex = (UInt32)rowIndex };
 
-            PopulateRow(dataRow, columnindex, row);
+            PopulateRow(dataRow, rowIndex + 2, row);
 
             return row;
         }
 
-        private static void PopulateRow(DataRow dataRow, int columnindex, Row row)
+        private static void PopulateRow(DataRow dataRow, int rowindex, Row row)
         {
-            int rowIndex = (int)row.RowIndex.Value;
 
-            for (int i = 0; i < dataRow.Table.Columns.Count; i++)
-            {
-                int index = i + columnindex + 1;
-                Cell dataCell = GetCell(row, index);
-                if (dataCell == null)
-                {
-                    dataCell = CreateCell(i + columnindex + 1, rowIndex, dataRow[i]);
-                    row.AppendChild(dataCell);
-                }
-                else
-                {
-                    if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
-                        dataCell.DataType = CellValues.String;
-                    if (dataRow[i].GetType() == typeof(DateTime))
-                        dataCell.CellValue.Text = ((DateTime)dataRow[i]).ToOADate().ToString();
-                    else
-                        dataCell.CellValue.Text = dataRow[i].ToString();
-                }
-            }
+            Cell dataCell = GetCell(row,1);
+            if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
+                dataCell.DataType = CellValues.String;
+            dataCell.CellValue.Text = dataRow["Task"].ToString() + " " + ((DateTime)dataRow["Finish"]).ToShortDateString();
+            dataCell.CellFormula = new CellFormula(string.Format("=CONCATENATE(D{0},\":  \",TEXT(B{1},\"m/d\"))",rowindex,rowindex));
+            dataCell = GetCell(row, 2);
+            if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
+                dataCell.DataType = CellValues.String;
+            dataCell.CellValue.Text = ((DateTime)dataRow["Finish"]).ToOADate().ToString();
+
+            dataCell = GetCell(row, 3);
+            if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
+                dataCell.DataType = CellValues.String;
+            dataCell.CellValue.Text = 10.ToString();
+
+            dataCell = GetCell(row, 4);
+            if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
+                dataCell.DataType = CellValues.String;
+            dataCell.CellValue.Text = dataRow["Task"].ToString();
+                
+            //int rowIndex = (int)row.RowIndex.Value;
+            //for (int i = 0; i < dataRow.Table.Columns.Count; i++)
+            //{
+            //    int index = i + columnindex + 1;
+            //    Cell dataCell = GetCell(row, index);
+            //    if (dataCell == null)
+            //    {
+            //        dataCell = CreateCell(i + columnindex + 1, rowIndex, dataRow[i]);
+            //        row.AppendChild(dataCell);
+            //    }
+            //    else
+            //    {
+            //        if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
+            //            dataCell.DataType = CellValues.String;
+            //        if (dataRow[i].GetType() == typeof(DateTime))
+            //            dataCell.CellValue.Text = ((DateTime)dataRow[i]).ToOADate().ToString();
+            //        else
+            //            dataCell.CellValue.Text = dataRow[i].ToString();
+            //    }
+            //}
         }
 
         private static Cell CreateCell(int columnIndex, int rowIndex, object cellValue)
