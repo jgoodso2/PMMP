@@ -6,6 +6,9 @@ using Repository;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TaskGroupData
     {
         public IList<TaskItemGroup> TaskItemGroups { get; set; }

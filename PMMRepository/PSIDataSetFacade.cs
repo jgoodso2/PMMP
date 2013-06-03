@@ -6,6 +6,9 @@ using System.Data;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PSIDataSetFacade
     {
         public void Update(IPSIDataSet dataSet)

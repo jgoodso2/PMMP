@@ -5,6 +5,9 @@ using System.Text;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum SlideType
     {
         Grid = 0,

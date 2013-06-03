@@ -11,6 +11,7 @@ namespace PMMP
     {
         public static void PopulateTable(Table table, IList<TaskItem> items)
         {
+            Repository.Utility.WriteLog("PopulateTable started ", System.Diagnostics.EventLogEntryType.Information);
             foreach (TaskItem item in items)
             {
                 TableRow tr = new TableRow();
@@ -32,10 +33,12 @@ namespace PMMP
                 //tr.Append(CreateTextCell(item.ModifiedOn.HasValue ? item.ModifiedOn.Value.ToShortDateString() : String.Empty));
                 table.Append(tr);
             }
+            Repository.Utility.WriteLog("PopulateTable completed successfully ", System.Diagnostics.EventLogEntryType.Information);
         }
 
         static TableCell CreateTextCell(string text, params System.Drawing.Color[] color)
         {
+            Repository.Utility.WriteLog("CreateTextCell started ", System.Diagnostics.EventLogEntryType.Information);
             TableCellProperties tableCellProperty = new TableCellProperties();
             if (color.Length > 0)
             {
@@ -53,14 +56,14 @@ namespace PMMP
             new RunProperties() { FontSize = 1200 },
             new Text(text)))),
             tableCellProperty);
-
+            Repository.Utility.WriteLog("CreateTextCell completed successfully ", System.Diagnostics.EventLogEntryType.Information);
             return tc;
 
         }
 
         internal static void PopulateLateTasksTable(Table table, IList<TaskItem> iList, Repository.FiscalMonth fiscalMonth)
         {
-
+            Repository.Utility.WriteLog("PopulateLateTasksTable started ", System.Diagnostics.EventLogEntryType.Information);
             foreach (TaskItem item in iList)
             {
                 //shp.Table.Cell(2, 2).Shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red);
@@ -162,6 +165,7 @@ namespace PMMP
                 tr.Append(CreateTextCell(item.EstFinish.HasValue ? item.EstFinish.Value.ToVeryShortDateString() : String.Empty));
                 table.Append(tr);
             }
+            Repository.Utility.WriteLog("PopulateLateTasksTable completed successfully ", System.Diagnostics.EventLogEntryType.Information);
         }
     }
 }

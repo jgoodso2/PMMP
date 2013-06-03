@@ -11,6 +11,7 @@ namespace PMMP
     {
         public static int CountSlides(PresentationDocument presentationDocument)
         {
+            Repository.Utility.WriteLog("CountSlides started", System.Diagnostics.EventLogEntryType.Information);
             if (presentationDocument == null)
                 throw new ArgumentNullException("presentationDocument");
 
@@ -21,11 +22,13 @@ namespace PMMP
             if (presentationPart != null)
                 slidesCount = presentationPart.SlideParts.Count();
 
+            Repository.Utility.WriteLog("CountSlides completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return slidesCount;
         }
 
         public static void MoveSlide(PresentationDocument presentationDocument, int from, int to)
         {
+            Repository.Utility.WriteLog("MoveSlide started", System.Diagnostics.EventLogEntryType.Information);
             if (presentationDocument == null)
                 throw new ArgumentNullException("presentationDocument");
 
@@ -55,10 +58,12 @@ namespace PMMP
             slideIdList.InsertAfter(sourceSlide, targetSlide);
 
             presentation.Save();
+            Repository.Utility.WriteLog("MoveSlide completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 
         public static void DeleteSlide(PresentationDocument presentationDocument, int slideIndex)
         {
+            Repository.Utility.WriteLog("DeleteSlide started ", System.Diagnostics.EventLogEntryType.Information);
             if (presentationDocument == null)
                 throw new ArgumentNullException("presentationDocument");
 
@@ -95,6 +100,7 @@ namespace PMMP
             presentation.Save();
             SlidePart slidePart = presentationPart.GetPartById(slideRelId) as SlidePart;
             presentationPart.DeletePart(slidePart);
+            Repository.Utility.WriteLog("DeleteSlide completed successfully ", System.Diagnostics.EventLogEntryType.Information);
         }
     }
 }

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PSIDataSetFactory
     {
         public static IPSIDataSet GetPSISDataSet(string type)

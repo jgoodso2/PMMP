@@ -6,6 +6,9 @@ using System.Data;
 
 namespace Repository
 {
+    /// <summary>
+    ///  
+    /// </summary>
     public class TASKDTO
     {
         public string LINK_PRED_UID

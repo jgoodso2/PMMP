@@ -12,12 +12,12 @@ namespace Repository
 
         public static void WriteLog(string message, EventLogEntryType type)
         {
-            WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
-            WindowsImpersonationContext ctx = null;
+            //WindowsIdentity winId = (WindowsIdentity)System.Security.Principal.WindowsIdentity.GetCurrent();
+            //WindowsImpersonationContext ctx = null;
             try
             {
                 // Start impersonating
-                ctx = winId.Impersonate();
+                //ctx = winId.Impersonate();
                 // Now impersonating
                 // Access resources using the identity of the authenticated user
                 System.Diagnostics.EventLog appLog =
@@ -30,12 +30,12 @@ namespace Repository
             catch
             {
             }
-            finally
-            {
-                // Revert impersonation
-                if (ctx != null)
-                    ctx.Undo();
-            }
+            //finally
+            //{
+            //    // Revert impersonation
+            //    if (ctx != null)
+            //        ctx.Undo();
+            //}
 
         }
 

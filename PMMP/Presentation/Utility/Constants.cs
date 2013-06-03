@@ -5,6 +5,9 @@ using System.Text;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Constants
     {
         public const string DOCLIB_NAME_PMM_PRESENTATIONS = "PMM Presentations";

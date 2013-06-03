@@ -35,6 +35,7 @@ namespace PMMP
 
         public DataTable GetChartDataTable(string chartName)
         {
+            Repository.Utility.WriteLog("GetChartDataTable started", System.Diagnostics.EventLogEntryType.Information);
             IList<TaskItem> tasks = new List<TaskItem>();
             string[] values = chartName.Split(",".ToCharArray());
             for (int i = 0; i < values.Count(); i++)
@@ -50,7 +51,7 @@ namespace PMMP
                     }
                 }
             }
-
+            Repository.Utility.WriteLog("GetChartDataTable completed successfully", System.Diagnostics.EventLogEntryType.Information);
             if (tasks.Count > 0)
                 return this.ToDataTable(tasks, SlideType.Chart);
             else
@@ -59,6 +60,7 @@ namespace PMMP
 
         private DataTable ToDataTable(IList<TaskItem> data, SlideType type)
         {
+            Repository.Utility.WriteLog("ToDataTable started", System.Diagnostics.EventLogEntryType.Information);
             PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(TaskItem));
             DataTable table = new DataTable();
             for (int i = 0; i < props.Count; i++)
@@ -84,6 +86,7 @@ namespace PMMP
 
                 table.Rows.Add(values);
             }
+            Repository.Utility.WriteLog("ToDataTable completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return table;
         }
 
@@ -156,11 +159,12 @@ namespace PMMP
 
         private object GetValue(PropertyDescriptor prop, TaskItem item, SlideType type)
         {
+            Repository.Utility.WriteLog("GetValue started", System.Diagnostics.EventLogEntryType.Information);
             object retVal = prop.GetValue(item);
 
             if (type == SlideType.Chart && prop.Name == "Task")
                 retVal = String.Format("{0}: {1}", item.Task, item.Finish.HasValue ? item.Finish.Value.ToString("MM/dd") : String.Empty);
-
+            Repository.Utility.WriteLog("GetValue completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return retVal;
         }
     }

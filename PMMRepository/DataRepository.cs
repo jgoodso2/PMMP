@@ -28,6 +28,9 @@ namespace Repository
         public DateTime From { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class DataRepository
     {
         // WCF endpoint names in app.config.
@@ -463,6 +466,7 @@ namespace Repository
 
         public static FiscalMonth GetCurrentFiscalMonth()
         {
+            Utility.WriteLog(string.Format("Calling GetCurrentFiscalMonth"), System.Diagnostics.EventLogEntryType.Information);
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
@@ -499,20 +503,25 @@ namespace Repository
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
                         if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
+                            Utility.WriteLog(string.Format("GetCurrentFiscalMonth completed successfully"), System.Diagnostics.EventLogEntryType.Information);
                             return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
                         }
                     }
                 }
             }
+            Utility.WriteLog(string.Format("GetCurrentFiscalMonth completed successfully"), System.Diagnostics.EventLogEntryType.Information);
             return new FiscalMonth() { From = DateTime.MinValue, To = DateTime.Now };
         }
         public static CustomFieldDataSet ReadCustomFields()
         {
+            Utility.WriteLog(string.Format("Calling ReadCustomFields"), System.Diagnostics.EventLogEntryType.Information);
             using (OperationContextScope scope = new OperationContextScope(customFieldsClient.InnerChannel))
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
             }
-            return customFieldsClient.ReadCustomFields(string.Empty, false);
+            var obj =  customFieldsClient.ReadCustomFields(string.Empty, false);
+            Utility.WriteLog(string.Format("ReadCustomFields completed successfully"), System.Diagnostics.EventLogEntryType.Information);
+            return obj;
         }
 
         public static LookupTableDataSet ReadLookupTables()
@@ -526,11 +535,14 @@ namespace Repository
 
         public static ProjectDataSet ReadProject(Guid projectUID)
         {
+            Utility.WriteLog(string.Format("Calling ReadProject"), System.Diagnostics.EventLogEntryType.Information);
             using (OperationContextScope scope = new OperationContextScope(projectClient.InnerChannel))
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
             }
-            return projectClient.ReadProject(projectUID, SvcProject.DataStoreEnum.PublishedStore);
+            var obj = projectClient.ReadProject(projectUID, SvcProject.DataStoreEnum.PublishedStore);
+            Utility.WriteLog(string.Format("ReadProject completed successfully"), System.Diagnostics.EventLogEntryType.Information);
+            return obj;
         }
 
         public static string ReadTaskEntityUID()

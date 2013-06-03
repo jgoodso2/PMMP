@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Constants
     {
         public const string TASK_ENTITY_ID = "ebad93e7-2149-410d-9a39-a8680738329d";

@@ -6,6 +6,9 @@ using System.IO;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     interface IPMPDocument
     {
         Stream CreateDocument(string template, byte[] fileName,string projectUID);

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TaskItem
     {
         public int ID { get; set; }

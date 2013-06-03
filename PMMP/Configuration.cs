@@ -7,6 +7,9 @@ using PMMP;
 
 namespace PMMPPresentation
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Configuration
     {
         public static string ServiceURL

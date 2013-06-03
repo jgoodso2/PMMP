@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Repository;
 
 namespace PMMP
 {
@@ -10,9 +11,10 @@ namespace PMMP
     {
         public Stream CreateDocument(string template,byte[] fileName,string projectUID)
         {
-            return PresentationDocumentFactory.CreateDocument(template, fileName, projectUID);
+            Utility.WriteLog("Create Document Started", System.Diagnostics.EventLogEntryType.Information);
+            Stream stream  = PresentationDocumentFactory.CreateDocument(template, fileName, projectUID);
+            Utility.WriteLog("Create Document ompleted Successfully", System.Diagnostics.EventLogEntryType.Information);
+            return stream;
         }
     }
-
-   
 }

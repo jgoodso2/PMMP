@@ -49,30 +49,24 @@ namespace PMMP
         }
 
 
-        public static string ExceptChars(this string str, IEnumerable<char> toExclude)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < str.Length; i++)
-            {
-                char c = str[i];
-                if (!toExclude.Contains(c))
-                    sb.Append(c);
-            }
-            return sb.ToString();
-        }
+        
 
         public static IEnumerable<SlidePart> GetSlidePartsInOrder(this PresentationPart presentationPart)
         {
+            Repository.Utility.WriteLog("GetSlidePartsInOrder started", System.Diagnostics.EventLogEntryType.Information);
             SlideIdList slideIdList = presentationPart.Presentation.SlideIdList;
 
-            return slideIdList.ChildElements
+            var objects =  slideIdList.ChildElements
                 .Cast<SlideId>()
                 .Select(x => presentationPart.GetPartById(x.RelationshipId))
                 .Cast<SlidePart>();
+            Repository.Utility.WriteLog("GetSlidePartsInOrder completed successfully", System.Diagnostics.EventLogEntryType.Information);
+            return objects;
         }
 
         public static SlidePart CloneSlide(this SlidePart templatePart, SlideType type)
         {
+            Repository.Utility.WriteLog("CloneSlide started", System.Diagnostics.EventLogEntryType.Information);
             // find the presentationPart: makes the API more fluent
             var presentationPart = templatePart.GetParentParts().OfType<PresentationPart>().Single();
 
@@ -136,7 +130,7 @@ namespace PMMP
                 }
                 
             }
-
+            Repository.Utility.WriteLog("CloneSlide completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return slidePartClone;
         }
 
@@ -144,6 +138,7 @@ namespace PMMP
 
         public static void AppendSlide(this PresentationPart presentationPart, SlidePart newSlidePart)
         {
+            Repository.Utility.WriteLog("AppendSlide started", System.Diagnostics.EventLogEntryType.Information);
             SlideIdList slideIdList = presentationPart.Presentation.SlideIdList;
 
             // find the highest id
@@ -155,6 +150,7 @@ namespace PMMP
             slideIdList.Append(newSlideId);
             newSlideId.Id = id;
             newSlideId.RelationshipId = presentationPart.GetIdOfPart(newSlidePart);
+            Repository.Utility.WriteLog("AppendSlide completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 
         public static string GetString(this CustomFieldType e)

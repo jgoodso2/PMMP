@@ -86,8 +86,6 @@
       <DependentUpon>Settings.aspx.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Support\DataHelper.cs" />
-    <Compile Include="Support\Impersonator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ContentTypes\PMMPresentation\SharePointProjectItem.spdata">

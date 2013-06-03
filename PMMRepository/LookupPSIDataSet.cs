@@ -11,6 +11,9 @@ using System.Diagnostics;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LookupPSIDataSet : IPSIDataSet
     {
         private const string RBS_CON_STRING = "RBSConnectionString";

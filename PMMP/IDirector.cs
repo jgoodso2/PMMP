@@ -6,6 +6,9 @@ using System.IO;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     interface IDirector
     {
         Stream Construct(IBuilder builder, byte[] fileName, string projectGuid);

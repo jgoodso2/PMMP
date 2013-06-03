@@ -11,6 +11,7 @@ namespace PMMP
     {
         public static void LoadChartData(ChartPart chartPart, System.Data.DataTable dataTable)
         {
+            Repository.Utility.WriteLog("LoadChartData started", System.Diagnostics.EventLogEntryType.Information);
             Chart chart = chartPart.ChartSpace.Elements<Chart>().First();
             BarChart bc = chart.Descendants<BarChart>().FirstOrDefault();
 
@@ -62,10 +63,12 @@ namespace PMMP
                     }
                 }
             }
+            Repository.Utility.WriteLog("LoadChartData completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 
         private static void CreateNumericPoints(NumberingCache nc, int count)
         {
+            Repository.Utility.WriteLog("CreateNumericPoints started", System.Diagnostics.EventLogEntryType.Information);
             var np1 = nc.Elements<NumericPoint>().ElementAt(0);
 
             for (int i = 0; i < count; i++)
@@ -77,10 +80,12 @@ namespace PMMP
 
                 nc.InsertAfter(np, npref);
             }
+            Repository.Utility.WriteLog("CreateNumericPoints completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 
         private static void CreateStringPoints(StringCache sc, int count)
         {
+            Repository.Utility.WriteLog("CreateStringPoints started", System.Diagnostics.EventLogEntryType.Information);
             var sp1 = sc.Elements<StringPoint>().ElementAt(0);
 
             for (int i = 0; i < count; i++)
@@ -92,6 +97,7 @@ namespace PMMP
 
                 sc.InsertAfter(sp, spref);
             }
+            Repository.Utility.WriteLog("CreateStringPoints completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
     }
 }

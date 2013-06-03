@@ -14,6 +14,9 @@ using WCFHelpers.WsfSvcAuthentication;
 
 namespace WCFHelpers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class WcfHelpers
     {
         // Use the Authentication class in the Microsoft SharePoint Foundation web services, not in the PSI.

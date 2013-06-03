@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     class CustomFieldDTO
     {
         public string Text { get; set; }

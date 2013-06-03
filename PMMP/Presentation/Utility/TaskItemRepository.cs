@@ -18,6 +18,7 @@ namespace PMMP
        
         public static TaskGroupData GetTaskGroups(string projectUID)
         {
+            Repository.Utility.WriteLog("GetTaskGroups started", System.Diagnostics.EventLogEntryType.Information);
             TaskGroupData taskData = new TaskGroupData();
             FiscalMonth fiscalPeriod = DataRepository.GetCurrentFiscalMonth();
             taskData.FiscalPeriod = fiscalPeriod;
@@ -157,12 +158,14 @@ namespace PMMP
 
                 }
             }
+            Repository.Utility.WriteLog("GetTaskGroups completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return taskData;
         }
 
         private static IList<TaskItemGroup> GetLateTasksData(DataTable tasksDataTable, FiscalMonth month)
         {
-            
+
+            Repository.Utility.WriteLog("GetLateTasksData started", System.Diagnostics.EventLogEntryType.Information);
             int count = -1;
             int lateTaskCount = 0;
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
@@ -205,12 +208,13 @@ namespace PMMP
                     retVal.Add(taskData);
 
                 }
-                
+                Repository.Utility.WriteLog("GetLateTasksData completed successfully", System.Diagnostics.EventLogEntryType.Information);    
             return retVal;
         }
 
         private static Dictionary<string, IList<TaskItem>> GetChartsData(DataTable tasksDataTable)
         {
+            Repository.Utility.WriteLog("GetLateTasksData started", System.Diagnostics.EventLogEntryType.Information);    
             Dictionary<string, IList<TaskItem>> chartsData = new Dictionary<string, IList<TaskItem>>() ;
 
 
@@ -238,6 +242,7 @@ namespace PMMP
                    }
                    }
             }
+                Repository.Utility.WriteLog("GetChartsData completed successfully", System.Diagnostics.EventLogEntryType.Information);    
             return chartsData;
         }
 

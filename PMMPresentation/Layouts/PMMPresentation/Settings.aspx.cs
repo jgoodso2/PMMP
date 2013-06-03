@@ -2,13 +2,9 @@
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.WebControls;
 using Repository;
-using PMMPresentation.Support;
-using System.Linq;
 using System.Web.UI.WebControls;
 using Configuration = PMMPPresentation.Configuration;
 using Constants = PMMP.Constants;
-using System.Security.Principal;
-using System.Net;
 namespace PMMPresentation.Layouts.PMMPresentation
 {
     public partial class Settings : LayoutsPageBase
@@ -18,8 +14,8 @@ namespace PMMPresentation.Layouts.PMMPresentation
             try
             {
                 //This gets the app pool account
-//                SPSecurity.RunWithElevatedPrivileges(() =>
-//{
+                SPSecurity.RunWithElevatedPrivileges(() =>
+{
     var obj = System.Security.Principal.WindowsIdentity.GetCurrent();
     lblLoggedInUser.Text = "The Logged in User =" + SPContext.Current.Web.CurrentUser.LoginName;
     lblAppPoolUser.Text = "The App Pool User =" + System.Security.Principal.WindowsIdentity.GetCurrent().Name;
@@ -61,7 +57,7 @@ namespace PMMPresentation.Layouts.PMMPresentation
                 }
             }
     }
-//});
+});
             }
             catch (Exception ex)
             {

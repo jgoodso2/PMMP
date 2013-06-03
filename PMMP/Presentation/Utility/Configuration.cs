@@ -6,6 +6,9 @@ using System.Configuration;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Configuration
     {
         public static string SampleDataFile
@@ -20,6 +23,7 @@ namespace PMMP
 
         private static string GetConfigurationValue(string key)
         {
+            Repository.Utility.WriteLog("GetConfigurationValue started", System.Diagnostics.EventLogEntryType.Information);
             string value = null;
             if (ConfigurationManager.AppSettings.Count > 0)
             {
@@ -28,7 +32,7 @@ namespace PMMP
                     value = ConfigurationManager.AppSettings[key];
                 }
             }
-
+            Repository.Utility.WriteLog("GetConfigurationValue completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return value;
         }
     }

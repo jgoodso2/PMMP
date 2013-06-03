@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LookupDTO
     {
         public Guid ID {get;set;}

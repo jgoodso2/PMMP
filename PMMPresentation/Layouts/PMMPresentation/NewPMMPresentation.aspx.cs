@@ -11,6 +11,9 @@ using System.Security.Principal;
 
 namespace PMMPresentation.Layouts.PMMPresentation
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class NewPMMPresentation : LayoutsPageBase
     {
         private Guid ListId

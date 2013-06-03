@@ -6,6 +6,9 @@ using System.IO;
 
 namespace PMMP
 {
+    /// <summary>
+    /// 
+    /// </summary>
     interface IBuilder
     {
         object BuildDataFromDataSource(string projectGuid);

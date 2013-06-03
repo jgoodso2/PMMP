@@ -6,6 +6,9 @@ using System.Data;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DataAccess
     {
         private DataSet projectDataSet;
@@ -134,6 +137,8 @@ namespace Repository
 
         private DataSet TransformDataSet()
         {
+
+            Utility.WriteLog(string.Format("Calling TransformDataSet"), System.Diagnostics.EventLogEntryType.Information);
             DataSet outputDataSet = projectDataSet.Copy();
             //add new table DrivingPath
             outputDataSet.Tables.Add("DrivingPath");
@@ -306,7 +311,7 @@ namespace Repository
                 count++;
             }
             #endregion
-
+            Utility.WriteLog(string.Format("TransformDataSet completed successfully"), System.Diagnostics.EventLogEntryType.Information);
 
             return outputDataSet;
         }

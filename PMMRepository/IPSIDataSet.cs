@@ -6,6 +6,9 @@ using System.Data;
 
 namespace Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IPSIDataSet
     {
         DataSet GetDataSet();

@@ -14,6 +14,7 @@ namespace PMMP
 
         public static void ReplicateRow(SheetData sheetData, int refRowIndex, int count)
         {
+            Repository.Utility.WriteLog("ReplicateRow started", System.Diagnostics.EventLogEntryType.Information);    
             IEnumerable<Row> rows = sheetData.Descendants<Row>().Where(r => r.RowIndex.Value > refRowIndex);
 
             foreach (Row row in rows)
@@ -28,11 +29,13 @@ namespace PMMP
 
                 sheetData.InsertAfter(newRow, GetRow(sheetData, refRowIndex + i));
             }
+            Repository.Utility.WriteLog("ReplicateRow completed successfully", System.Diagnostics.EventLogEntryType.Information);    
         }
 
         public static void LoadSheetData(SheetData sheetData, DataTable data, int rowIndex, int columnindex)
         {
             //Populate data
+            Repository.Utility.WriteLog("LoadSheetData started", System.Diagnostics.EventLogEntryType.Information);    
             int startRow = rowIndex + 1;
             for (int i = 0; i < data.Rows.Count; i++)
             {
@@ -45,6 +48,7 @@ namespace PMMP
                 else
                     PopulateRow(data.Rows[i], i + 2, row);
             }
+            Repository.Utility.WriteLog("LoadSheetData completed successfully", System.Diagnostics.EventLogEntryType.Information);    
         }
 
         private static Row GetRow(SheetData sheetData, int rowIndex)
@@ -84,11 +88,11 @@ namespace PMMP
 
         private static void PopulateRow(DataRow dataRow, int rowindex, Row row)
         {
-
+            Repository.Utility.WriteLog("PopulateRow started", System.Diagnostics.EventLogEntryType.Information);    
             Cell dataCell = GetCell(row,1);
             if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
                 dataCell.DataType = CellValues.String;
-            dataCell.CellValue.Text = dataRow["Task"].ToString() + " " + ((DateTime)dataRow["Finish"]).ToShortDateString();
+            dataCell.CellValue.Text = dataRow["Task"].ToString().Split(":".ToCharArray())[0] + " " + ((DateTime)dataRow["Finish"]).ToShortDateString();
             dataCell.CellFormula = new CellFormula(string.Format("=CONCATENATE(D{0},\":  \",TEXT(B{1},\"m/d\"))",rowindex,rowindex));
             dataCell = GetCell(row, 2);
             if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
@@ -103,7 +107,7 @@ namespace PMMP
             dataCell = GetCell(row, 4);
             if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
                 dataCell.DataType = CellValues.String;
-            dataCell.CellValue.Text = dataRow["Task"].ToString();
+            dataCell.CellValue.Text = dataRow["Task"].ToString().Split(":".ToCharArray())[0];
                 
             //int rowIndex = (int)row.RowIndex.Value;
             //for (int i = 0; i < dataRow.Table.Columns.Count; i++)
@@ -125,10 +129,12 @@ namespace PMMP
             //            dataCell.CellValue.Text = dataRow[i].ToString();
             //    }
             //}
+            Repository.Utility.WriteLog("PopulateRow complete successfully", System.Diagnostics.EventLogEntryType.Information);    
         }
 
         private static Cell CreateCell(int columnIndex, int rowIndex, object cellValue)
         {
+            Repository.Utility.WriteLog("CreateCell started", System.Diagnostics.EventLogEntryType.Information);    
             Cell cell = new Cell();
 
             cell.CellReference = GetColumnName(columnIndex) + rowIndex;
@@ -160,12 +166,13 @@ namespace PMMP
             }
 
             cell.CellValue = new CellValue(value);
-
+            Repository.Utility.WriteLog("CreateCell completed successfully", System.Diagnostics.EventLogEntryType.Information);    
             return cell;
         }
 
         private static void IncrementIndexes(Row row, int increment)
         {
+            Repository.Utility.WriteLog("IncrementIndexes started", System.Diagnostics.EventLogEntryType.Information);    
             uint newRowIndex;
             newRowIndex = System.Convert.ToUInt32(row.RowIndex.Value + increment);
 
@@ -176,6 +183,7 @@ namespace PMMP
             }
 
             row.RowIndex = new UInt32Value(newRowIndex);
+            Repository.Utility.WriteLog("IncrementIndexes completed successfully", System.Diagnostics.EventLogEntryType.Information);    
         }
     }
 }
