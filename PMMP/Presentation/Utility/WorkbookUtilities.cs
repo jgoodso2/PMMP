@@ -230,36 +230,42 @@ namespace PMMP
                 dataCell.CellValue.Text = graphData.Title.ToString();
                 switch (type)
                 {
+                    case "CF":
                     case "CS": 
                         Cell dataCell1 = GetCell(row, 2);
                         if (dataCell1.DataType != null && dataCell1.DataType == CellValues.SharedString)
                             dataCell1.DataType = CellValues.String;
                         dataCell1.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "FCF":
                     case "FCS":
                         Cell dataCell2 = GetCell(row, 3);
                         if (dataCell2.DataType != null && dataCell2.DataType == CellValues.SharedString)
                             dataCell2.DataType = CellValues.String;
                         dataCell2.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "DQF":
                     case "DQ":
                         Cell dataCell3 = GetCell(row, 4);
                         if (dataCell3.DataType != null && dataCell3.DataType == CellValues.SharedString)
                             dataCell3.DataType = CellValues.String;
                         dataCell3.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "FDQF":
                     case "FDQ":
                         Cell dataCell4 = GetCell(row, 5);
                         if (dataCell4.DataType != null && dataCell4.DataType == CellValues.SharedString)
                             dataCell4.DataType = CellValues.String;
                         dataCell4.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "CDQF":
                     case "CDQ":
                         Cell dataCell5 = GetCell(row, 6);
                         if (dataCell5.DataType != null && dataCell5.DataType == CellValues.SharedString)
                             dataCell5.DataType = CellValues.String;
                         dataCell5.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "FCDQF":
                     case "FCDQ":
                         Cell dataCell6 = GetCell(row, 7);
                         if (dataCell6.DataType != null && dataCell6.DataType == CellValues.SharedString)

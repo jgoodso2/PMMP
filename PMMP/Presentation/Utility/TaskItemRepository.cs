@@ -33,7 +33,9 @@ namespace PMMP
             taskData.TaskItemGroups = retVal;
             taskData.ChartsData = ChartsData;
             taskData.LateTaskGroups = LateTasksData;
-            taskData.GraphGroups = GetSPDLSTartToBLData(new Guid(projectUID),DataRepository.ReadProject(new Guid(projectUID)));
+            ProjectDataSet ds = DataRepository.ReadProject(new Guid(projectUID));
+            taskData.SPDLSTartToBL = GetSPDLSTartToBLData(new Guid(projectUID),ds);
+            taskData.SPDLFinishToBL = GetSPDLFinishToBLData(new Guid(projectUID), ds);
             if (tasksDataTable != null)
             {
                 var dPaths = tasksDataTable.AsEnumerable().Where(t => !string.IsNullOrEmpty(t.Field<string>("TASK_DRIVINGPATH_ID"))).Select(t => t.Field<string>("TASK_DRIVINGPATH_ID")).Distinct();
@@ -223,10 +225,76 @@ namespace PMMP
             List<GraphData> graphDataFCDQ = new List<GraphData>();
             foreach (FiscalUnit unit in projectStatusPeriods)
             {
-                int count = tasks.Count(t => !t.IsTASK_START_DATENull() && t.TASK_START_DATE > projectStatusDate && t.TASK_START_DATE >= unit.From && t.TASK_START_DATE <= unit.To && t.TASK_START_DATE > t.TB_START);
+                int count = tasks.Count(t => !t.IsTASK_START_DATENull() && !t.IsTB_STARTNull() && t.TASK_START_DATE > projectStatusDate && t.TASK_START_DATE >= unit.From && t.TASK_START_DATE <= unit.To && t.TASK_START_DATE > t.TB_START);
                 graphDataFCDQ.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
             }
             group.Add(new GraphDataGroup() { Type = "FCDQ", Data = graphDataFCDQ });
+
+            return group;
+        }
+
+        private static List<GraphDataGroup> GetSPDLFinishToBLData(Guid projectUID, ProjectDataSet projectDataSet)
+        {
+            List<GraphDataGroup> group = new List<GraphDataGroup>();
+            DateTime projectStatusDate = GetProjectStatusDate(projectUID, projectDataSet);
+            List<FiscalUnit> projectStatusPeriods = GetProjectStatusPeriods(projectStatusDate);
+            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
+
+
+            //Get CS Data
+            List<GraphData> graphDataCS = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int count = tasks.Count(t => !t.IsTASK_FINISH_DATENull() && t.TASK_FINISH_DATE <= projectStatusDate && !t.IsTASK_ACT_FINISHNull() && t.TASK_ACT_FINISH >= unit.From && t.TASK_ACT_FINISH <= unit.To);
+                graphDataCS.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "CF", Data = graphDataCS });
+
+            //Get FCS Data
+            List<GraphData> graphDataFCS = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int count = tasks.Count(t => !t.IsTASK_FINISH_DATENull() && t.TASK_FINISH_DATE > projectStatusDate && t.TASK_FINISH_DATE >= unit.From && t.TASK_FINISH_DATE <= unit.To && t.IsTASK_ACT_FINISHNull());
+                graphDataFCS.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "FCF", Data = graphDataFCS });
+
+            //Get DQ Data
+            List<GraphData> graphDataDQ = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int count = tasks.Count(t => !t.IsTASK_FINISH_DATENull() && t.TASK_FINISH_DATE <= projectStatusDate && !t.IsTB_FINISHNull() && t.TB_FINISH >= unit.From && t.TB_FINISH <= unit.To && t.TASK_FINISH_DATE > t.TB_FINISH);
+                graphDataDQ.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "DQF", Data = graphDataDQ });
+
+            //Get FDQ Data
+            List<GraphData> graphDataFDQ = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int count = tasks.Count(t => !t.IsTASK_FINISH_DATENull() && t.TASK_FINISH_DATE > projectStatusDate && !t.IsTB_FINISHNull() && t.TB_FINISH >= unit.From && t.TB_FINISH <= unit.To && t.TASK_FINISH_DATE > t.TB_FINISH);
+                graphDataFDQ.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "FDQF", Data = graphDataFDQ });
+
+
+            //Get CDQ Data
+            List<GraphData> graphDataCDQ = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int count = tasks.Count(t => !t.IsTB_FINISHNull() && t.TB_FINISH <= projectStatusDate && t.TB_FINISH >= unit.From && t.TB_FINISH <= unit.To && t.IsTASK_ACT_FINISHNull());
+                graphDataCDQ.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "CDQF", Data = graphDataCDQ });
+
+            //Get FCDQ Data
+            List<GraphData> graphDataFCDQ = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int count = tasks.Count(t => !t.IsTASK_FINISH_DATENull() && !t.IsTB_FINISHNull() && t.TASK_FINISH_DATE > projectStatusDate && t.TASK_FINISH_DATE >= unit.From && t.TASK_FINISH_DATE <= unit.To && t.TASK_FINISH_DATE > t.TB_FINISH);
+                graphDataFCDQ.Add(new GraphData() { Count = count, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "FCDQF", Data = graphDataFCDQ });
 
             return group;
         }

@@ -137,7 +137,7 @@ namespace PMMP
 
                             StringCache sc = categories.Descendants<StringCache>().First();
 
-                            if (graphGroup.Type == "CS")
+                            if (graphGroup.Type == "CS" || graphGroup.Type == "CF")
                             {
                                 CreateStringPoints(sc, list[j].Data.Count,true);
                             }
@@ -150,7 +150,7 @@ namespace PMMP
 
                             NumberingCache nc1 = values1.Descendants<NumberingCache>().First();
 
-                            if (graphGroup.Type == "CS")
+                            if (graphGroup.Type == "CS" || graphGroup.Type == "CF")
                             {
                                 CreateNumericPoints(nc1, list[j].Data.Count,true);
                             }
@@ -162,7 +162,7 @@ namespace PMMP
 
                             NumberingCache nc2 = values2.Descendants<NumberingCache>().First();
 
-                            if (graphGroup.Type == "FCS")
+                            if (graphGroup.Type == "FCS" || graphGroup.Type == "FCF")
                             {
                                 CreateNumericPoints(nc2, list[j].Data.Count,true);
                             }
@@ -175,7 +175,7 @@ namespace PMMP
 
                             NumberingCache nc3 = values3.Descendants<NumberingCache>().First();
 
-                            if (graphGroup.Type == "DQ")
+                            if (graphGroup.Type == "DQ" || graphGroup.Type == "DQF")
                             {
                                 CreateNumericPoints(nc3, list[j].Data.Count,true);
                             }
@@ -188,7 +188,7 @@ namespace PMMP
 
                             NumberingCache nc4 = values4.Descendants<NumberingCache>().First();
 
-                            if (graphGroup.Type == "FDQ")
+                            if (graphGroup.Type == "FDQ" || graphGroup.Type == "FDQF")
                             {
                                 CreateNumericPoints(nc4, list[j].Data.Count,true);
                             }
@@ -201,7 +201,7 @@ namespace PMMP
 
                             NumberingCache nc5 = values5.Descendants<NumberingCache>().First();
 
-                            if (graphGroup.Type == "CDQ")
+                            if (graphGroup.Type == "CDQ" || graphGroup.Type == "CDQF")
                             {
                                 CreateNumericPoints(nc5, list[j].Data.Count, true);
                             }
@@ -214,7 +214,7 @@ namespace PMMP
 
                             NumberingCache nc6 = values6.Descendants<NumberingCache>().First();
 
-                            if (graphGroup.Type == "FCDQ")
+                            if (graphGroup.Type == "FCDQ" || graphGroup.Type == "FCDQF")
                             {
                                 CreateNumericPoints(nc6, list[j].Data.Count, true);
                             }
@@ -229,21 +229,27 @@ namespace PMMP
 
                                     switch (graphGroup.Type)
                                     {
+                                        case "CF":
                                         case "CS":
                                             NumericValue nv1 = nc1.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv1.Text = graphGroup.Data[i].Count.ToString();break;
+                                        case "FCF":
                                         case "FCS":
                                             NumericValue nv2 = nc2.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv2.Text = graphGroup.Data[i].Count.ToString(); break;
+                                        case "DQF":
                                         case "DQ":
                                             NumericValue nv3 = nc3.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv3.Text = graphGroup.Data[i].Count.ToString(); break;
+                                        case "FDQF":
                                         case "FDQ":
                                             NumericValue nv4 = nc4.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv4.Text = graphGroup.Data[i].Count.ToString(); break;
+                                        case "CDQF":
                                         case "CDQ":
                                             NumericValue nv5 = nc5.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv5.Text = graphGroup.Data[i].Count.ToString(); break;
+                                        case "FCDQF":
                                         case "FCDQ":
                                             NumericValue nv6 = nc6.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv6.Text = graphGroup.Data[i].Count.ToString(); break;
