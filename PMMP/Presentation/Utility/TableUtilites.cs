@@ -61,7 +61,7 @@ namespace PMMP
 
         }
 
-        internal static void PopulateLateTasksTable(Table table, IList<TaskItem> iList, Repository.FiscalMonth fiscalMonth)
+        internal static void PopulateLateTasksTable(Table table, IList<TaskItem> iList, Repository.FiscalUnit fiscalMonth)
         {
             Repository.Utility.WriteLog("PopulateLateTasksTable started ", System.Diagnostics.EventLogEntryType.Information);
             foreach (TaskItem item in iList)

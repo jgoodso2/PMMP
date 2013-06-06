@@ -46,3 +46,15 @@ C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMRepository.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\WCFHelpers.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\PMMRepository.pdb
 C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\PMMP\bin\Debug\WCFHelpers.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\PMMP.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\PMMP.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\DocumentFormat.OpenXml.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\DocumentFormat.OpenXml.xml
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\obj\Debug\PMMP.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\obj\Debug\PMMP.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\PMMRepository.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\WCFHelpers.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\PMMRepository.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMP\bin\Debug\WCFHelpers.pdb

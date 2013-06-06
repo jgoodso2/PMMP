@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using SvcProject;
 
 namespace Repository
 {
@@ -353,6 +354,16 @@ namespace Repository
                 }
             }
             return "";
+        }
+
+        public DateTime GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projectGuid)
+        {
+            return DataRepository.GetProjectStatusDate(projectDataSet, projectGuid);
+        }
+
+        public List<FiscalUnit> GetProjectStatusPeriods(DateTime date)
+        {
+            return DataRepository.GetProjectStatusPeriods(date);
         }
     }
 }

@@ -22,10 +22,49 @@ using System.Globalization;
 
 namespace Repository
 {
-    public struct FiscalMonth
+    public class FiscalUnit
     {
+        public FiscalUnit()
+        {
+            From = DateTime.MinValue;
+            To = DateTime.MaxValue;
+        }
+        public FiscalUnit(DateTime fromDate, DateTime toDate,int month,int year,bool isWeekly,int weekNoStart)
+        {
+            From = fromDate;
+            To = toDate;
+            Month = month;
+            Year = year;
+            IsWeekly = isWeekly;
+            WeekNoStart = weekNoStart;
+        }
+
+        public bool IsWeekly { get; set; }
+        public int WeekNoStart { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
         public DateTime To { get; set; }
         public DateTime From { get; set; }
+
+        public string GetTitle()
+        {
+            if (IsWeekly)
+            {
+                DateTime date = new DateTime(Year, Month, 1);
+                return date.ToString("MMM y " + string .Format("WK{0}",WeekNoStart));
+            }
+            else
+            {
+                DateTime date = new DateTime(Year, Month, 1);
+                return date.ToString("MMM y");
+            }
+            
+        }
+
+        public int GetNoOfWeeks()
+        {
+            return (To - From).Days / 7;
+        }
     }
 
     /// <summary>
@@ -464,7 +503,7 @@ namespace Repository
 
         #endregion
 
-        public static FiscalMonth GetCurrentFiscalMonth()
+        public static FiscalUnit GetCurrentFiscalMonth()
         {
             Utility.WriteLog(string.Format("Calling GetCurrentFiscalMonth"), System.Diagnostics.EventLogEntryType.Information);
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
@@ -478,7 +517,7 @@ namespace Repository
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
                         if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
-                            return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                            return new FiscalUnit() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
                         }
                     }
                 }
@@ -490,7 +529,7 @@ namespace Repository
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
                         if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
-                            return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                            return new FiscalUnit() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
                         }
                     }
                 }
@@ -504,13 +543,13 @@ namespace Repository
                         if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
                             Utility.WriteLog(string.Format("GetCurrentFiscalMonth completed successfully"), System.Diagnostics.EventLogEntryType.Information);
-                            return new FiscalMonth() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
+                            return new FiscalUnit() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
                         }
                     }
                 }
             }
             Utility.WriteLog(string.Format("GetCurrentFiscalMonth completed successfully"), System.Diagnostics.EventLogEntryType.Information);
-            return new FiscalMonth() { From = DateTime.MinValue, To = DateTime.Now };
+            return new FiscalUnit() { From = DateTime.MinValue, To = DateTime.Now };
         }
         public static CustomFieldDataSet ReadCustomFields()
         {
@@ -533,6 +572,7 @@ namespace Repository
             return lookupTableClient.ReadLookupTables(string.Empty, false, 1);
         }
 
+        
         public static ProjectDataSet ReadProject(Guid projectUID)
         {
             Utility.WriteLog(string.Format("Calling ReadProject"), System.Diagnostics.EventLogEntryType.Information);
@@ -576,6 +616,83 @@ namespace Repository
                     errMess += "\n" + ex.Message.ToString();
                     // Send error string to console or message box.
                 }
+            }
+        }
+
+        internal static List<FiscalUnit> GetProjectStatusPeriods(DateTime date)
+        {
+            List<FiscalUnit> months = new List<FiscalUnit>();
+            using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
+            {
+                WcfHelpers.UseCorrectHeaders(isImpersonated);
+                SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(date.Year);
+                if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
+                {
+                   
+                    for (int count=0;count< fiscalPeriods.FiscalPeriods.Rows.Count;count++)
+                    {
+                       DataRow row = fiscalPeriods.FiscalPeriods.Rows[count];
+                        SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
+                        int noOfWeeks=0;
+                        if (date >= fiscalRow.WFISCAL_PERIOD_START_DATE && date <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        {
+                            for (int i = 3; i > 0; i--)
+                            {
+                                
+                                if (count >= 0)
+                                {
+                                    DataRow row1 = fiscalPeriods.FiscalPeriods.Rows[count - i];
+                                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow1 = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row1;
+                                    FiscalUnit fiscalMonth = new FiscalUnit(fiscalRow1.WFISCAL_PERIOD_START_DATE, fiscalRow1.WFISCAL_PERIOD_FINISH_DATE, fiscalRow1.WFISCAL_MONTH, fiscalRow1.WFISCAL_YEAR, false, 0);
+                                    months.Add(fiscalMonth);
+                                }
+                            }
+                            //count += 3;
+
+                            FiscalUnit fiscalMonth1 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(7), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR,true,(1));
+                            FiscalUnit fiscalMonth2 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(7), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(14), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (2));
+                            FiscalUnit fiscalMonth3 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(14), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(21), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (3));
+                            FiscalUnit fiscalMonth4 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(21), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(28), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (4));
+                            months.Add(fiscalMonth1);
+                            months.Add(fiscalMonth2);
+                            months.Add(fiscalMonth3);
+                            months.Add(fiscalMonth4);
+                            if (new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_FINISH_DATE, fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, false, 0).GetNoOfWeeks() > 4)
+                            {
+                                FiscalUnit fiscalMonth5 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(28), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(35), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (5));
+                                months.Add(fiscalMonth5);
+                            }
+                            
+                            for (int i = 0; i < 3; i++)
+                            {
+                                count++;
+                                if (count < fiscalPeriods.FiscalPeriods.Rows.Count)
+                                {
+                                    DataRow row1 = fiscalPeriods.FiscalPeriods.Rows[count];
+                                    SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow1 = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row1;
+                                    FiscalUnit fiscalMonth = new FiscalUnit(fiscalRow1.WFISCAL_PERIOD_START_DATE, fiscalRow1.WFISCAL_PERIOD_FINISH_DATE, fiscalRow1.WFISCAL_MONTH, fiscalRow1.WFISCAL_YEAR, false, 0);
+                                    months.Add(fiscalMonth);
+                                }
+                            }
+                            break;
+                        }
+                        noOfWeeks += new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_FINISH_DATE, fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, false,0).GetNoOfWeeks();
+                    }
+                }
+            }
+            return months;
+        }
+
+        internal static DateTime GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projUID)
+        {
+            try
+            {
+                DateTime date = projectDataSet.Project.First(t => t.PROJ_UID == projUID).PROJ_INFO_STATUS_DATE;
+                return date;
+            }
+            catch
+            {
+                return DateTime.Now;
             }
         }
     }

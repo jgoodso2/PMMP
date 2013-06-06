@@ -14,6 +14,7 @@ namespace PMMP
         public IList<TaskItemGroup> TaskItemGroups { get; set; }
         public Dictionary<string, IList<TaskItem>> ChartsData { get; set; }
         public IList<TaskItemGroup> LateTaskGroups { get; set; }
-        public FiscalMonth FiscalPeriod { get; set; }
+        public FiscalUnit FiscalPeriod { get; set; }
+        public List<GraphDataGroup> GraphGroups { get; set; }
     }
 }

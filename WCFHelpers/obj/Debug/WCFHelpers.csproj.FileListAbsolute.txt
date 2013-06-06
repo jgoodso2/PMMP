@@ -64,3 +64,10 @@ C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\WCFHelpers\bin\Debug\Microsoft.Sharepoint.
 C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\WCFHelpers\obj\Debug\ResolveAssemblyReference.cache
 C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\WCFHelpers\obj\Debug\WCFHelpers.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19\PMMP\WCFHelpers\obj\Debug\WCFHelpers.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\bin\Debug\WCFHelpers.dll.config
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\bin\Debug\WCFHelpers.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\bin\Debug\WCFHelpers.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\bin\Debug\Microsoft.Sharepoint.Sandbox.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\obj\Debug\ResolveAssemblyReference.cache
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\obj\Debug\WCFHelpers.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\WCFHelpers\obj\Debug\WCFHelpers.pdb

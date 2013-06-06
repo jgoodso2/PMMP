@@ -72,6 +72,8 @@
     <Compile Include="Presentation\Implementation\PresentationBuilder.cs" />
     <Compile Include="Presentation\Implementation\PresentationDirector.cs" />
     <Compile Include="Presentation\Implementation\PresentationDocumentFactory.cs" />
+    <Compile Include="Presentation\Utility\GraphData.cs" />
+    <Compile Include="Presentation\Utility\GraphDataGroup.cs" />
     <Compile Include="Presentation\Utility\PresentationExtensions.cs" />
     <Compile Include="Presentation\Utility\PresentationUtilities.cs" />
     <Compile Include="Presentation\Utility\TaskGroupData.cs" />

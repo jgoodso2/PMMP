@@ -185,5 +185,89 @@ namespace PMMP
             row.RowIndex = new UInt32Value(newRowIndex);
             Repository.Utility.WriteLog("IncrementIndexes completed successfully", System.Diagnostics.EventLogEntryType.Information);    
         }
+
+        internal static void LoadGraphSheetData(SheetData sheetData, List<GraphDataGroup> data, int rowIndex, int columnIndex)
+        {
+            //Populate data
+            Repository.Utility.WriteLog("LoadSheetData started", System.Diagnostics.EventLogEntryType.Information);
+            int startRow = rowIndex + 1;
+            for (int i = 0; i < data.Count; i++)
+            {
+                for (int j = 0; j < data[i].Data.Count; j++)
+                {
+                    Row row = GetRow(sheetData, j + startRow);
+                    if (row == null)
+                    {
+                        row = CreateContentRow(data[i], j + startRow, columnIndex);
+                        sheetData.AppendChild(row);
+                    }
+                    else
+                        PopulateRow(data[i].Data[j], row,data[i].Type);
+                }
+            }
+            Repository.Utility.WriteLog("LoadSheetData completed successfully", System.Diagnostics.EventLogEntryType.Information);    
+        }
+
+        private static Row CreateContentRow(GraphDataGroup graphDataGroup, int rowIndex, int columnIndex)
+        {
+            Row row = new Row { RowIndex = (UInt32)rowIndex };
+
+            foreach (GraphData data in graphDataGroup.Data)
+            {
+                PopulateRow(data, row, graphDataGroup.Type);
+            }
+
+            return row;
+        }
+
+        private static void PopulateRow(GraphData graphData, Row row,string type)
+        {
+            Repository.Utility.WriteLog("PopulateRow started", System.Diagnostics.EventLogEntryType.Information);
+            
+                Cell dataCell = GetCell(row, 1);
+                if (dataCell.DataType != null && dataCell.DataType == CellValues.SharedString)
+                    dataCell.DataType = CellValues.String;
+                dataCell.CellValue.Text = graphData.Title.ToString();
+                switch (type)
+                {
+                    case "CS": 
+                        Cell dataCell1 = GetCell(row, 2);
+                        if (dataCell1.DataType != null && dataCell1.DataType == CellValues.SharedString)
+                            dataCell1.DataType = CellValues.String;
+                        dataCell1.CellValue.Text = graphData.Count.ToString();
+                        break;
+                    case "FCS":
+                        Cell dataCell2 = GetCell(row, 3);
+                        if (dataCell2.DataType != null && dataCell2.DataType == CellValues.SharedString)
+                            dataCell2.DataType = CellValues.String;
+                        dataCell2.CellValue.Text = graphData.Count.ToString();
+                        break;
+                    case "DQ":
+                        Cell dataCell3 = GetCell(row, 4);
+                        if (dataCell3.DataType != null && dataCell3.DataType == CellValues.SharedString)
+                            dataCell3.DataType = CellValues.String;
+                        dataCell3.CellValue.Text = graphData.Count.ToString();
+                        break;
+                    case "FDQ":
+                        Cell dataCell4 = GetCell(row, 5);
+                        if (dataCell4.DataType != null && dataCell4.DataType == CellValues.SharedString)
+                            dataCell4.DataType = CellValues.String;
+                        dataCell4.CellValue.Text = graphData.Count.ToString();
+                        break;
+                    case "CDQ":
+                        Cell dataCell5 = GetCell(row, 6);
+                        if (dataCell5.DataType != null && dataCell5.DataType == CellValues.SharedString)
+                            dataCell5.DataType = CellValues.String;
+                        dataCell5.CellValue.Text = graphData.Count.ToString();
+                        break;
+                    case "FCDQ":
+                        Cell dataCell6 = GetCell(row, 7);
+                        if (dataCell6.DataType != null && dataCell6.DataType == CellValues.SharedString)
+                            dataCell6.DataType = CellValues.String;
+                        dataCell6.CellValue.Text = graphData.Count.ToString();
+                        break;
+                }
+            Repository.Utility.WriteLog("PopulateRow complete successfully", System.Diagnostics.EventLogEntryType.Information); 
+        }
     }
 }
