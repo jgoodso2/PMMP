@@ -356,12 +356,12 @@ namespace Repository
             return "";
         }
 
-        public DateTime GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projectGuid)
+        public DateTime? GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projectGuid)
         {
             return DataRepository.GetProjectStatusDate(projectDataSet, projectGuid);
         }
 
-        public List<FiscalUnit> GetProjectStatusPeriods(DateTime date)
+        public List<FiscalUnit> GetProjectStatusPeriods(DateTime? date)
         {
             return DataRepository.GetProjectStatusPeriods(date);
         }

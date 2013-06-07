@@ -503,44 +503,48 @@ namespace Repository
 
         #endregion
 
-        public static FiscalUnit GetCurrentFiscalMonth()
+        public static FiscalUnit GetFiscalMonth(DateTime? date)
         {
+            if (!date.HasValue)
+            {
+                return new FiscalUnit() { From = DateTime.MinValue, To = DateTime.MaxValue }; 
+            }
             Utility.WriteLog(string.Format("Calling GetCurrentFiscalMonth"), System.Diagnostics.EventLogEntryType.Information);
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
-                SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year);
+                SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(date.Value.Year);
                 if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
                     foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
                     {
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                        if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        if (date >= fiscalRow.WFISCAL_PERIOD_START_DATE && date <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
                             return new FiscalUnit() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
                         }
                     }
                 }
-                fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year - 1);
+                fiscalPeriods = adminClient.ReadFiscalPeriods(date.Value.Year - 1);
                 if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
                     foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
                     {
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                        if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        if (date >= fiscalRow.WFISCAL_PERIOD_START_DATE && date <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
                             return new FiscalUnit() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
                         }
                     }
                 }
 
-                fiscalPeriods = adminClient.ReadFiscalPeriods(DateTime.Now.Year + 1);
+                fiscalPeriods = adminClient.ReadFiscalPeriods(date.Value.Year + 1);
                 if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
                     foreach (DataRow row in fiscalPeriods.FiscalPeriods.Rows)
                     {
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                        if (DateTime.Now >= fiscalRow.WFISCAL_PERIOD_START_DATE && DateTime.Now <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
+                        if (date >= fiscalRow.WFISCAL_PERIOD_START_DATE && date <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
                             Utility.WriteLog(string.Format("GetCurrentFiscalMonth completed successfully"), System.Diagnostics.EventLogEntryType.Information);
                             return new FiscalUnit() { From = fiscalRow.WFISCAL_PERIOD_START_DATE, To = fiscalRow.WFISCAL_PERIOD_FINISH_DATE };
@@ -549,7 +553,7 @@ namespace Repository
                 }
             }
             Utility.WriteLog(string.Format("GetCurrentFiscalMonth completed successfully"), System.Diagnostics.EventLogEntryType.Information);
-            return new FiscalUnit() { From = DateTime.MinValue, To = DateTime.Now };
+            return new FiscalUnit() { From = DateTime.MinValue, To = DateTime.MaxValue };
         }
         public static CustomFieldDataSet ReadCustomFields()
         {
@@ -619,13 +623,18 @@ namespace Repository
             }
         }
 
-        internal static List<FiscalUnit> GetProjectStatusPeriods(DateTime date)
+        internal static List<FiscalUnit> GetProjectStatusPeriods(DateTime? date)
         {
             List<FiscalUnit> months = new List<FiscalUnit>();
+            if (!date.HasValue)
+            {
+                return months;
+            } 
+            
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
-                SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(date.Year);
+                SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(date.Value.Year);
                 if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
                    
@@ -683,7 +692,7 @@ namespace Repository
             return months;
         }
 
-        internal static DateTime GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projUID)
+        internal static DateTime? GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projUID)
         {
             try
             {
@@ -692,7 +701,7 @@ namespace Repository
             }
             catch
             {
-                return DateTime.Now;
+                return null;
             }
         }
     }

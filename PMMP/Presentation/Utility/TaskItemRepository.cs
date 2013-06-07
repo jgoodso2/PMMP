@@ -19,21 +19,24 @@ namespace PMMP
         public static TaskGroupData GetTaskGroups(string projectUID)
         {
             Repository.Utility.WriteLog("GetTaskGroups started", System.Diagnostics.EventLogEntryType.Information);
-            TaskGroupData taskData = new TaskGroupData();
-            FiscalUnit fiscalPeriod = DataRepository.GetCurrentFiscalMonth();
-            taskData.FiscalPeriod = fiscalPeriod;
+          
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
            
             
             DataAccess dataAccess = new Repository.DataAccess(new Guid(projectUID));
             DataSet dataset = dataAccess.ReadProject(null);
+            ProjectDataSet ds = DataRepository.ReadProject(new Guid(projectUID));
             DataTable tasksDataTable = dataset.Tables["Task"];
             Dictionary<string, IList<TaskItem>> ChartsData = GetChartsData(tasksDataTable);
+            TaskGroupData taskData = new TaskGroupData();
+            DateTime? projectStatusDate = GetProjectStatusDate(new Guid(projectUID), ds);
+            FiscalUnit fiscalPeriod = DataRepository.GetFiscalMonth(projectStatusDate);
+            taskData.FiscalPeriod = fiscalPeriod;
             IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable,fiscalPeriod);
             taskData.TaskItemGroups = retVal;
             taskData.ChartsData = ChartsData;
             taskData.LateTaskGroups = LateTasksData;
-            ProjectDataSet ds = DataRepository.ReadProject(new Guid(projectUID));
+            
             taskData.SPDLSTartToBL = GetSPDLSTartToBLData(new Guid(projectUID),ds);
             taskData.SPDLFinishToBL = GetSPDLFinishToBLData(new Guid(projectUID), ds);
             if (tasksDataTable != null)
@@ -170,8 +173,10 @@ namespace PMMP
         private static List<GraphDataGroup> GetSPDLSTartToBLData(Guid projectUID, ProjectDataSet projectDataSet)
         {
             List<GraphDataGroup> group = new List<GraphDataGroup>();
-            DateTime projectStatusDate = GetProjectStatusDate(projectUID, projectDataSet);
-            List<FiscalUnit> projectStatusPeriods = GetProjectStatusPeriods(projectStatusDate);
+            DateTime? projectStatusDate = GetProjectStatusDate(projectUID, projectDataSet);
+            if (!projectStatusDate.HasValue)
+                return new List<GraphDataGroup>();
+            List<FiscalUnit> projectStatusPeriods = GetProjectStatusPeriods(projectStatusDate.Value);
             IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
             
 
@@ -236,7 +241,7 @@ namespace PMMP
         private static List<GraphDataGroup> GetSPDLFinishToBLData(Guid projectUID, ProjectDataSet projectDataSet)
         {
             List<GraphDataGroup> group = new List<GraphDataGroup>();
-            DateTime projectStatusDate = GetProjectStatusDate(projectUID, projectDataSet);
+            DateTime? projectStatusDate = GetProjectStatusDate(projectUID, projectDataSet);
             List<FiscalUnit> projectStatusPeriods = GetProjectStatusPeriods(projectStatusDate);
             IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
 
@@ -299,32 +304,33 @@ namespace PMMP
             return group;
         }
 
-        private static List<FiscalUnit> GetProjectStatusPeriods(DateTime date)
+        private static List<FiscalUnit> GetProjectStatusPeriods(DateTime? date)
         {
             DataAccess da = new DataAccess(Guid.Empty);
             return da.GetProjectStatusPeriods(date);
         }
 
-        private static DateTime GetProjectStatusDate(Guid projectUID, ProjectDataSet projectDataSet)
+        private static DateTime? GetProjectStatusDate(Guid projectUID, ProjectDataSet projectDataSet)
         {
             DataAccess da = new DataAccess(projectUID);
             return da.GetProjectStatusDate(projectDataSet, projectUID);
         }
         private static IList<TaskItemGroup> GetLateTasksData(DataTable tasksDataTable, FiscalUnit month)
         {
-
+            if (month.From == DateTime.MinValue && month.To == DateTime.MaxValue)
+                return new List<TaskItemGroup>();
             Repository.Utility.WriteLog("GetLateTasksData started", System.Diagnostics.EventLogEntryType.Information);
             int count = -1;
             int lateTaskCount = 0;
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
+
            
-            
             TaskItemGroup taskData = new TaskItemGroup() { TaskItems = new List<TaskItem>()};
                IList<TaskItem> items = new List<TaskItem>();
                 EnumerableRowCollection<DataRow> collection = 
                     
                     tasksDataTable.AsEnumerable()
-                    .Where((t => t.Field<bool>("TASK_IS_SUMMARY") == false && t.Field<DateTime?>("TASK_START_DATE").HasValue && t.Field<DateTime?>("TB_START").HasValue && t.Field<DateTime?>("TB_START").Value.InCurrentFiscalMonth(month) &&
+                    .Where((t => t.Field<bool>("TASK_IS_SUMMARY") == false &&  t.Field<int>("TASK_PCT_COMP") == 0 && t.Field<DateTime?>("TASK_START_DATE").HasValue && t.Field<DateTime?>("TB_START").HasValue && t.Field<DateTime?>("TB_START").Value.InCurrentFiscalMonth(month) &&
                            t.Field<int>("TASK_PCT_COMP") < 100 &&
                            t.Field<DateTime?>("TASK_START_DATE").Value.Date > t.Field<DateTime?>("TB_START").Value.Date));
                             

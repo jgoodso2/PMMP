@@ -29,7 +29,7 @@ namespace PMMP
                 }
                 tr.Append(CreateTextCell(item.Predecessor));
                 tr.Append(CreateTextCell(item.Start.HasValue ? item.Start.Value.ToShortDateString() : String.Empty));
-                tr.Append(CreateTextCell(item.Finish.HasValue ? item.Start.Value.ToShortDateString() : String.Empty));
+                tr.Append(CreateTextCell(item.Finish.HasValue ? item.Finish.Value.ToShortDateString() : String.Empty));
                 //tr.Append(CreateTextCell(item.ModifiedOn.HasValue ? item.ModifiedOn.Value.ToShortDateString() : String.Empty));
                 table.Append(tr);
             }

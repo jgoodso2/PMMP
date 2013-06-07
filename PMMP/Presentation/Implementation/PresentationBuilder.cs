@@ -45,8 +45,8 @@ namespace PMMP
             {
                 var oPPart = oPDoc.PresentationPart;
                 int gridSlideIndex = GetSlideindexByTitle(oPPart, "Driving Path");
-                int completedSlideIndex = GetSlideindexByTitle(oPPart, "Complete Tasks");
-                var lateSlideIndex = GetSlideindexByTitle(oPPart, "Late Tasks"); ;
+                int completedSlideIndex = GetSlideindexByTitle(oPPart, "Completed Driving Path Tasks (current Fiscal Month)");
+                var lateSlideIndex = GetSlideindexByTitle(oPPart, "Late Tasks (current Fiscal Month)"); ;
                 var chartSlideIndex = GetSlideindexByTitle(oPPart, "Chart");
                 var SPDLSTartToBLSlideIndex = GetSlideindexByTitle(oPPart, "Schedule Performance – Delinquent Starts to BL");
                 var SPDLFinishToBLSlideIndex = GetSlideindexByTitle(oPPart, "Schedule Performance – Delinquent Finishes to BL"); 
@@ -194,15 +194,21 @@ namespace PMMP
 
                                 if (isStart)
                                 {
+                                    if (taskData.SPDLSTartToBL != null && taskData.SPDLSTartToBL.Count > 0 && taskData.SPDLSTartToBL[0].Data!= null)
+                                    {
                                     WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.SPDLSTartToBL[0].Data.Count - 1);
                                     WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.SPDLSTartToBL, 1, 0);
                                     BarChartUtilities.LoadChartData(chartPart, taskData.SPDLSTartToBL);
+                                    }
                                 }
                                 else
                                 {
+                                    if(taskData.SPDLFinishToBL != null && taskData.SPDLFinishToBL.Count > 0 && taskData.SPDLFinishToBL[0].Data!= null)
+                                    {
                                     WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.SPDLFinishToBL[0].Data.Count - 1);
                                     WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.SPDLFinishToBL, 1, 0);
                                     BarChartUtilities.LoadChartData(chartPart, taskData.SPDLFinishToBL);
+                                    }
                                 }
                             }
 
