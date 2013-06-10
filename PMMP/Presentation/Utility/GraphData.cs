@@ -7,7 +7,7 @@ namespace PMMP
 {
     public class GraphData
     {
-        public int Count {get;set;}
+        public float Count {get;set;}
         public string Title {get;set;}
     }
 }

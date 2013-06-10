@@ -231,12 +231,14 @@ namespace PMMP
                 switch (type)
                 {
                     case "CF":
+                    case "BES":
                     case "CS": 
                         Cell dataCell1 = GetCell(row, 2);
                         if (dataCell1.DataType != null && dataCell1.DataType == CellValues.SharedString)
                             dataCell1.DataType = CellValues.String;
                         dataCell1.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "BEF":
                     case "FCF":
                     case "FCS":
                         Cell dataCell2 = GetCell(row, 3);
@@ -244,6 +246,7 @@ namespace PMMP
                             dataCell2.DataType = CellValues.String;
                         dataCell2.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "BEFS":
                     case "DQF":
                     case "DQ":
                         Cell dataCell3 = GetCell(row, 4);
@@ -251,6 +254,7 @@ namespace PMMP
                             dataCell3.DataType = CellValues.String;
                         dataCell3.CellValue.Text = graphData.Count.ToString();
                         break;
+                    case "BEFF":
                     case "FDQF":
                     case "FDQ":
                         Cell dataCell4 = GetCell(row, 5);

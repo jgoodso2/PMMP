@@ -38,30 +38,37 @@ namespace PMMP
 
         static TableCell CreateTextCell(string text, params System.Drawing.Color[] color)
         {
-            Repository.Utility.WriteLog("CreateTextCell started ", System.Diagnostics.EventLogEntryType.Information);
-            TableCellProperties tableCellProperty = new TableCellProperties();
-            if (color.Length > 0)
+            try
             {
+                Repository.Utility.WriteLog("CreateTextCell started ", System.Diagnostics.EventLogEntryType.Information);
+                TableCellProperties tableCellProperty = new TableCellProperties();
+                if (color.Length > 0)
+                {
 
-                SolidFill solidFill1 = new SolidFill();
-                RgbColorModelHex rgbColorModelHex1 = new RgbColorModelHex() { Val = color[0].ToHexString() };
-                solidFill1.Append(rgbColorModelHex1);
-                tableCellProperty.Append(solidFill1);
+                    SolidFill solidFill1 = new SolidFill();
+                    RgbColorModelHex rgbColorModelHex1 = new RgbColorModelHex() { Val = color[0].ToHexString() };
+                    solidFill1.Append(rgbColorModelHex1);
+                    tableCellProperty.Append(solidFill1);
+                }
+                TableCell tc = new TableCell(
+                new TextBody(
+                new BodyProperties(),
+                new Paragraph(
+                new Run(
+                new RunProperties() { FontSize = 1200 },
+                new Text(text)))),
+                tableCellProperty);
+                Repository.Utility.WriteLog("CreateTextCell completed successfully ", System.Diagnostics.EventLogEntryType.Information);
+                return tc;
             }
-            TableCell tc = new TableCell(
-            new TextBody(
-            new BodyProperties(),
-            new Paragraph(
-            new Run(
-            new RunProperties() { FontSize = 1200 },
-            new Text(text)))),
-            tableCellProperty);
-            Repository.Utility.WriteLog("CreateTextCell completed successfully ", System.Diagnostics.EventLogEntryType.Information);
-            return tc;
+            catch
+            {
+                return new TableCell();
+            }
 
         }
 
-        internal static void PopulateLateTasksTable(Table table, IList<TaskItem> iList, Repository.FiscalUnit fiscalMonth)
+        internal static void PopulateLateOrUpComingTasksTable(Table table, IList<TaskItem> iList, Repository.FiscalUnit fiscalMonth)
         {
             Repository.Utility.WriteLog("PopulateLateTasksTable started ", System.Diagnostics.EventLogEntryType.Information);
             foreach (TaskItem item in iList)
@@ -149,7 +156,7 @@ namespace PMMP
 
                 tr.Append(baseLineStart);
                 tr.Append(baseLineFinish);
-                tr.Append(Convert.ToInt32(item.Hours) != 0 ? CreateTextCell((Convert.ToInt32(item.Hours) / 60000).ToString()) : CreateTextCell(item.Hours));
+                tr.Append(Convert.ToDouble(item.Hours) != 0 ? CreateTextCell(((int)(Convert.ToDouble(item.Hours) / 60000)).ToString()) : CreateTextCell(item.Hours));
                 tr.Append(CreateTextCell(item.PMT));
                 tr.Append(CreateTextCell(item.ReasonRecovery));
                 tr.Append(CreateTextCell(""));

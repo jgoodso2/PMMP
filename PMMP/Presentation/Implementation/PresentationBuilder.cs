@@ -46,17 +46,21 @@ namespace PMMP
                 var oPPart = oPDoc.PresentationPart;
                 int gridSlideIndex = GetSlideindexByTitle(oPPart, "Driving Path");
                 int completedSlideIndex = GetSlideindexByTitle(oPPart, "Completed Driving Path Tasks (current Fiscal Month)");
-                var lateSlideIndex = GetSlideindexByTitle(oPPart, "Late Tasks (current Fiscal Month)"); ;
+                var lateSlideIndex = GetSlideindexByTitle(oPPart, "Late Tasks (current Fiscal Month)");
+                var upcomingSlideIndex = GetSlideindexByTitle(oPPart, "Upcoming Tasks (current Fiscal Month)"); 
                 var chartSlideIndex = GetSlideindexByTitle(oPPart, "Chart");
                 var SPDLSTartToBLSlideIndex = GetSlideindexByTitle(oPPart, "Schedule Performance – Delinquent Starts to BL");
-                var SPDLFinishToBLSlideIndex = GetSlideindexByTitle(oPPart, "Schedule Performance – Delinquent Finishes to BL"); 
+                var SPDLFinishToBLSlideIndex = GetSlideindexByTitle(oPPart, "Schedule Performance – Delinquent Finishes to BL");
+                var BEISlideIndex = GetSlideindexByTitle(oPPart, "Schedule Performance – Baseline Execution Index (BEI)"); 
 
                 SlidePart gridSlidePart = null;
                 SlidePart chartSlidePart = null;
                 SlidePart lateSlidePart = null;
+                SlidePart upcomingSlidePart = null;
                 SlidePart completedSlidePart = null;
                 SlidePart SPDLSTartToBLSlidePart = null;
                 SlidePart SPDLFinishToBLSlidePart = null;
+                SlidePart BEISlideIndexPart = null;
                 if (gridSlideIndex > -1)
                 {
                     gridSlidePart = oPPart.GetSlidePartsInOrder().ToList()[gridSlideIndex];
@@ -73,6 +77,10 @@ namespace PMMP
                 {
                     lateSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lateSlideIndex];
                 }
+                if (upcomingSlideIndex > -1)
+                {
+                    upcomingSlidePart = oPPart.GetSlidePartsInOrder().ToList()[upcomingSlideIndex];
+                }
 
                 if (SPDLSTartToBLSlideIndex > -1)
                 {
@@ -84,11 +92,24 @@ namespace PMMP
                     SPDLFinishToBLSlidePart = oPPart.GetSlidePartsInOrder().ToList()[SPDLFinishToBLSlideIndex];
                 }
 
+                if (BEISlideIndex > -1)
+                {
+                    BEISlideIndexPart = oPPart.GetSlidePartsInOrder().ToList()[BEISlideIndex];
+                }
+
+                DPSlidePart =  gridSlidePart;
+                ChartSlidePart = chartSlidePart;
+                LateSlidePart =  lateSlidePart;
+                UpComingSlidePart = upcomingSlidePart;
+                CPSlidePart = completedSlidePart;
+                SPDSSlidePart =SPDLSTartToBLSlidePart;
+                SPDFSlidePart = SPDLFinishToBLSlidePart;
+                SPBEISlidePart = BEISlideIndexPart;
                 var taskData = TaskItemRepository.GetTaskGroups(projectUID);
                 var data = taskData.TaskItemGroups;
 
                 int[] dynamicSlideIndices = { gridSlideIndex, completedSlideIndex };
-                int[] fixedSlideIndices = { lateSlideIndex, chartSlideIndex, SPDLSTartToBLSlideIndex, SPDLFinishToBLSlideIndex };
+                int[] fixedSlideIndices = { lateSlideIndex, upcomingSlideIndex, chartSlideIndex, SPDLSTartToBLSlideIndex, SPDLFinishToBLSlideIndex, BEISlideIndex };
 
                 dynamicSlideIndices = dynamicSlideIndices.Where(t => t != -1).ToArray();
                 fixedSlideIndices = fixedSlideIndices.Where(t => t != -1).ToArray();
@@ -98,11 +119,11 @@ namespace PMMP
                 if (dynamicSlideIndices[0] < fixedSlideIndices[0])
                 {
                     CreateDynamicSlides(data, dynamicSlideIndices, gridSlideIndex, completedSlideIndex, gridSlidePart, completedSlidePart, oPPart);
-                    CreateFixedSlides(taskData, fixedSlideIndices, lateSlideIndex, chartSlideIndex,SPDLSTartToBLSlideIndex,SPDLFinishToBLSlideIndex, lateSlidePart, chartSlidePart,SPDLSTartToBLSlidePart,SPDLFinishToBLSlidePart, oPPart);
+                    CreateFixedSlides(taskData, fixedSlideIndices, lateSlideIndex,upcomingSlideIndex, chartSlideIndex,SPDLSTartToBLSlideIndex,SPDLFinishToBLSlideIndex,BEISlideIndex, lateSlidePart,upcomingSlidePart, chartSlidePart,SPDLSTartToBLSlidePart,SPDLFinishToBLSlidePart,BEISlideIndexPart, oPPart);
                 }
                 else
                 {
-                    CreateFixedSlides(taskData, fixedSlideIndices, lateSlideIndex, chartSlideIndex, SPDLSTartToBLSlideIndex, SPDLFinishToBLSlideIndex, lateSlidePart, chartSlidePart, SPDLSTartToBLSlidePart, SPDLFinishToBLSlidePart, oPPart);
+                    CreateFixedSlides(taskData, fixedSlideIndices, lateSlideIndex, upcomingSlideIndex, chartSlideIndex, SPDLSTartToBLSlideIndex, SPDLFinishToBLSlideIndex, BEISlideIndex, lateSlidePart, upcomingSlidePart, chartSlidePart, SPDLSTartToBLSlidePart, SPDLFinishToBLSlidePart, BEISlideIndexPart, oPPart);
                     CreateDynamicSlides(data, dynamicSlideIndices, gridSlideIndex, completedSlideIndex, gridSlidePart, completedSlidePart, oPPart);
                 }
 
@@ -126,11 +147,11 @@ namespace PMMP
                 if (dynamicSlideIndices[0] < fixedSlideIndices[0])
                 {
                     CreateDynamicSlidesData(data, dynamicSlideIndices, gridSlideIndex, lowestSLideIndex, ref createdCount, completedSlideIndex, oPPart);
-                    CreateFixedSlidesData(taskData, fixedSlideIndices, lateSlideIndex, chartSlideIndex, lowestSLideIndex, SPDLSTartToBLSlideIndex, SPDLFinishToBLSlideIndex, ref createdCount, oPPart);
+                    CreateFixedSlidesData(taskData, fixedSlideIndices, lateSlideIndex,upcomingSlideIndex, chartSlideIndex, lowestSLideIndex, SPDLSTartToBLSlideIndex, SPDLFinishToBLSlideIndex,BEISlideIndex, ref createdCount, oPPart);
                 }
                 else
                 {
-                    CreateFixedSlidesData(taskData, fixedSlideIndices, lateSlideIndex, chartSlideIndex, lowestSLideIndex,SPDLSTartToBLSlideIndex,SPDLFinishToBLSlideIndex, ref createdCount, oPPart);
+                    CreateFixedSlidesData(taskData, fixedSlideIndices, lateSlideIndex,upcomingSlideIndex, chartSlideIndex, lowestSLideIndex,SPDLSTartToBLSlideIndex,SPDLFinishToBLSlideIndex,BEISlideIndex, ref createdCount, oPPart);
                     CreateDynamicSlidesData(data, dynamicSlideIndices, gridSlideIndex, lowestSLideIndex, ref createdCount, completedSlideIndex, oPPart);
                 }
                 Repository.Utility.WriteLog("CreateDocument completed successfully", System.Diagnostics.EventLogEntryType.Information);
@@ -138,7 +159,7 @@ namespace PMMP
             }
         }
 
-        private void CreateFixedSlidesData(TaskGroupData taskData, int[] fixedSlideIndices, int lateSlideIndex, int chartSlideIndex, int lowestSLideIndex, int SPDLSTartToBLSlideIndex, int SPDLFinishToBLSlideIndex,ref int createdCount, PresentationPart oPPart)
+        private void CreateFixedSlidesData(TaskGroupData taskData, int[] fixedSlideIndices, int lateSlideIndex,int upcomingSlideIndex, int chartSlideIndex, int lowestSLideIndex, int SPDLSTartToBLSlideIndex, int SPDLFinishToBLSlideIndex,int BEISlideIndex,ref int createdCount, PresentationPart oPPart)
         {
             Repository.Utility.WriteLog("CreateFixedSlidesData started", System.Diagnostics.EventLogEntryType.Information);
             foreach (int slideIndex in fixedSlideIndices)
@@ -147,33 +168,88 @@ namespace PMMP
                 {
                     CreateLateSlides(taskData, lowestSLideIndex, ref createdCount, oPPart);
                 }
-
+                if (slideIndex == upcomingSlideIndex)
+                {
+                    CreateUpComingSlides(taskData, lowestSLideIndex, ref createdCount, oPPart);
+                }
                 if (slideIndex == chartSlideIndex)
                 {
                     CreateChartSlides(taskData, lowestSLideIndex, ref createdCount, oPPart);
                 }
                 if (slideIndex == SPDLSTartToBLSlideIndex)
                 {
-                    CreateSPDLToBLSlides(taskData, lowestSLideIndex, ref createdCount, oPPart,true);
+                    CreateSPDLToBLSlides(taskData, lowestSLideIndex, ref createdCount, oPPart,ChartType.SPBaseLineStart);
                 }
                 if (slideIndex == SPDLFinishToBLSlideIndex)
                 {
-                    CreateSPDLToBLSlides(taskData, lowestSLideIndex, ref createdCount, oPPart,false);
+                    CreateSPDLToBLSlides(taskData, lowestSLideIndex, ref createdCount, oPPart, ChartType.SPBaseLineFinish);
+                }
+                if (slideIndex == BEISlideIndex)
+                {
+                    CreateSPDLToBLSlides(taskData, lowestSLideIndex, ref createdCount, oPPart, ChartType.SPBEI);
                 }
                 
             }
             Repository.Utility.WriteLog("CreateFixedSlidesData completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 
+        private void CreateUpComingSlides(TaskGroupData taskData, int lowestSLideIndex, ref int createdCount, PresentationPart oPPart)
+        {
+            Repository.Utility.WriteLog("CreateupComingSlides started", System.Diagnostics.EventLogEntryType.Information);
+            try
+            {
+                if (UpComingSlidePart == null)
+                    return;
+                #region upComingSlides
+
+                if (taskData.UpComingTaskGroups == null || taskData.UpComingTaskGroups.Count == 0)
+                {
+                    createdCount++;
+                    return;
+                }
+
+                foreach (TaskItemGroup upComingTaskgroup in taskData.UpComingTaskGroups)
+                {
+                    try
+                    {
+                        SlidePart upComingSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
+                        var table = upComingSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Table>().FirstOrDefault();
+
+                        if (table != null && upComingTaskgroup.TaskItems.Count > 0)
+                        {
+                            TableUtilities.PopulateLateOrUpComingTasksTable(table, upComingTaskgroup.TaskItems, taskData.FiscalPeriod);
+                        }
+                        createdCount++;
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                Repository.Utility.WriteLog(string.Format("CreateupComingSlides had an error and the error message={0}", ex.Message), System.Diagnostics.EventLogEntryType.Information);
+            }
+            Repository.Utility.WriteLog("CreateupComingSlides completed", System.Diagnostics.EventLogEntryType.Information);
+        }
+
        
 
-        private void CreateSPDLToBLSlides(TaskGroupData taskData, int lowestSLideIndex, ref int createdCount, PresentationPart oPPart, bool isStart)
+        private void CreateSPDLToBLSlides(TaskGroupData taskData, int lowestSLideIndex, ref int createdCount, PresentationPart oPPart, ChartType chartType)
         {
             Repository.Utility.WriteLog("CreateLateSlides started", System.Diagnostics.EventLogEntryType.Information);
             try
             {
                 #region LateSlides
-
+                if (chartType == ChartType.SPBaseLineStart && SPDSSlidePart == null)
+                    return;
+                if (chartType == ChartType.SPBaseLineFinish && SPDFSlidePart == null)
+                    return;
+                if (chartType == ChartType.SPBEI && SPBEISlidePart == null)
+                    return;
                 SlidePart chartSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
 
                 if (chartSlidePart.ChartParts.ToList().Count > 0)
@@ -192,23 +268,32 @@ namespace PMMP
                                 var workSheetPart = oSDoc.WorkbookPart.GetPartsOfType<WorksheetPart>().FirstOrDefault();
                                 var sheetData = workSheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
-                                if (isStart)
+                                switch (chartType)
                                 {
-                                    if (taskData.SPDLSTartToBL != null && taskData.SPDLSTartToBL.Count > 0 && taskData.SPDLSTartToBL[0].Data!= null)
-                                    {
-                                    WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.SPDLSTartToBL[0].Data.Count - 1);
-                                    WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.SPDLSTartToBL, 1, 0);
-                                    BarChartUtilities.LoadChartData(chartPart, taskData.SPDLSTartToBL);
-                                    }
-                                }
-                                else
-                                {
-                                    if(taskData.SPDLFinishToBL != null && taskData.SPDLFinishToBL.Count > 0 && taskData.SPDLFinishToBL[0].Data!= null)
-                                    {
-                                    WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.SPDLFinishToBL[0].Data.Count - 1);
-                                    WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.SPDLFinishToBL, 1, 0);
-                                    BarChartUtilities.LoadChartData(chartPart, taskData.SPDLFinishToBL);
-                                    }
+                                    case ChartType.SPBaseLineStart:
+                                        if (taskData.SPDLSTartToBL != null && taskData.SPDLSTartToBL.Count > 0 && taskData.SPDLSTartToBL[0].Data != null)
+                                        {
+                                            WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.SPDLSTartToBL[0].Data.Count - 1);
+                                            WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.SPDLSTartToBL, 1, 0);
+                                            BarChartUtilities.LoadChartData(chartPart, taskData.SPDLSTartToBL);
+                                        }
+                                        break;
+                                    case ChartType.SPBaseLineFinish:
+                                        if (taskData.SPDLFinishToBL != null && taskData.SPDLFinishToBL.Count > 0 && taskData.SPDLFinishToBL[0].Data != null)
+                                        {
+                                            WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.SPDLFinishToBL[0].Data.Count - 1);
+                                            WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.SPDLFinishToBL, 1, 0);
+                                            BarChartUtilities.LoadChartData(chartPart, taskData.SPDLFinishToBL);
+                                        }
+                                        break;
+                                    case ChartType.SPBEI:
+                                        if (taskData.BEIData != null && taskData.BEIData.Count > 0 && taskData.BEIData[0].Data != null)
+                                        {
+                                            WorkbookUtilities.ReplicateRow(sheetData, 2, taskData.BEIData[0].Data.Count - 1);
+                                            WorkbookUtilities.LoadGraphSheetData(sheetData, taskData.BEIData, 1, 0);
+                                            BarChartUtilities.LoadChartData(chartPart, taskData.BEIData);
+                                        }
+                                        break;
                                 }
                             }
 
@@ -261,6 +346,8 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateChartSlides started", System.Diagnostics.EventLogEntryType.Information);
             try
             {
+                if (ChartSlidePart == null)
+                    return;
                 if (taskData.ChartsData == null || taskData.ChartsData.Keys.Count == 0)
                 {
                     createdCount++;
@@ -352,6 +439,8 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateLateSlides started", System.Diagnostics.EventLogEntryType.Information);
             try
             {
+                if (LateSlidePart == null)
+                    return;
                 #region LateSlides
 
                 if (taskData.LateTaskGroups == null || taskData.LateTaskGroups.Count == 0)
@@ -364,12 +453,12 @@ namespace PMMP
                 {
                     try
                     {
-                        lateSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
+                        SlidePart lateSlidePart = oPPart.GetSlidePartsInOrder().ToList()[lowestSLideIndex + createdCount];
                         var table = lateSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Table>().FirstOrDefault();
 
                         if (table != null && lateTaskgroup.TaskItems.Count > 0)
                         {
-                            TableUtilities.PopulateLateTasksTable(table, lateTaskgroup.TaskItems, taskData.FiscalPeriod);
+                            TableUtilities.PopulateLateOrUpComingTasksTable(table, lateTaskgroup.TaskItems, taskData.FiscalPeriod);
                         }
                         createdCount++;
                     }
@@ -393,6 +482,8 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateCompletedSlides started", System.Diagnostics.EventLogEntryType.Information);
             try
             {
+                if (CPSlidePart == null)
+                    return;
                 if (group.CompletedTaskgroups != null)
                 {
                     IList<TaskItemGroup> CompletedTasks = group.CompletedTaskgroups;
@@ -441,6 +532,8 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateGridSlide started", System.Diagnostics.EventLogEntryType.Information);
             try
             {
+                if (DPSlidePart == null)
+                    return;
                 SlidePart gridSlidePart = oPPart.GetSlidePartsInOrder().ToList()[gridSlideIndex + i];
 
                 var dataTable = group.TaskItemsDataTable;
@@ -476,7 +569,7 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateGridSlide completed", System.Diagnostics.EventLogEntryType.Information);
         }
 
-        private void CreateFixedSlides(TaskGroupData taskData, int[] dynamicSlideIndices, int lateSlideIndex, int chartSlideIndex, int SPDLSTartToBLSlideIndex, int SPDLFinishToBLSlideIndex, SlidePart lateSlidePart, SlidePart chartSlidePart, SlidePart SPDLSTartToBLSlidePart, SlidePart SPDLFinishToBLSlidePart, PresentationPart oPPart)
+        private void CreateFixedSlides(TaskGroupData taskData, int[] dynamicSlideIndices, int lateSlideIndex,int upComingSlideIndex, int chartSlideIndex, int SPDLSTartToBLSlideIndex, int SPDLFinishToBLSlideIndex,int BEISlideIndex, SlidePart lateSlidePart,SlidePart upComingSlidePart, SlidePart chartSlidePart, SlidePart SPDLSTartToBLSlidePart, SlidePart SPDLFinishToBLSlidePart,SlidePart BEISlidePart, PresentationPart oPPart)
         {
             Repository.Utility.WriteLog("CreateFixedSlides started", System.Diagnostics.EventLogEntryType.Information);
             foreach (int slideIndex in dynamicSlideIndices)
@@ -503,6 +596,28 @@ namespace PMMP
                         }
                     }
                 }
+                if (upComingSlideIndex == slideIndex)
+                {
+                    if (taskData.UpComingTaskGroups != null && taskData.UpComingTaskGroups.Count > 0)
+                    {
+                        if (upComingSlidePart != null)
+                        {
+                            foreach (TaskItemGroup group in taskData.UpComingTaskGroups)
+                            {
+                                var newupComingSlidePart = upComingSlidePart.CloneSlide(SlideType.Late);
+                                oPPart.AppendSlide(newupComingSlidePart);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (upComingSlidePart != null)
+                        {
+                            var newupComingSlidePart = upComingSlidePart.CloneSlide(SlideType.Late);
+                            oPPart.AppendSlide(newupComingSlidePart);
+                        }
+                    }
+                }
 
                 if (SPDLSTartToBLSlideIndex == slideIndex)
                 {
@@ -519,6 +634,15 @@ namespace PMMP
                     {
                         var newSPDLFinishToBLSlidePart = SPDLFinishToBLSlidePart.CloneSlide(SlideType.Chart);
                         oPPart.AppendSlide(newSPDLFinishToBLSlidePart);
+                    }
+                }
+
+                if (BEISlideIndex == slideIndex)
+                {
+                    if (BEISlidePart != null)
+                    {
+                        var newBEISlidePart = BEISlidePart.CloneSlide(SlideType.Chart);
+                        oPPart.AppendSlide(newBEISlidePart);
                     }
                 }
 
@@ -635,6 +759,14 @@ namespace PMMP
             return -1;
         }
 
-        public SlidePart lateSlidePart { get; set; }
+        public SlidePart DPSlidePart { get; set; }
+        public SlidePart CPSlidePart { get; set; }
+        public SlidePart LateSlidePart { get; set; }
+        public SlidePart UpComingSlidePart { get; set; }
+        public SlidePart ChartSlidePart { get; set; }
+        public SlidePart SPDSSlidePart { get; set; }
+        public SlidePart SPDFSlidePart { get; set; }
+        public SlidePart SPBEISlidePart { get; set; }
     }
+
 }

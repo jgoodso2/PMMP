@@ -33,12 +33,15 @@ namespace PMMP
             FiscalUnit fiscalPeriod = DataRepository.GetFiscalMonth(projectStatusDate);
             taskData.FiscalPeriod = fiscalPeriod;
             IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable,fiscalPeriod);
+            IList<TaskItemGroup> UpComingTasksData = GetupComingTasksData(tasksDataTable, fiscalPeriod);
             taskData.TaskItemGroups = retVal;
             taskData.ChartsData = ChartsData;
             taskData.LateTaskGroups = LateTasksData;
+            taskData.UpComingTaskGroups = UpComingTasksData;
             
             taskData.SPDLSTartToBL = GetSPDLSTartToBLData(new Guid(projectUID),ds);
             taskData.SPDLFinishToBL = GetSPDLFinishToBLData(new Guid(projectUID), ds);
+            taskData.BEIData = GetBEIData(new Guid(projectUID), ds);
             if (tasksDataTable != null)
             {
                 var dPaths = tasksDataTable.AsEnumerable().Where(t => !string.IsNullOrEmpty(t.Field<string>("TASK_DRIVINGPATH_ID"))).Select(t => t.Field<string>("TASK_DRIVINGPATH_ID")).Distinct();
@@ -304,6 +307,93 @@ namespace PMMP
             return group;
         }
 
+        private static List<GraphDataGroup> GetBEIData(Guid projectUID, ProjectDataSet projectDataSet)
+        {
+            List<GraphDataGroup> group = new List<GraphDataGroup>();
+            DateTime? projectStatusDate = GetProjectStatusDate(projectUID, projectDataSet);
+            List<FiscalUnit> projectStatusPeriods = GetProjectStatusWeekPeriods(projectStatusDate);
+            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
+
+
+            //Get BEIStart Data
+            List<GraphData> graphDataBES = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+
+                int totalStart = tasks.Count(t => !t.IsTASK_ACT_STARTNull() && t.TASK_ACT_START >= unit.From && t.TASK_ACT_START <= unit.To);
+                int totalTBStart = tasks.Count(t => !t.IsTB_STARTNull() && t.TB_START >= unit.From && t.TB_START <= unit.To);
+                if (totalTBStart != 0)
+                {
+                    graphDataBES.Add(new GraphData() { Count = totalStart / totalTBStart, Title = unit.GetTitle() });
+                }
+                else
+                {
+                    graphDataBES.Add(new GraphData() { Count = 0, Title = unit.GetTitle() });
+                }
+            }
+            group.Add(new GraphDataGroup() { Type = "BES", Data = graphDataBES });
+
+            //Get BEIFinish Data
+            List<GraphData> graphDataBEF = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+
+                int totalFinish = tasks.Count(t => !t.IsTASK_ACT_FINISHNull() && t.TASK_ACT_FINISH >= unit.From && t.TASK_ACT_FINISH <= unit.To);
+                int totalTBFinish = tasks.Count(t => !t.IsTB_FINISHNull() && t.TB_FINISH >= unit.From && t.TB_FINISH <= unit.To);
+                if (totalTBFinish != 0)
+                {
+                    graphDataBEF.Add(new GraphData() { Count = totalFinish / totalTBFinish, Title = unit.GetTitle() });
+                }
+                else
+                {
+                    graphDataBEF.Add(new GraphData() { Count = 0, Title = unit.GetTitle() });
+                }
+            }
+            group.Add(new GraphDataGroup() { Type = "BEF", Data = graphDataBEF });
+
+            //Get BEI Forecast Start Data
+            List<GraphData> graphDataBEFS = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+                int totalStart = tasks.Count(t => !t.IsTASK_START_DATENull() && !t.IsTASK_PCT_COMPNull() && t.TASK_START_DATE >= unit.From && t.TASK_START_DATE <= unit.To && t.TASK_PCT_COMP == 0);
+                int totalTBStart = tasks.Count(t => !t.IsTB_STARTNull() && t.TB_START >= unit.From && t.TB_START <= unit.To);
+                if (totalTBStart != 0)
+                {
+                    graphDataBEFS.Add(new GraphData() { Count = totalStart / totalTBStart, Title = unit.GetTitle() });
+                }
+                else
+                {
+
+                } graphDataBEFS.Add(new GraphData() { Count = 0, Title = unit.GetTitle() });
+            }
+            group.Add(new GraphDataGroup() { Type = "BEFS", Data = graphDataBEFS });
+
+            //Get BEI Forecast Finish Data
+            List<GraphData> graphDataBEFF = new List<GraphData>();
+            foreach (FiscalUnit unit in projectStatusPeriods)
+            {
+
+                int totalFinish = tasks.Count(t => !t.IsTASK_FINISH_DATENull() && !t.IsTASK_PCT_COMPNull() && t.TASK_FINISH_DATE >= unit.From && t.TASK_FINISH_DATE <= unit.To);
+                int totalTBFinish = tasks.Count(t => !t.IsTB_FINISHNull() && t.TB_FINISH >= unit.From && t.TB_FINISH <= unit.To);
+                if (totalTBFinish != 0)
+                {
+                graphDataBEFF.Add(new GraphData() { Count = totalFinish / totalTBFinish, Title = unit.GetTitle() });
+                }
+                else{
+                    graphDataBEFF.Add(new GraphData() { Count = 0, Title = unit.GetTitle() });
+                }
+            }
+            group.Add(new GraphDataGroup() { Type = "BEFF", Data = graphDataBEFF });
+           
+
+            return group;
+        }
+
+        private static List<FiscalUnit> GetProjectStatusWeekPeriods(DateTime? projectStatusDate)
+        {
+            DataAccess da = new DataAccess(Guid.Empty);
+            return da.GetProjectStatusWeekPeriods(projectStatusDate);
+        }
         private static List<FiscalUnit> GetProjectStatusPeriods(DateTime? date)
         {
             DataAccess da = new DataAccess(Guid.Empty);
@@ -363,6 +453,54 @@ namespace PMMP
 
                 }
                 Repository.Utility.WriteLog("GetLateTasksData completed successfully", System.Diagnostics.EventLogEntryType.Information);    
+            return retVal;
+        }
+
+        private static IList<TaskItemGroup> GetupComingTasksData(DataTable tasksDataTable, FiscalUnit month)
+        {
+            if (month.From == DateTime.MinValue && month.To == DateTime.MaxValue)
+                return new List<TaskItemGroup>();
+            month.To = month.To.AddMonths(2);
+            Repository.Utility.WriteLog("GetupComingTasksData started", System.Diagnostics.EventLogEntryType.Information);
+            int count = -1;
+            int upComingTaskCount = 0;
+            IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
+
+
+            TaskItemGroup taskData = new TaskItemGroup() { TaskItems = new List<TaskItem>() };
+            IList<TaskItem> items = new List<TaskItem>();
+            EnumerableRowCollection<DataRow> collection =
+
+                tasksDataTable.AsEnumerable()
+                .Where((t => t.Field<bool>("TASK_IS_SUMMARY") == false && t.Field<int>("TASK_PCT_COMP") < 100
+                    && t.Field<DateTime?>("TASK_FINISH_DATE").HasValue && t.Field<DateTime?>("TASK_FINISH_DATE").Value.InCurrentFiscalMonth(month) 
+                       )).OrderBy(t=>t.Field<int>("TASK_ID"));
+
+
+            foreach (DataRow item in collection)
+            {
+                count++;
+                upComingTaskCount++;
+                TaskItem taskItem = BuildTaskItem("", item);
+                if (count == 10)
+                {
+                    retVal.Add(taskData);
+                    taskData = new TaskItemGroup { TaskItems = new List<TaskItem>() };
+                    count = -1;
+                    taskData.TaskItems.Add(BuildTaskItem("", item));
+                }
+                else
+                {
+                    taskData.TaskItems.Add(BuildTaskItem("", item));
+                }
+            }
+
+            if (count % 10 != 0)
+            {
+                retVal.Add(taskData);
+
+            }
+            Repository.Utility.WriteLog("GetupComingTasksData completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return retVal;
         }
 

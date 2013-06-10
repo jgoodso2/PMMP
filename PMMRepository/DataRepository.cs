@@ -29,7 +29,7 @@ namespace Repository
             From = DateTime.MinValue;
             To = DateTime.MaxValue;
         }
-        public FiscalUnit(DateTime fromDate, DateTime toDate,int month,int year,bool isWeekly,int weekNoStart)
+        public FiscalUnit(DateTime fromDate, DateTime toDate, int month, int year, bool isWeekly, int weekNoStart)
         {
             From = fromDate;
             To = toDate;
@@ -39,26 +39,40 @@ namespace Repository
             WeekNoStart = weekNoStart;
         }
 
+        public FiscalUnit(DateTime fromDate, DateTime toDate, int month, int year, bool nonFiscal)
+        {
+            From = fromDate;
+            To = toDate;
+            Month = month;
+            Year = year;
+            IsWeekly = false;
+            NonFiscal = nonFiscal;
+        }
+
         public bool IsWeekly { get; set; }
         public int WeekNoStart { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
         public DateTime To { get; set; }
         public DateTime From { get; set; }
-
+        public bool NonFiscal { get; set; }
         public string GetTitle()
         {
+            if (NonFiscal)
+            {
+                return To.ToString("dd/MM");
+            }
             if (IsWeekly)
             {
                 DateTime date = new DateTime(Year, Month, 1);
-                return date.ToString("MMM y " + string .Format("WK{0}",WeekNoStart));
+                return date.ToString("MMM y " + string.Format("WK{0}", WeekNoStart));
             }
             else
             {
                 DateTime date = new DateTime(Year, Month, 1);
                 return date.ToString("MMM y");
             }
-            
+
         }
 
         public int GetNoOfWeeks()
@@ -132,7 +146,7 @@ namespace Repository
 
         public static void SetImpersonation(bool isWindowsUser)
         {
-            string impersonatedUser = System.Security.Principal.WindowsIdentity.GetCurrent().Name;  
+            string impersonatedUser = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             Guid resourceGuid = GetResourceUid(impersonatedUser);
             Guid trackingGuid = Guid.NewGuid();
             Guid siteId = Guid.Empty;           // Project Web App site ID.
@@ -193,7 +207,7 @@ namespace Repository
                 using (OperationContextScope scope = new OperationContextScope(projectClient.InnerChannel))
                 {
                     WcfHelpers.UseCorrectHeaders(isImpersonated);
-           
+
                     Utility.WriteLog(string.Format("Calling ReadStatus"), System.Diagnostics.EventLogEntryType.Information);
                     SvcStatusing.StatusingDataSet dataSet = pwaClient.ReadStatus(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
                     Utility.WriteLog(string.Format("ReadStatus Successful"), System.Diagnostics.EventLogEntryType.Information);
@@ -212,14 +226,14 @@ namespace Repository
                         projectName, (int)PSLib.Project.ProjectType.MasterProject));
                     Utility.WriteLog(string.Format("ReadStatus on Inserted Published Store Successful"), System.Diagnostics.EventLogEntryType.Information);
 
-                    
+
                     //SvcProject.ProjectDataSet pds = projectClient.ReadProjectList(); // this fails if no permission... Conversely...ReadProjectStatus returns 0 if no permission.  
                 }
 
             }
             catch (Exception ex)
             {
-                Utility.WriteLog(string.Format("An error occured in ReadProjectsList and the error ={0}",ex.Message), System.Diagnostics.EventLogEntryType.Information);
+                Utility.WriteLog(string.Format("An error occured in ReadProjectsList and the error ={0}", ex.Message), System.Diagnostics.EventLogEntryType.Information);
             }
             finally
             {
@@ -230,7 +244,7 @@ namespace Repository
 
         public static bool P14Login(string projectserverURL)
         {
-           
+
             bool endPointError = false;
             bool result = false;
 
@@ -287,7 +301,7 @@ namespace Repository
                                 loginWindows = new SvcLoginWindows.LoginWindows();
                                 loginWindows.Url = baseUrl + "_vti_bin/PSI/LoginWindows.asmx";
                                 loginWindows.Credentials = new NetworkCredential(windowsUserName, password, windowsDomainName);
-                                Utility.WriteLog(string.Format("Logging in with username={0} password={1} Domain={1} ", windowsUserName, password, windowsDomainName),System.Diagnostics.EventLogEntryType.Information);
+                                Utility.WriteLog(string.Format("Logging in with username={0} password={1} Domain={1} ", windowsUserName, password, windowsDomainName), System.Diagnostics.EventLogEntryType.Information);
                                 result = loginWindows.Login();
                                 Utility.WriteLog(string.Format("Logging in result ={0} ", result.ToString()), System.Diagnostics.EventLogEntryType.Information);
                             }
@@ -441,7 +455,7 @@ namespace Repository
                 binding.MaxBufferSize = MAXSIZE;
                 binding.MaxReceivedMessageSize = MAXSIZE;
                 binding.MaxBufferPoolSize = MAXSIZE;
-                
+
 
                 binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
                 binding.GetType().GetProperty("ReaderQuotas").SetValue(binding, XmlDictionaryReaderQuotas.Max, null);
@@ -457,7 +471,7 @@ namespace Repository
                 projectClient.ChannelFactory.Credentials.Windows.AllowedImpersonationLevel
                     = TokenImpersonationLevel.Impersonation;
                 projectClient.ChannelFactory.Credentials.Windows.AllowNtlm = true;
-                
+
                 queueSystemClient = new SvcQueueSystem.QueueSystemClient(binding, address);
                 queueSystemClient.ChannelFactory.Credentials.Windows.AllowedImpersonationLevel
                     = TokenImpersonationLevel.Impersonation;
@@ -507,7 +521,7 @@ namespace Repository
         {
             if (!date.HasValue)
             {
-                return new FiscalUnit() { From = DateTime.MinValue, To = DateTime.MaxValue }; 
+                return new FiscalUnit() { From = DateTime.MinValue, To = DateTime.MaxValue };
             }
             Utility.WriteLog(string.Format("Calling GetCurrentFiscalMonth"), System.Diagnostics.EventLogEntryType.Information);
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
@@ -562,7 +576,7 @@ namespace Repository
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
             }
-            var obj =  customFieldsClient.ReadCustomFields(string.Empty, false);
+            var obj = customFieldsClient.ReadCustomFields(string.Empty, false);
             Utility.WriteLog(string.Format("ReadCustomFields completed successfully"), System.Diagnostics.EventLogEntryType.Information);
             return obj;
         }
@@ -576,7 +590,7 @@ namespace Repository
             return lookupTableClient.ReadLookupTables(string.Empty, false, 1);
         }
 
-        
+
         public static ProjectDataSet ReadProject(Guid projectUID)
         {
             Utility.WriteLog(string.Format("Calling ReadProject"), System.Diagnostics.EventLogEntryType.Information);
@@ -629,25 +643,25 @@ namespace Repository
             if (!date.HasValue)
             {
                 return months;
-            } 
-            
+            }
+
             using (OperationContextScope scope = new OperationContextScope(adminClient.InnerChannel))
             {
                 WcfHelpers.UseCorrectHeaders(isImpersonated);
                 SvcAdmin.FiscalPeriodDataSet fiscalPeriods = adminClient.ReadFiscalPeriods(date.Value.Year);
                 if (fiscalPeriods.FiscalPeriods.Rows.Count > 0)
                 {
-                   
-                    for (int count=0;count< fiscalPeriods.FiscalPeriods.Rows.Count;count++)
+
+                    for (int count = 0; count < fiscalPeriods.FiscalPeriods.Rows.Count; count++)
                     {
-                       DataRow row = fiscalPeriods.FiscalPeriods.Rows[count];
+                        DataRow row = fiscalPeriods.FiscalPeriods.Rows[count];
                         SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow fiscalRow = (SvcAdmin.FiscalPeriodDataSet.FiscalPeriodsRow)row;
-                        int noOfWeeks=0;
+                        int noOfWeeks = 0;
                         if (date >= fiscalRow.WFISCAL_PERIOD_START_DATE && date <= fiscalRow.WFISCAL_PERIOD_FINISH_DATE)
                         {
                             for (int i = 3; i > 0; i--)
                             {
-                                
+
                                 if (count >= 0)
                                 {
                                     DataRow row1 = fiscalPeriods.FiscalPeriods.Rows[count - i];
@@ -658,7 +672,7 @@ namespace Repository
                             }
                             //count += 3;
 
-                            FiscalUnit fiscalMonth1 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(7), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR,true,(1));
+                            FiscalUnit fiscalMonth1 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(7), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (1));
                             FiscalUnit fiscalMonth2 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(7), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(14), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (2));
                             FiscalUnit fiscalMonth3 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(14), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(21), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (3));
                             FiscalUnit fiscalMonth4 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(21), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(28), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (4));
@@ -671,7 +685,7 @@ namespace Repository
                                 FiscalUnit fiscalMonth5 = new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(28), fiscalRow.WFISCAL_PERIOD_START_DATE.AddDays(35), fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, true, (5));
                                 months.Add(fiscalMonth5);
                             }
-                            
+
                             for (int i = 0; i < 3; i++)
                             {
                                 count++;
@@ -685,14 +699,14 @@ namespace Repository
                             }
                             break;
                         }
-                        noOfWeeks += new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_FINISH_DATE, fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, false,0).GetNoOfWeeks();
+                        noOfWeeks += new FiscalUnit(fiscalRow.WFISCAL_PERIOD_START_DATE, fiscalRow.WFISCAL_PERIOD_FINISH_DATE, fiscalRow.WFISCAL_MONTH, fiscalRow.WFISCAL_YEAR, false, 0).GetNoOfWeeks();
                     }
                 }
             }
             return months;
         }
 
-        internal static DateTime? GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projUID)
+        internal static DateTime? GetProjectStatusDate(ProjectDataSet projectDataSet, Guid projUID)
         {
             try
             {
@@ -703,6 +717,37 @@ namespace Repository
             {
                 return null;
             }
+        }
+
+        internal static List<FiscalUnit> GetProjectStatusWeekPeriods(DateTime? date)
+        {
+            List<FiscalUnit> weekly = new List<FiscalUnit>();
+            if (!date.HasValue)
+            {
+                return weekly;
+            }
+
+            FiscalUnit fiscalMonth1 = new FiscalUnit(date.Value.AddDays(-35), date.Value.AddDays(-28),date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth2 = new FiscalUnit(date.Value.AddDays(-28), date.Value.AddDays(-21), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth3 = new FiscalUnit(date.Value.AddDays(-21), date.Value.AddDays(-14), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth4 = new FiscalUnit(date.Value.AddDays(-14), date.Value.AddDays(-7), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth5 = new FiscalUnit(date.Value.AddDays(-7), date.Value, date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth6 = new FiscalUnit(date.Value, date.Value.AddDays(7), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth7 = new FiscalUnit(date.Value.AddDays(7), date.Value.AddDays(14), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth8 = new FiscalUnit(date.Value.AddDays(14), date.Value.AddDays(21), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth9 = new FiscalUnit(date.Value.AddDays(21), date.Value.AddDays(28), date.Value.Month, date.Value.Year, true);
+            FiscalUnit fiscalMonth10 = new FiscalUnit(date.Value.AddDays(28), date.Value.AddDays(25), date.Value.Month, date.Value.Year, true);
+            weekly.Add(fiscalMonth1);
+            weekly.Add(fiscalMonth2);
+            weekly.Add(fiscalMonth3);
+            weekly.Add(fiscalMonth4);
+            weekly.Add(fiscalMonth5);
+            weekly.Add(fiscalMonth6);
+            weekly.Add(fiscalMonth7);
+            weekly.Add(fiscalMonth8);
+            weekly.Add(fiscalMonth9);
+            weekly.Add(fiscalMonth10);
+            return weekly;
         }
     }
 

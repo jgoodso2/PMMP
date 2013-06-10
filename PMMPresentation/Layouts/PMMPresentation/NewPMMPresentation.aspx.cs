@@ -9,6 +9,8 @@ using Constants = PMMP.Constants;
 using WCFHelpers;
 using System.Security.Principal;
 using Repository;
+using System.Web;
+using Microsoft.SharePoint.Utilities;
 
 namespace PMMPresentation.Layouts.PMMPresentation
 {
@@ -34,43 +36,79 @@ namespace PMMPresentation.Layouts.PMMPresentation
         {
             SPSecurity.RunWithElevatedPrivileges(() =>
             {
-
-                if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
+                using (var operation = new SPLongOperation(this))
                 {
-
-
-                    if (DataRepository.P14Login(((string)SPContext.Current.Web.Properties[Constants.PROPERTY_NAME_DB_SERVICE_URL])))
-                    // Start impersonating
+                    operation.LeadingHTML = "<b>Document creation in Progress...</b>";
+                    operation.TrailingHTML = "";
+                    operation.Begin();
+                    //operation.EndScript("SP.UI.ModalDialog.commonModalDialogClose(1, 'Submitted');");
+                    #region Create document
+                    if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
                     {
-                        var docName = this.txtDocumentName.Text + ".pptx";
-                        var docLib = this.Web.Lists[this.ListId];
-                        var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
-                        PMMP.PMPDocument document = new PMMP.PMPDocument();
-                        var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(), Configuration.ProjectUID);
 
 
-
-
-                        SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
-
-                        var pmmContentType = (from SPContentType ct in docLib.ContentTypes
-                                              where ct.Name.ToLower() == Constants.CT_PMM_NAME.ToLower()
-                                              select ct).FirstOrDefault();
-
-                        if (pmmContentType != null)
+                        if (DataRepository.P14Login(((string)SPContext.Current.Web.Properties[Constants.PROPERTY_NAME_DB_SERVICE_URL])))
+                        // Start impersonating
                         {
-                            item[SPBuiltInFieldId.ContentTypeId] = pmmContentType.Id;
-                            item[Constants.FieldId_Comments] = txtComment.Text;
-                            item.Update();
+                            var docName = this.txtDocumentName.Text + ".pptx";
+                            var docLib = this.Web.Lists[this.ListId];
+                            var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
+                            PMMP.PMPDocument document = new PMMP.PMPDocument();
+                            var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(), Configuration.ProjectUID);
+
+
+
+
+                            SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
+
+                            var pmmContentType = (from SPContentType ct in docLib.ContentTypes
+                                                  where ct.Name.ToLower() == Constants.CT_PMM_NAME.ToLower()
+                                                  select ct).FirstOrDefault();
+
+                            if (pmmContentType != null)
+                            {
+                                item[SPBuiltInFieldId.ContentTypeId] = pmmContentType.Id;
+                                item[Constants.FieldId_Comments] = txtComment.Text;
+                                item.Update();
+                            }
                         }
                     }
-                }
-                else
-                {
-                    this.ShowErrorMessage("An error has ocurred trying to get the configuration parameters");
+                    else
+                    {
+                        this.ShowErrorMessage("An error has ocurred trying to get the configuration parameters");
+                    }
+                    #endregion
+                    EndOperation(operation);
+
                 }
             });
             this.pnlSubmit.Visible = true;
+        }
+        protected void EndOperation(SPLongOperation operation)
+        {
+
+            HttpContext context = HttpContext.Current;
+
+            if (context.Request.QueryString["IsDlg"] != null)
+            {
+
+                context.Response.Write("<script type='text/javascript'>window.frameElement.commitPopup();</script>");
+
+                context.Response.Flush();
+
+                context.Response.End();
+
+            }
+
+            else
+            {
+
+                string url = SPContext.Current.Web.Url;
+
+                operation.End(url, SPRedirectFlags.CheckUrl, context, string.Empty);
+
+            }
+
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)

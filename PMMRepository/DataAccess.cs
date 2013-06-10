@@ -365,5 +365,10 @@ namespace Repository
         {
             return DataRepository.GetProjectStatusPeriods(date);
         }
+
+        public List<FiscalUnit> GetProjectStatusWeekPeriods(DateTime? projectStatusDate)
+        {
+            return DataRepository.GetProjectStatusWeekPeriods(projectStatusDate);
+        }
     }
 }
