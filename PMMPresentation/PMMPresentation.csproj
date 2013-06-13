@@ -46,6 +46,7 @@
       <HintPath>..\..\StatusReport\StatusReport\bin\Debug\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SharePoint.Linq, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Web.CommandUI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
     <Reference Include="ProjectServerServices">
       <HintPath>..\..\DataAccess\Repository\bin\Debug\ProjectServerServices.dll</HintPath>
     </Reference>

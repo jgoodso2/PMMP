@@ -30,7 +30,7 @@
 	              SP.UI.ModalDialog.commonModalDialogClose(0, 'Canceled');
 	              return false;
 	          }
-	      </script>
+	   </script>
 	    </asp:Panel>
         <div class="nsr-container">
             <div class="nsr-row">

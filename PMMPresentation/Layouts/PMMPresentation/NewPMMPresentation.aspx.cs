@@ -11,6 +11,7 @@ using System.Security.Principal;
 using Repository;
 using System.Web;
 using Microsoft.SharePoint.Utilities;
+using Microsoft.SharePoint.WebPartPages;
 
 namespace PMMPresentation.Layouts.PMMPresentation
 {
@@ -26,14 +27,20 @@ namespace PMMPresentation.Layouts.PMMPresentation
 
         protected void Page_Load(object sender, EventArgs e)
         {
+           
             if (!Page.IsPostBack)
                 this.txtDocumentName.Text = String.Format("PMMPresentation_{0}_{1}", this.Web.Title, DateTime.Now.ToString("dMMMyyyy"));
         }
 
+
+        
         #region Events
 
         protected void btnCreate_Click(object sender, EventArgs e)
         {
+            try
+            {
+               
             SPSecurity.RunWithElevatedPrivileges(() =>
             {
 
@@ -46,31 +53,43 @@ namespace PMMPresentation.Layouts.PMMPresentation
                         Utility.WriteLog("Successful P14 Login to the system for Document creation stage", System.Diagnostics.EventLogEntryType.Information);
                         using (var operation = new SPLongOperation(this))
                         {
-                            operation.LeadingHTML = "<b>Document creation in Progress...</b>";
-                            operation.TrailingHTML = "";
-                            operation.Begin();
-                            var docName = this.txtDocumentName.Text + ".pptx";
-                            var docLib = this.Web.Lists[this.ListId];
-                            var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
-                            PMMP.PMPDocument document = new PMMP.PMPDocument();
-                            var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(), Configuration.ProjectUID);
-
-
-
-
-                            SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
-
-                            var pmmContentType = (from SPContentType ct in docLib.ContentTypes
-                                                  where ct.Name.ToLower() == Constants.CT_PMM_NAME.ToLower()
-                                                  select ct).FirstOrDefault();
-
-                            if (pmmContentType != null)
+                            try
                             {
-                                item[SPBuiltInFieldId.ContentTypeId] = pmmContentType.Id;
-                                item[Constants.FieldId_Comments] = txtComment.Text;
-                                item.Update();
+                                operation.LeadingHTML = "<b>Document creation in Progress...</b>";
+                                operation.TrailingHTML = "";
+                                operation.Begin();
+                                var docName = this.txtDocumentName.Text + ".pptx";
+                                var docLib = this.Web.Lists[this.ListId];
+                                var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
+                                PMMP.PMPDocument document = new PMMP.PMPDocument();
+                                var stream = document.CreateDocument("Presentation", templateFile.OpenBinary(), Configuration.ProjectUID);
+
+
+
+
+                                SPListItem item = docLib.RootFolder.Files.Add(docName, stream, true).Item;
+
+                                var pmmContentType = (from SPContentType ct in docLib.ContentTypes
+                                                      where ct.Name.ToLower() == Constants.CT_PMM_NAME.ToLower()
+                                                      select ct).FirstOrDefault();
+
+                                if (pmmContentType != null)
+                                {
+                                    item[SPBuiltInFieldId.ContentTypeId] = pmmContentType.Id;
+                                    item[Constants.FieldId_Comments] = txtComment.Text;
+                                    item.Update();
+                                }
+                                
                             }
-                            EndOperation(operation);
+                            catch (Exception ex)
+                            {
+                                this.ShowErrorMessage(ex);
+                                SPUtility.TransferToErrorPage(ex.ToString()); 
+                            }
+                            finally
+                            {
+                                EndOperation(operation);
+                            }
 
                         }
                     }
@@ -88,6 +107,11 @@ namespace PMMPresentation.Layouts.PMMPresentation
                 #endregion
 
             });
+            }
+            catch (Exception ex)
+            {
+                this.ShowErrorMessage(ex);
+            }
             this.pnlSubmit.Visible = true;
         }
         protected void EndOperation(SPLongOperation operation)
@@ -110,7 +134,7 @@ namespace PMMPresentation.Layouts.PMMPresentation
             {
 
                 string url = SPContext.Current.Web.Url;
-
+                
                 operation.End(url, SPRedirectFlags.CheckUrl, context, string.Empty);
 
             }
