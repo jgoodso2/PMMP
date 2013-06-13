@@ -16,9 +16,6 @@ namespace PMMP
             get
             {
                 var retVal = this._title;
-                if (this._title.EndsWith("Complete"))
-                    retVal = String.Format("Driving Path: {0}", this._title);
-
                 return retVal;
             }
             set { this._title = value; }

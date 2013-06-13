@@ -161,7 +161,7 @@ namespace PMMP
                 case CustomFieldType.EstFinish: return "CAM Finish";
                 case CustomFieldType.EstStart: return "CAM Start";
                 case CustomFieldType.PMT: return "PMT";
-                case CustomFieldType.ReasonRecovery: return "Reason _Recovery";
+                case CustomFieldType.ReasonRecovery: return "Reason_Recovery";
                 case CustomFieldType.ShowOn: return "Show On";
             }
             return null;

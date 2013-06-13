@@ -493,10 +493,18 @@ namespace PMMP
                         {
                             SlidePart completedSlidePart = oPPart.GetSlidePartsInOrder().ToList()[completedSlideIndex];
                             DocumentFormat.OpenXml.Presentation.TextBody numberPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
-
+                            int bulletCount = numberPart.Elements<DocumentFormat.OpenXml.Drawing.Paragraph>().Count();
                             foreach (string task in completedTaskgroup.TaskItems.Select(t => t.Task))
                             {
+                                
                                 DocumentFormat.OpenXml.Drawing.Paragraph paragraph = (DocumentFormat.OpenXml.Drawing.Paragraph)numberPart.Elements().ToList()[3].Clone();
+                                for (int i = paragraph.Elements().Count() - 1; i >=1; i--)
+                                {
+                                    if (paragraph.ElementAt(i).GetType() == typeof(DocumentFormat.OpenXml.Drawing.Run))
+                                    {
+                                        paragraph.ElementAt(i).Remove();
+                                    }
+                                }
                                 (paragraph.Elements().ToList()[0] as DocumentFormat.OpenXml.Drawing.Run).Text = new DocumentFormat.OpenXml.Drawing.Text(task);
                                 numberPart.Append(paragraph);
                             }
@@ -514,8 +522,10 @@ namespace PMMP
                             //}
 
                             DocumentFormat.OpenXml.Presentation.TextBody numPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
-                            ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
-                            ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
+                            for (int i = bulletCount - 2; i >= 0; i--)
+                            {
+                                ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();
+                            }
                         }
                     }
                 }

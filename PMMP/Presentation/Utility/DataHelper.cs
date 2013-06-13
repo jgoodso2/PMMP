@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 using System.Collections.Specialized;
+using System.Data;
+using SvcProject;
+using SvcCustomFields;
 
 
 namespace PMMP
@@ -36,14 +39,51 @@ namespace PMMP
             return value;
         }
 
-        public static string[] GetValueFromMultiChoice(object oValue,CustomFieldType type)
+
+        public static object GetValueFromCustomFieldTextOrDate(DataRow dataRow, CustomFieldType type, CustomFieldDataSet dataSet)
+        {
+            try
+            {
+                StringCollection value = new StringCollection();
+                Guid mdPropID = Guid.Empty;
+                if ((dataSet as CustomFieldDataSet).CustomFields.Any(t => t.MD_PROP_NAME == type.GetString()))
+                {
+                    mdPropID = (dataSet as CustomFieldDataSet).CustomFields.First(t => t.MD_PROP_NAME == type.GetString()).MD_PROP_UID;
+                }
+                if (mdPropID == Guid.Empty)
+                {
+                    return null;
+                }
+                if (type == CustomFieldType.EstStart || type == CustomFieldType.EstFinish)
+                {
+                    if ((dataRow.Table.DataSet as ProjectDataSet).TaskCustomFields.Any(t => t.TASK_UID == (dataRow as ProjectDataSet.TaskRow).TASK_UID && t.MD_PROP_UID == mdPropID))
+                        return (dataRow.Table.DataSet as ProjectDataSet).TaskCustomFields.First(t => t.TASK_UID == (dataRow as ProjectDataSet.TaskRow).TASK_UID && t.MD_PROP_UID == mdPropID && !t.IsDATE_VALUENull()).DATE_VALUE;
+                    else
+                        return null;
+                }
+                else if (type == CustomFieldType.PMT || type == CustomFieldType.ReasonRecovery)
+                {
+                    if ((dataRow.Table.DataSet as ProjectDataSet).TaskCustomFields.Any(t => t.TASK_UID == (dataRow as ProjectDataSet.TaskRow).TASK_UID && t.MD_PROP_UID == mdPropID && !t.IsTEXT_VALUENull()))
+                        return (dataRow.Table.DataSet as ProjectDataSet).TaskCustomFields.First(t => t.TASK_UID == (dataRow as ProjectDataSet.TaskRow).TASK_UID && t.MD_PROP_UID == mdPropID && !t.IsTEXT_VALUENull()).TEXT_VALUE;
+                    else
+                        return null;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static string[] GetValueFromMultiChoice(object oValue, CustomFieldType type)
         {
             Repository.Utility.WriteLog("GetValueFromMultiChoice started", System.Diagnostics.EventLogEntryType.Information);
             StringCollection value = new StringCollection();
 
             if (oValue != null)
             {
-                string[] fieldValue =oValue.ToString().Split(",".ToCharArray());
+                string[] fieldValue = oValue.ToString().Split(",".ToCharArray());
                 for (int i = 0; i < fieldValue.Length; i++)
                 {
                     foreach (string fieldval in fieldValue[i].Split(",".ToCharArray()))

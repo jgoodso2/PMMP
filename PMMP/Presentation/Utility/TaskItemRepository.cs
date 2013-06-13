@@ -9,6 +9,7 @@ using PMMP;
 using Constants = PMMP.Constants;
 using System.Collections.Specialized;
 using SvcProject;
+using SvcCustomFields;
 
 
 namespace PMMP
@@ -21,19 +22,19 @@ namespace PMMP
             Repository.Utility.WriteLog("GetTaskGroups started", System.Diagnostics.EventLogEntryType.Information);
           
             IList<TaskItemGroup> retVal = new List<TaskItemGroup>();
-           
+            CustomFieldDataSet customFieldDataSet = DataRepository.ReadCustomFields();
             
             DataAccess dataAccess = new Repository.DataAccess(new Guid(projectUID));
             DataSet dataset = dataAccess.ReadProject(null);
             ProjectDataSet ds = DataRepository.ReadProject(new Guid(projectUID));
             DataTable tasksDataTable = dataset.Tables["Task"];
-            Dictionary<string, IList<TaskItem>> ChartsData = GetChartsData(tasksDataTable);
+            Dictionary<string, IList<TaskItem>> ChartsData = GetChartsData(tasksDataTable,customFieldDataSet);
             TaskGroupData taskData = new TaskGroupData();
             DateTime? projectStatusDate = GetProjectCurrentDate(new Guid(projectUID), ds);
             FiscalUnit fiscalPeriod = DataRepository.GetFiscalMonth(projectStatusDate);
             taskData.FiscalPeriod = fiscalPeriod;
-            IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable,fiscalPeriod);
-            IList<TaskItemGroup> UpComingTasksData = GetupComingTasksData(tasksDataTable, fiscalPeriod);
+            IList<TaskItemGroup> LateTasksData = GetLateTasksData(tasksDataTable, fiscalPeriod, customFieldDataSet);
+            IList<TaskItemGroup> UpComingTasksData = GetupComingTasksData(tasksDataTable, fiscalPeriod, customFieldDataSet);
             taskData.TaskItemGroups = retVal;
             taskData.ChartsData = ChartsData;
             taskData.LateTaskGroups = LateTasksData;
@@ -73,10 +74,10 @@ namespace PMMP
 
                         if (item["CUSTOMFIELD_DESC"] != null)
                         {
-                            chartItems.Add(BuildTaskItem(dPath, item));
+                            chartItems.Add(BuildTaskItem(dPath, item, customFieldDataSet));
                         }
 
-                        if (item["TASK_PCT_COMP"] != null && (Convert.ToInt32(item["TASK_PCT_COMP"].ToString().Trim().Trim("%".ToCharArray()).Trim()) >= 100) && !string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(fiscalPeriod))
+                        if (!string.IsNullOrEmpty(item["TASK_ACT_FINISH"].ToString()) && (Convert.ToDateTime(item["TASK_ACT_FINISH"].ToString())).InCurrentFiscalMonth(fiscalPeriod))
                         {
                             totalCompletedTaskCount++;
                             completedTaskCount++;
@@ -85,11 +86,11 @@ namespace PMMP
                                 completedTasks.Add(completedTaskItemGroup);
                                 completedTaskItemGroup = new TaskItemGroup { DrivingPath = dPath, TaskItems = new List<TaskItem>() };
                                 completedTaskCount = 0;
-                                completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
+                                completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item,customFieldDataSet));
                             }
                             else
                             {
-                                completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
+                                completedTaskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item,customFieldDataSet));
                             }    
                            
                         }
@@ -107,12 +108,12 @@ namespace PMMP
 
                                     taskItemGroup.Title = previousTitle;
                                     taskCount = 0;
-                                    taskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
+                                    taskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item, customFieldDataSet));
 
                                 }
                                 else
                                 {
-                                    taskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item));
+                                    taskItemGroup.TaskItems.Add(BuildTaskItem(dPath, item, customFieldDataSet));
                                 }
                             }
                             
@@ -180,7 +181,7 @@ namespace PMMP
             if (!projectStatusDate.HasValue)
                 return new List<GraphDataGroup>();
             List<FiscalUnit> projectStatusPeriods = GetProjectStatusPeriods(projectStatusDate.Value);
-            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
+            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == false && !t.IsTASK_DURNull() && t.TASK_DUR > 0);
             
 
             //Get CS Data
@@ -246,7 +247,7 @@ namespace PMMP
             List<GraphDataGroup> group = new List<GraphDataGroup>();
             DateTime? projectStatusDate = GetProjectCurrentDate(projectUID, projectDataSet);
             List<FiscalUnit> projectStatusPeriods = GetProjectStatusPeriods(projectStatusDate);
-            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
+            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == false && !t.IsTASK_DURNull() && t.TASK_DUR > 0);
 
 
             //Get CS Data
@@ -312,7 +313,7 @@ namespace PMMP
             List<GraphDataGroup> group = new List<GraphDataGroup>();
             DateTime? projectStatusDate = GetProjectCurrentDate(projectUID, projectDataSet);
             List<FiscalUnit> projectStatusPeriods = GetProjectStatusWeekPeriods(projectStatusDate);
-            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == true && (t.IsTASK_DURNull() || t.TASK_DUR > 0));
+            IEnumerable<ProjectDataSet.TaskRow> tasks = projectDataSet.Task.Where(t => t.TASK_IS_SUMMARY == false && !t.IsTASK_DURNull() && t.TASK_DUR > 0);
 
 
             //Get BEIStart Data
@@ -405,7 +406,7 @@ namespace PMMP
             DataAccess da = new DataAccess(projectUID);
             return da.GetProjectCurrentDate(projectDataSet, projectUID);
         }
-        private static IList<TaskItemGroup> GetLateTasksData(DataTable tasksDataTable, FiscalUnit month)
+        private static IList<TaskItemGroup> GetLateTasksData(DataTable tasksDataTable, FiscalUnit month, CustomFieldDataSet dataSet)
         {
             if (month.From == DateTime.MinValue && month.To == DateTime.MaxValue)
                 return new List<TaskItemGroup>();
@@ -433,17 +434,17 @@ namespace PMMP
                 {
                     count++;
                     lateTaskCount++;
-                    TaskItem taskItem = BuildTaskItem("", item);
+                    TaskItem taskItem = BuildTaskItem("", item, dataSet);
                     if (count == 10)
                     {
                         retVal.Add(taskData);
                         taskData = new TaskItemGroup {  TaskItems = new List<TaskItem>() };
                         count = -1;
-                        taskData.TaskItems.Add(BuildTaskItem("", item));
+                        taskData.TaskItems.Add(BuildTaskItem("", item, dataSet));
                     }
                     else
                     {
-                        taskData.TaskItems.Add(BuildTaskItem("", item));
+                        taskData.TaskItems.Add(BuildTaskItem("", item, dataSet));
                     }
                 }
 
@@ -456,11 +457,13 @@ namespace PMMP
             return retVal;
         }
 
-        private static IList<TaskItemGroup> GetupComingTasksData(DataTable tasksDataTable, FiscalUnit month)
+        private static IList<TaskItemGroup> GetupComingTasksData(DataTable tasksDataTable, FiscalUnit month, CustomFieldDataSet dataSet)
         {
             if (month.From == DateTime.MinValue && month.To == DateTime.MaxValue)
                 return new List<TaskItemGroup>();
-            month.To = month.To.AddMonths(2);
+            
+            FiscalUnit fiscalUnit = new FiscalUnit() { From = month.From,To=month.To.AddMonths(1)};
+            
             Repository.Utility.WriteLog("GetupComingTasksData started", System.Diagnostics.EventLogEntryType.Information);
             int count = -1;
             int upComingTaskCount = 0;
@@ -473,7 +476,7 @@ namespace PMMP
 
                 tasksDataTable.AsEnumerable()
                 .Where((t => t.Field<bool>("TASK_IS_SUMMARY") == false && t.Field<int>("TASK_PCT_COMP") < 100
-                    && t.Field<DateTime?>("TASK_FINISH_DATE").HasValue && t.Field<DateTime?>("TASK_FINISH_DATE").Value.InCurrentFiscalMonth(month) 
+                    && t.Field<DateTime?>("TASK_FINISH_DATE").HasValue && t.Field<DateTime?>("TASK_FINISH_DATE").Value.InCurrentFiscalMonth(fiscalUnit) 
                        )).OrderBy(t=>t.Field<int>("TASK_ID"));
 
 
@@ -481,17 +484,17 @@ namespace PMMP
             {
                 count++;
                 upComingTaskCount++;
-                TaskItem taskItem = BuildTaskItem("", item);
+                TaskItem taskItem = BuildTaskItem("", item,dataSet);
                 if (count == 10)
                 {
                     retVal.Add(taskData);
                     taskData = new TaskItemGroup { TaskItems = new List<TaskItem>() };
                     count = -1;
-                    taskData.TaskItems.Add(BuildTaskItem("", item));
+                    taskData.TaskItems.Add(BuildTaskItem("", item, dataSet));
                 }
                 else
                 {
-                    taskData.TaskItems.Add(BuildTaskItem("", item));
+                    taskData.TaskItems.Add(BuildTaskItem("", item, dataSet));
                 }
             }
 
@@ -504,7 +507,7 @@ namespace PMMP
             return retVal;
         }
 
-        private static Dictionary<string, IList<TaskItem>> GetChartsData(DataTable tasksDataTable)
+        private static Dictionary<string, IList<TaskItem>> GetChartsData(DataTable tasksDataTable,CustomFieldDataSet dataSet)
         {
             Repository.Utility.WriteLog("GetLateTasksData started", System.Diagnostics.EventLogEntryType.Information);    
             Dictionary<string, IList<TaskItem>> chartsData = new Dictionary<string, IList<TaskItem>>() ;
@@ -521,7 +524,7 @@ namespace PMMP
                     EnumerableRowCollection<DataRow> collection = tasksDataTable.AsEnumerable().Where(t => t.Field<string>("CUSTOMFIELD_DESC") != null && t.Field<string>("CUSTOMFIELD_DESC").Split(",".ToCharArray()).Contains(chartTypeItem));
                     foreach (DataRow item in collection)
                     {
-                        TaskItem taskItem =  BuildTaskItem("", item);
+                        TaskItem taskItem = BuildTaskItem("", item, dataSet);
                         items.Add(taskItem);
                     }
                     if (items.Count > 0)
@@ -538,8 +541,12 @@ namespace PMMP
             return chartsData;
         }
 
-        private static TaskItem BuildTaskItem(string dPath, DataRow item)
+        private static TaskItem BuildTaskItem(string dPath, DataRow item, CustomFieldDataSet dataSet)
         {
+            DateTime? estFinish = (DateTime?)DataHelper.GetValueFromCustomFieldTextOrDate(item, CustomFieldType.EstFinish, dataSet);
+            DateTime? estStart = (DateTime?)DataHelper.GetValueFromCustomFieldTextOrDate(item, CustomFieldType.EstStart, dataSet);
+            object objreason = DataHelper.GetValueFromCustomFieldTextOrDate(item, CustomFieldType.ReasonRecovery, dataSet);
+            string reasonrecovery = objreason != null ? objreason.ToString() : "";
             return new TaskItem
             {
                 ID = DataHelper.GetValueAsInteger(item["TASK_ID"].ToString()),
@@ -552,11 +559,11 @@ namespace PMMP
                 Finish = DataHelper.GetValueAsDateTime(item["TASK_FINISH_DATE"].ToString()),
                 Deadline = DataHelper.GetValueAsDateTime(item["TASK_DEADLINE"].ToString()),
                 ShowOn = DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(),CustomFieldType.ShowOn),
-                CA = string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.CA)),
-                EstFinish = !string.IsNullOrEmpty(string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstFinish))) ? (DateTime?) Convert.ToDateTime(DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstFinish)) : null,
-                EstStart = !string.IsNullOrEmpty(string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstStart))) ? (DateTime?) Convert.ToDateTime(DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.EstStart)): null,
+                CA = string.Join(",", DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.CA)),
+                EstFinish = estFinish,
+                EstStart = estStart,
                 PMT = string.Join(",",DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.PMT)),
-                ReasonRecovery =string.Join(",", DataHelper.GetValueFromMultiChoice(item["CUSTOMFIELD_DESC"].ToString(), CustomFieldType.ReasonRecovery)),
+                ReasonRecovery = reasonrecovery,
                 ModifiedOn = DataHelper.GetValueAsDateTime(item["TASK_MODIFIED_ON"].ToString()),
                 WorkCompletePercentage = DataHelper.GetValueAsInteger(item["TASK_PCT_COMP"].ToString()),
                 TotalSlack = DataHelper.GetValue(item["TASK_TOTAL_SLACK"].ToString()),
