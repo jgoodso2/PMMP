@@ -36,20 +36,19 @@ namespace PMMPresentation.Layouts.PMMPresentation
         {
             SPSecurity.RunWithElevatedPrivileges(() =>
             {
-                using (var operation = new SPLongOperation(this))
+
+                //operation.EndScript("SP.UI.ModalDialog.commonModalDialogClose(1, 'Submitted');");
+                #region Create document
+                if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
                 {
-                    operation.LeadingHTML = "<b>Document creation in Progress...</b>";
-                    operation.TrailingHTML = "";
-                    operation.Begin();
-                    //operation.EndScript("SP.UI.ModalDialog.commonModalDialogClose(1, 'Submitted');");
-                    #region Create document
-                    if (!String.IsNullOrEmpty(Configuration.ServiceURL) && !String.IsNullOrEmpty(Configuration.ProjectUID))
+                    if (DataRepository.P14Login(((string)SPContext.Current.Web.Properties[Constants.PROPERTY_NAME_DB_SERVICE_URL])))
                     {
-
-
-                        if (DataRepository.P14Login(((string)SPContext.Current.Web.Properties[Constants.PROPERTY_NAME_DB_SERVICE_URL])))
-                        // Start impersonating
+                        Utility.WriteLog("Successful P14 Login to the system for Document creation stage", System.Diagnostics.EventLogEntryType.Information);
+                        using (var operation = new SPLongOperation(this))
                         {
+                            operation.LeadingHTML = "<b>Document creation in Progress...</b>";
+                            operation.TrailingHTML = "";
+                            operation.Begin();
                             var docName = this.txtDocumentName.Text + ".pptx";
                             var docLib = this.Web.Lists[this.ListId];
                             var templateFile = this.Web.GetFile(Constants.TEMPLATE_FILE_LOCATION);
@@ -71,16 +70,23 @@ namespace PMMPresentation.Layouts.PMMPresentation
                                 item[Constants.FieldId_Comments] = txtComment.Text;
                                 item.Update();
                             }
+                            EndOperation(operation);
+
                         }
                     }
                     else
                     {
-                        this.ShowErrorMessage("An error has ocurred trying to get the configuration parameters");
+                        Utility.WriteLog("An error has ocurred in trying to P14 Login to the system", System.Diagnostics.EventLogEntryType.Error);
+                        this.ShowErrorMessage("An error has ocurred in trying to P14 Login to the system");
                     }
-                    #endregion
-                    EndOperation(operation);
-
                 }
+                else
+                {
+                    this.ShowErrorMessage("An error has ocurred trying to get the configuration parameters");
+                    Utility.WriteLog("An error has ocurred trying to get the configuration parameters", System.Diagnostics.EventLogEntryType.Error);
+                }
+                #endregion
+
             });
             this.pnlSubmit.Visible = true;
         }

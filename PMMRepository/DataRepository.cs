@@ -706,7 +706,7 @@ namespace Repository
             return months;
         }
 
-        internal static DateTime? GetProjectStatusDate(ProjectDataSet projectDataSet, Guid projUID)
+        internal static DateTime? GetProjectCurrentDate(ProjectDataSet projectDataSet, Guid projUID)
         {
             try
             {
@@ -715,7 +715,7 @@ namespace Repository
             }
             catch
             {
-                return null;
+                return DateTime.Now;
             }
         }
 

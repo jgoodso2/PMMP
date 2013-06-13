@@ -348,7 +348,7 @@ namespace PMMP
             {
                 if (ChartSlidePart == null)
                     return;
-                if (taskData.ChartsData == null || taskData.ChartsData.Keys.Count == 0)
+                if (taskData.ChartsData == null || taskData.ChartsData.Keys.Count == 0 || !taskData.ChartsData.Keys.Any(t=>t.StartsWith("Show On")))
                 {
                     createdCount++;
                     return;
@@ -501,17 +501,17 @@ namespace PMMP
                                 numberPart.Append(paragraph);
                             }
 
-                            var titleShape = completedSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
-                            if (titleShape.Count > 0)
-                            {
-                                titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
-                                                      new DocumentFormat.OpenXml.Drawing.BodyProperties(),
-                                                      new DocumentFormat.OpenXml.Drawing.ListStyle(),
-                                                      new DocumentFormat.OpenXml.Drawing.Paragraph(
-                                                      new DocumentFormat.OpenXml.Drawing.Run(
-                                                      new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
-                                                      new DocumentFormat.OpenXml.Drawing.Text { Text = group.Title })));
-                            }
+                            //var titleShape = completedSlidePart.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Shape>().ToList();
+                            //if (titleShape.Count > 0)
+                            //{
+                            //    titleShape[0].TextBody = new DocumentFormat.OpenXml.Presentation.TextBody(
+                            //                          new DocumentFormat.OpenXml.Drawing.BodyProperties(),
+                            //                          new DocumentFormat.OpenXml.Drawing.ListStyle(),
+                            //                          new DocumentFormat.OpenXml.Drawing.Paragraph(
+                            //                          new DocumentFormat.OpenXml.Drawing.Run(
+                            //                          new DocumentFormat.OpenXml.Drawing.RunProperties() { FontSize = 3600 },
+                            //                          new DocumentFormat.OpenXml.Drawing.Text { Text = group.Title })));
+                            //}
 
                             DocumentFormat.OpenXml.Presentation.TextBody numPart = (DocumentFormat.OpenXml.Presentation.TextBody)completedSlidePart.Slide.CommonSlideData.ShapeTree.Elements().ToList()[3].Elements().ToList()[2];
                             ((DocumentFormat.OpenXml.Drawing.Paragraph)numPart.Elements().ToList()[3]).Remove();

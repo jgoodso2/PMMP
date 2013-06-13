@@ -353,12 +353,12 @@ namespace Repository
                     return sTaskRow;
                 }
             }
-            return "";
+            return taskRow != null ? taskRow.ToString():"";
         }
 
-        public DateTime? GetProjectStatusDate(ProjectDataSet projectDataSet,Guid projectGuid)
+        public DateTime? GetProjectCurrentDate(ProjectDataSet projectDataSet,Guid projectGuid)
         {
-            return DataRepository.GetProjectStatusDate(projectDataSet, projectGuid);
+            return DataRepository.GetProjectCurrentDate(projectDataSet, projectGuid);
         }
 
         public List<FiscalUnit> GetProjectStatusPeriods(DateTime? date)

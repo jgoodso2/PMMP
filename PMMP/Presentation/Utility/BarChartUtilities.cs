@@ -14,7 +14,8 @@ namespace PMMP
             Repository.Utility.WriteLog("LoadChartData started", System.Diagnostics.EventLogEntryType.Information);
             Chart chart = chartPart.ChartSpace.Elements<Chart>().First();
             BarChart bc = chart.Descendants<BarChart>().FirstOrDefault();
-
+           
+            
             if (bc != null)
             {
                 BarChartSeries bcs1 = bc.Elements<BarChartSeries>().FirstOrDefault();
@@ -88,6 +89,7 @@ namespace PMMP
 
         private static void CreateStringPoints(StringCache sc, int count,bool deleteClone)
         {
+            
             Repository.Utility.WriteLog("CreateStringPoints started", System.Diagnostics.EventLogEntryType.Information);
             var sp1 = sc.Elements<StringPoint>().ElementAt(0);
 
@@ -117,7 +119,13 @@ namespace PMMP
             BarChartSeries bcs2 = null;
             BarChartSeries bcs3 = null;
             BarChartSeries bcs4 = null;
-
+            NumberingCache nc1 = null;
+            NumberingCache nc2 = null;
+            NumberingCache nc3 = null;
+            NumberingCache nc4 = null;
+            NumberingCache nc5 = null;
+            NumberingCache nc6 = null;
+            StringCache sc = null;
             if (bc != null)
             {
                  bcs1 = bc.Elements<BarChartSeries>().ElementAt(0);
@@ -149,15 +157,16 @@ namespace PMMP
                             {
                                 categories = bcs1.Descendants<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().ToList()[count];
                             }
-                            StringReference csr = categories.Descendants<StringReference>().First();
-                            csr.Formula.Text = String.Format("Sheet1!$A$2:$A${0}", list[j].Data.Count - 1);
-
-                            StringCache sc = categories.Descendants<StringCache>().First();
+                            
                             
 
                             if (graphGroup.Type == "CS" || graphGroup.Type == "CF" ||  graphGroup.Type == "BES")
                             {
-                               
+
+                                StringReference csr = categories.Descendants<StringReference>().First();
+                                //csr.Formula.Text = String.Format("Sheet1!$A$2:$A${0}", list[j].Data.Count - 1);
+
+                                sc = categories.Descendants<StringCache>().First();
                                 CreateStringPoints(sc, list[j].Data.Count,true);
                             }
 
@@ -173,14 +182,13 @@ namespace PMMP
                                 values1 = bcs1.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
                             }
 
-                            NumberReference vnr1 = values1.Descendants<NumberReference>().First();
-                            vnr1.Formula.Text = String.Format("Sheet1!$B$2:$B${0}", list[j].Data.Count - 1);
-
-                            NumberingCache nc1 = values1.Descendants<NumberingCache>().First();
+                           
 
                             if (graphGroup.Type == "CS" || graphGroup.Type == "CF" || graphGroup.Type == "BES" )
                             {
-                               
+                                NumberReference vnr1 = values1.Descendants<NumberReference>().First();
+                                //vnr1.Formula.Text = String.Format("Sheet1!$B$2:$B${0}", list[j].Data.Count - 1);
+                                nc1 = values1.Descendants<NumberingCache>().First();
                                 CreateNumericPoints(nc1, list[j].Data.Count,true);
                             }
                             //Series 2
@@ -194,13 +202,12 @@ namespace PMMP
                                values2 = bcs2.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
                             }
                            
-                            NumberingCache nc2 = values2.Descendants<NumberingCache>().First();
-                            NumberReference vnr2 = values2.Descendants<NumberReference>().First();
-                            vnr2.Formula.Text = String.Format("Sheet1!$C$2:$C${0}", list[j].Data.Count - 1 + 1);
                             if (graphGroup.Type == "FCS" || graphGroup.Type == "FCF" || graphGroup.Type == "BEF")
                             {
-                               
 
+                                nc2 = values2.Descendants<NumberingCache>().First();
+                                NumberReference vnr2 = values2.Descendants<NumberReference>().First();
+                                //vnr2.Formula.Text = String.Format("Sheet1!$C$2:$C${0}", list[j].Data.Count - 1 + 1);
                                 CreateNumericPoints(nc2, list[j].Data.Count,true);
                             }
 
@@ -214,14 +221,14 @@ namespace PMMP
                             {
                                 values3 = bcs3.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
                             }
-                            NumberReference vnr3 = values3.Descendants<NumberReference>().First();
-                            vnr3.Formula.Text = String.Format("Sheet1!$D$2:$D${0}", list[j].Data.Count);
-
-                            NumberingCache nc3 = values3.Descendants<NumberingCache>().First();
+                           
                            
                             if (graphGroup.Type == "DQ" || graphGroup.Type == "DQF" || graphGroup.Type == "BEFS")
                             {
-                               
+                                NumberReference vnr3 = values3.Descendants<NumberReference>().First();
+                                //vnr3.Formula.Text = String.Format("Sheet1!$D$2:$D${0}", list[j].Data.Count);
+
+                                nc3 = values3.Descendants<NumberingCache>().First();
                                 CreateNumericPoints(nc3, list[j].Data.Count,true);
                             }
 
@@ -238,69 +245,79 @@ namespace PMMP
                                 values4 = bcs4.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
                             }
 
-                            NumberReference vnr4 = values4.Descendants<NumberReference>().First();
-                            vnr4.Formula.Text = String.Format("Sheet1!$E$2:$E${0}", list[j].Data.Count);
-
-                            NumberingCache nc4 = values4.Descendants<NumberingCache>().First();
+                            
 
                             if (graphGroup.Type == "FDQ" || graphGroup.Type == "FDQF" || graphGroup.Type == "BEFS")
                             {
-                               
+                                NumberReference vnr4 = values4.Descendants<NumberReference>().First();
+                                //vnr4.Formula.Text = String.Format("Sheet1!$E$2:$E${0}", list[j].Data.Count);
+
+                                nc4 = values4.Descendants<NumberingCache>().First();
                                 CreateNumericPoints(nc4, list[j].Data.Count,true);
                             }
 
-                            //Series 5
-                            var values5 = lcs1.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
-                            NumberReference vnr5 = values5.Descendants<NumberReference>().First();
-                            vnr5.Formula.Text = String.Format("Sheet1!$F$2:$F${0}", list[j].Data.Count);
-
-                            NumberingCache nc5 = values5.Descendants<NumberingCache>().First();
+                            if (graphGroup.Type == "BES" || graphGroup.Type == "BEFS" || graphGroup.Type == "BEFF" || graphGroup.Type == "BEF")
+                            {
+                                goto xy;
+                            }
                           
 
                             if (graphGroup.Type == "CDQ" || graphGroup.Type == "CDQF")
                             {
-                               
+                                //Series 5
+                                var values5 = lcs1.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+                                NumberReference vnr5 = values5.Descendants<NumberReference>().First();
+                                //vnr5.Formula.Text = String.Format("Sheet1!$F$2:$F${0}", list[j].Data.Count);
+
+                                nc5 = values5.Descendants<NumberingCache>().First();
                                 CreateNumericPoints(nc5, list[j].Data.Count, true);
                             }
 
-                            //Series 6
-                            var values6 = lcs2.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
-
-                            NumberReference vnr6 = values6.Descendants<NumberReference>().First();
-                            vnr6.Formula.Text = String.Format("Sheet1!$G$2:$G${0}", list[j].Data.Count);
-
-                            NumberingCache nc6 = values6.Descendants<NumberingCache>().First();
+                           
 
                             if (graphGroup.Type == "FCDQ" || graphGroup.Type == "FCDQF")
                             {
-                               
+                                //Series 6
+                                var values6 = lcs2.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+
+                                NumberReference vnr6 = values6.Descendants<NumberReference>().First();
+                                //vnr6.Formula.Text = String.Format("Sheet1!$G$2:$G${0}", list[j].Data.Count);
+
+                                nc6 = values6.Descendants<NumberingCache>().First();
                                 CreateNumericPoints(nc6, list[j].Data.Count, true);
                             }
 
 
-                            for (int i = 0; i < graphGroup.Data.Count; i++)
+                           xy: for (int i = 0; i < graphGroup.Data.Count; i++)
                             {
                                 try
                                 {
-                                    NumericValue sv = sc.Elements<StringPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
-                                    sv.Text = graphGroup.Data[i].Title.ToString();
+                                   
 
                                     switch (graphGroup.Type)
                                     {
                                         case "CF":
                                         case "CS":
-                                            NumericValue nv1 = nc1.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
-                                            nv1.Text = graphGroup.Data[i].Count.ToString();break;
+                                        case "BES":
+                                        NumericValue nv1 = nc1.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
+                                        nv1.Text = graphGroup.Data[i].Count.ToString();
+                                             NumericValue sv = sc.Elements<StringPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
+                                             sv.Text = graphGroup.Data[i].Title.ToString();
+                                            break;
+                                   
                                         case "FCF":
                                         case "FCS":
+                                             case "BEF":
                                             NumericValue nv2 = nc2.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv2.Text = graphGroup.Data[i].Count.ToString(); break;
                                         case "DQF":
                                         case "DQ":
+                                             case "BEFS":
                                             NumericValue nv3 = nc3.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv3.Text = graphGroup.Data[i].Count.ToString(); break;
                                         case "FDQF":
                                         case "FDQ":
+                                        case "BEFF":
                                             NumericValue nv4 = nc4.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
                                             nv4.Text = graphGroup.Data[i].Count.ToString(); break;
                                         case "CDQF":
@@ -327,5 +344,6 @@ namespace PMMP
                     }
                 Repository.Utility.WriteLog("LoadChartData completed successfully", System.Diagnostics.EventLogEntryType.Information);
             }
+        
         }
     }

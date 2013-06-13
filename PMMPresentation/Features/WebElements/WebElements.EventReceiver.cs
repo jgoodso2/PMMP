@@ -21,11 +21,17 @@ namespace PMMPresentation.Features.WebElements
 
         public override void FeatureActivated(SPFeatureReceiverProperties properties)
         {
-            SPSecurity.RunWithElevatedPrivileges(() =>
-                    {
-                        if (!EventLog.SourceExists("PMM Presentation"))
-                            EventLog.CreateEventSource("PMM Presentation", "Application");
-                    });
+            try
+            {
+                SPSecurity.RunWithElevatedPrivileges(() =>
+                        {
+                            if (!EventLog.SourceExists("PMM Presentation"))
+                                EventLog.CreateEventSource("PMM Presentation", "Application");
+                        });
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
 
