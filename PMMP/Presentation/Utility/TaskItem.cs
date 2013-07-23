@@ -25,7 +25,7 @@ namespace PMMP
         public string[] ShowOn { get; set; }
         public int WorkCompletePercentage { get; set; }
         public string TotalSlack { get; set; }
-
+        public string BLDuration {get;set;}
         public string Hours { get; set; }
 
         public string CA { get; set; }

@@ -93,7 +93,7 @@ namespace PMMP
 
             if (type == SlideType.Grid && name == "Deadline" || name == "ShowOn")
                 retVal = false;
-            else if (name != "Task" && name != "Finish")
+            else if (name != "Task" && name != "Start" && name != "Duration" && name != "BaseLineStart" && name != "BLDuration" && name !="Finish" && name!= "BaseLineFinish" && name != "ID")
             {
                 retVal = false;
             }
@@ -107,8 +107,14 @@ namespace PMMP
 
             switch (propName)
             {
+                case "BaseLineStart":
+                    return "BaseLineStart";
+                case "BLDuration":
+                    return "BLDuration";
+                case "Duration":
+                    return "Duration";
                 case "ID":
-                    retVal = "ID_";
+                    retVal = "ID";
                     break;
                 case "UniqueID":
                     retVal = "UniqueID";
@@ -118,9 +124,6 @@ namespace PMMP
                     break;
                 case "Task":
                     retVal = "Task";
-                    break;
-                case "Duration":
-                    retVal = "Duration";
                     break;
                 case "Predecessor":
                     retVal = "Predecessor";
@@ -159,8 +162,9 @@ namespace PMMP
             Repository.Utility.WriteLog("GetValue started", System.Diagnostics.EventLogEntryType.Information);
             object retVal = prop.GetValue(item);
 
-            if (type == SlideType.Chart && prop.Name == "Task")
-                retVal = String.Format("{0}: {1}", item.Task, item.Finish.HasValue ? item.Finish.Value.ToString("MM/dd") : String.Empty);
+            //TODO Delete Later
+            //if (type == SlideType.Chart && prop.Name == "Task")
+            //    retVal = String.Format("{0}: {1}", item.Task, item.Finish.HasValue ? item.Finish.Value.ToString("MM/dd") : String.Empty);
             Repository.Utility.WriteLog("GetValue completed successfully", System.Diagnostics.EventLogEntryType.Information);
             return retVal;
         }

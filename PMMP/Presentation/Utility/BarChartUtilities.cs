@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Packaging;
+using System.Data;
 
 namespace PMMP
 {
@@ -13,13 +14,42 @@ namespace PMMP
         {
             Repository.Utility.WriteLog("LoadChartData started", System.Diagnostics.EventLogEntryType.Information);
             Chart chart = chartPart.ChartSpace.Elements<Chart>().First();
-            BarChart bc = chart.Descendants<BarChart>().FirstOrDefault();
-           
-            
-            if (bc != null)
+            BarChart bc1 = chart.Descendants<BarChart>().FirstOrDefault();
+            BarChart bc2 = chart.Descendants<BarChart>().ElementAt(1);
+            DateTime maxAxisvAlue=DateTime.MinValue;
+            DateTime minAxisvAlue = DateTime.MaxValue;
+            DateTime maxFinishValue = dataTable.AsEnumerable().Select(t=>t.Field<DateTime>("Finish")).Max();
+            DateTime maxBFinishvalue = dataTable.AsEnumerable().Select(t => t.Field<DateTime>("BaseLineFinish")).Max();
+            maxAxisvAlue = maxBFinishvalue > maxFinishValue ? maxBFinishvalue : maxFinishValue;
+
+            DateTime minStartValue = dataTable.AsEnumerable().Select(t => t.Field<DateTime>("Start")).Min();
+            DateTime minBStartvalue = dataTable.AsEnumerable().Select(t => t.Field<DateTime>("BaseLineStart")).Min();
+            minAxisvAlue = minBStartvalue < minStartValue ? minBStartvalue : minStartValue;
+            IEnumerable<ValueAxis> axes = chart.Descendants<ValueAxis>();
+            foreach (ValueAxis axis in axes)
             {
-                BarChartSeries bcs1 = bc.Elements<BarChartSeries>().FirstOrDefault();
-                BarChartSeries bcs2 = bc.Elements<BarChartSeries>().ElementAt(1);
+                if (maxAxisvAlue != DateTime.MaxValue)
+                {
+                    axis.Scaling.MaxAxisValue.Val = maxAxisvAlue.ToOADate();
+                }
+                if (minAxisvAlue != DateTime.MinValue)
+                {
+                    axis.Scaling.MinAxisValue.Val = minAxisvAlue.ToOADate();
+                }
+                if (dataTable.Rows.Count > 0)
+                {
+                    axis.Elements<MajorUnit>().FirstOrDefault().Val = (axis.Scaling.MaxAxisValue.Val - axis.Scaling.MinAxisValue.Val) / dataTable.Rows.Count;
+                }
+            }
+            
+
+            
+            if (bc1 != null && bc2 != null)
+            {
+                BarChartSeries bcs1 = bc1.Elements<BarChartSeries>().FirstOrDefault();
+                BarChartSeries bcs2 = bc1.Elements<BarChartSeries>().ElementAt(1);
+                BarChartSeries bcs3 = bc2.Elements<BarChartSeries>().FirstOrDefault();
+                BarChartSeries bcs4 = bc2.Elements<BarChartSeries>().ElementAt(1);
                 if (bcs1 != null && bcs2 != null)
                 {
                     var categories = bcs1.Descendants<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
@@ -29,7 +59,7 @@ namespace PMMP
 
                     StringCache sc = categories.Descendants<StringCache>().First();
 
-                    CreateStringPoints(sc, dataTable.Rows.Count - 1,false);
+                    CreateStringPoints(sc, dataTable.Rows.Count,false);
 
                     //Series 1
                     var values1 = bcs1.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
@@ -39,7 +69,7 @@ namespace PMMP
 
                     NumberingCache nc1 = values1.Descendants<NumberingCache>().First();
 
-                    CreateNumericPoints(nc1, dataTable.Rows.Count - 1,false);
+                    CreateNumericPoints(nc1, dataTable.Rows.Count,false);
 
                     //Series 2
                     var values2 = bcs2.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
@@ -49,21 +79,53 @@ namespace PMMP
 
                     NumberingCache nc2 = values2.Descendants<NumberingCache>().First();
 
-                    CreateNumericPoints(nc2, dataTable.Rows.Count - 1,false);
+                    CreateNumericPoints(nc2, dataTable.Rows.Count, false);
+
+                    //Series 3
+                    var values3 = bcs3.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+
+                    NumberReference vnr3 = values3.Descendants<NumberReference>().First();
+                    vnr3.Formula.Text = String.Format("Sheet1!$D$2:$D${0}", dataTable.Rows.Count + 1);
+
+                    NumberingCache nc3 = values3.Descendants<NumberingCache>().First();
+
+                    CreateNumericPoints(nc3, dataTable.Rows.Count,false);
+
+                    //Series 4
+                    var values4 = bcs4.Descendants<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+
+                    NumberReference vnr4 = values4.Descendants<NumberReference>().First();
+                    vnr4.Formula.Text = String.Format("Sheet1!$E$2:$E${0}", dataTable.Rows.Count + 1);
+
+                    NumberingCache nc4 = values4.Descendants<NumberingCache>().First();
+
+                    CreateNumericPoints(nc4, dataTable.Rows.Count, false);
+
+                    
 
                     for (int i = 0; i < dataTable.Rows.Count; i++)
                     {
                         NumericValue sv = sc.Elements<StringPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
-                        sv.Text = dataTable.Rows[i][0].ToString();
+                        sv.Text = dataTable.Rows[i]["Task"].ToString() + " | " + ((DateTime)dataTable.Rows[i]["Finish"]).ToString("MM/dd");
 
                         NumericValue nv1 = nc1.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
-                        nv1.Text = ((DateTime)dataTable.Rows[i][1]).ToOADate().ToString();
-
                         NumericValue nv2 = nc2.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
-                        nv2.Text = "10";
+                        NumericValue nv3 = nc3.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
+                        NumericValue nv4 = nc4.Elements<NumericPoint>().ElementAt(i).Elements<NumericValue>().FirstOrDefault();
+                        
+                        nv1.Text = ((DateTime)dataTable.Rows[i]["Start"]).ToOADate().ToString();
+
+                        nv2.Text = ((DateTime)dataTable.Rows[i]["Finish"] - (DateTime)dataTable.Rows[i]["Start"]).TotalDays > 4 ?
+                            ((DateTime)dataTable.Rows[i]["Finish"] - (DateTime)dataTable.Rows[i]["Start"]).TotalDays.ToString() : "5";
+                        
+                        nv3.Text = ((DateTime)dataTable.Rows[i]["BaseLineStart"]).ToOADate().ToString();
+
+                        nv4.Text = ((DateTime)dataTable.Rows[i]["BaseLineFinish"] - (DateTime)dataTable.Rows[i]["BaseLineStart"]).TotalDays > 4 ?
+                            ((DateTime)dataTable.Rows[i]["BaseLineFinish"] - (DateTime)dataTable.Rows[i]["BaseLineStart"]).TotalDays.ToString() : "5";
                     }
                 }
             }
+            
             Repository.Utility.WriteLog("LoadChartData completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 
@@ -72,6 +134,11 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateNumericPoints started", System.Diagnostics.EventLogEntryType.Information);
             var np1 = nc.Elements<NumericPoint>().ElementAt(0);
 
+            
+            for (int i = nc.Elements<NumericPoint>().Count() - 1; i > 0; i--)
+            {
+                nc.Elements<NumericPoint>().ElementAt(i).Remove();
+            }
             for (int i = 0; i < count; i++)
             {
                 var npref = nc.Elements<NumericPoint>().ElementAt(i);
@@ -82,7 +149,6 @@ namespace PMMP
                 nc.InsertAfter(np, npref);
             }
 
-            if(deleteClone == true)
             np1.Remove();
             Repository.Utility.WriteLog("CreateNumericPoints completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
@@ -93,6 +159,11 @@ namespace PMMP
             Repository.Utility.WriteLog("CreateStringPoints started", System.Diagnostics.EventLogEntryType.Information);
             var sp1 = sc.Elements<StringPoint>().ElementAt(0);
 
+            for (int i = sc.Elements<StringPoint>().Count() - 1; i > 0; i--)
+            {
+                sc.Elements<StringPoint>().ElementAt(i).Remove();
+            }
+
             for (int i = 0; i < count; i++)
             {
                 var spref = sc.Elements<StringPoint>().ElementAt(i);
@@ -102,10 +173,10 @@ namespace PMMP
 
                 sc.InsertAfter(sp, spref);
             }
-            if (deleteClone)
-            {
+            
+            
                 sp1.Remove();
-            }
+            
             Repository.Utility.WriteLog("CreateStringPoints completed successfully", System.Diagnostics.EventLogEntryType.Information);
         }
 

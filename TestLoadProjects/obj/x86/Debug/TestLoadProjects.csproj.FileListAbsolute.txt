@@ -17,8 +17,10 @@ C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\Microsof
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\obj\x86\Debug\TestLoadProjects.exe
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\obj\x86\Debug\TestLoadProjects.pdb
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\PMMP.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\PMMRepository.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\ProjectServerServices.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\WCFHelpers.dll
+C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\PMMP.pdb
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\PMMRepository.pdb
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\TestLoadProjects\bin\Debug\WCFHelpers.pdb

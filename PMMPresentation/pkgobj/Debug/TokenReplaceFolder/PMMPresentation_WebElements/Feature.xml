@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" ActivateOnDefault="FALSE" Id="c53ab744-6fdd-4cc1-b22a-94df9138ba0d" ReceiverAssembly="PMMPresentation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4817109300b3adf3" ReceiverClass="PMMPresentation.Features.WebElements.WebElementsEventReceiver" Scope="Web" Title="PMMPresentation Components">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" ActivateOnDefault="FALSE" Title="PMMPresentation Components" Id="c53ab744-6fdd-4cc1-b22a-94df9138ba0d" ReceiverAssembly="PMMPresentation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4817109300b3adf3" ReceiverClass="PMMPresentation.Features.WebElements.WebElementsEventReceiver" Scope="Web">
   <ElementManifests>
     <ElementManifest Location="PMMPresentation\Elements.xml" />
     <ElementManifest Location="PMMPresentations\Elements.xml" />

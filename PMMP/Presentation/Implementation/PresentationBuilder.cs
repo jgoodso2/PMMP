@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using DocumentFormat.OpenXml.Packaging;
-
+using System.Data;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -383,14 +383,25 @@ namespace PMMP
 
                                             if (spreadsheet != null)
                                             {
-                                                using (var oSDoc = SpreadsheetDocument.Open(spreadsheet.GetStream(FileMode.OpenOrCreate, FileAccess.ReadWrite), true))
+                                                OpenSettings settings  = new OpenSettings();
+                                                settings.AutoSave = true;
+                                                using (var oSDoc = SpreadsheetDocument.Open(spreadsheet.GetStream(FileMode.OpenOrCreate, FileAccess.ReadWrite), true,settings))
                                                 {
                                                     var workSheetPart = oSDoc.WorkbookPart.GetPartsOfType<WorksheetPart>().FirstOrDefault();
                                                     var sheetData = workSheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
-
+                                                    for (int i = sheetData.Elements().Count() - 1; i >= 2; i--)
+                                                    {
+                                                        sheetData.ElementAt(i).Remove();
+                                                    }
+                                                    string reference = workSheetPart.TableDefinitionParts.ElementAt(0).Table.Reference.Value;
+                                                    string length = reference.Split(":".ToCharArray())[1].Replace("I","");
                                                     WorkbookUtilities.ReplicateRow(sheetData, 2, chartDataTable.Rows.Count - 1);
                                                     WorkbookUtilities.LoadSheetData(sheetData, chartDataTable, 1, 0);
+                                                    workSheetPart.TableDefinitionParts.ElementAt(0).Table.Reference.Value = reference.Replace(length, (chartDataTable.Rows.Count + 1).ToString());
                                                     BarChartUtilities.LoadChartData(chartPart, chartDataTable);
+                                                    workSheetPart.TableDefinitionParts.ElementAt(0).Table.Save();
+                                                    workSheetPart.Worksheet.Save();
+                                                    
                                                 }
 
                                                 break;
