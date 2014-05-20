@@ -61,3 +61,13 @@ C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMPresentation\bin\Debug\PMMP.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMPresentation\bin\Debug\PMMRepository.dll
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMPresentation\bin\Debug\PMMP.pdb
 C:\PMMP_5_19_13\PMM519\PMMP 5_19 - Copy\PMMP\PMMPresentation\bin\Debug\PMMRepository.pdb
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\obj\Debug\PMMPresentation.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\obj\Debug\PMMPresentation.pdb
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\PMMPresentation.dll
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\PMMPresentation.pdb
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\PMMP.dll
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\PMMRepository.dll
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\ProjectServerServices.dll
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\PMMP.pdb
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\bin\Debug\PMMRepository.pdb
+C:\Users\Administrator\Documents\GitHub\PMMP\PMMPresentation\obj\Debug\PMMPresentation.dll

@@ -1,9 +1,0 @@
-C:\Development\BAE\DataAccess\WCFHelpers\obj\Release\ResolveAssemblyReference.cache
-C:\Development\BAE\DataAccess\WCFHelpers\obj\Release\WCFHelpers.dll
-C:\Development\BAE\DataAccess\WCFHelpers\obj\Release\WCFHelpers.pdb
-C:\Development\BAE\DataAccess\WCFHelpers\bin\Release\WCFHelpers.dll.config
-C:\Development\BAE\DataAccess\WCFHelpers\bin\Release\WCFHelpers.dll
-C:\Development\BAE\DataAccess\WCFHelpers\bin\Release\WCFHelpers.pdb
-C:\Development\BAE\DataAccess\WCFHelpers\bin\Release\Microsoft.Sharepoint.Sandbox.dll
-C:\Development\BAE\DataAccess\WCFHelpers\bin\Release\WCFHelpers.XmlSerializers.dll
-C:\Development\BAE\DataAccess\WCFHelpers\obj\Release\WCFHelpers.XmlSerializers.dll
